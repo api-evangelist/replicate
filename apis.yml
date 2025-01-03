@@ -1,32 +1,39 @@
 aid: replicate
-name: Replicate
-description: >-
-  Run AI with an API. Run and fine-tune open-source models. Deploy custom models
-  at scale. All with one line of code. With Replicate you can. Generate images
-type: Index
-position: Consumer
-access: 3rd-Party
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
-tags:
-  - API
-created: '2024-11-13'
-modified: '2024-11-13'
 url: >-
   https://raw.githubusercontent.com/api-search/replicate/refs/heads/main/apis.yml
-specificationVersion: '0.19'
 apis:
   - aid: replicate:replicate
     name: Replicate
-    description: >-
-      Run AI with an API. Run and fine-tune open-source models. Deploy custom
-      models at scale. All with one line of code. With Replicate you can.
-      Generate images
-    humanURL: https://replicate.com/
     tags:
-      - API
+      - Artificial Intelligence
+    humanURL: https://replicate.com/
     properties:
-      - type: Documentation
-        url: https://replicate.com/
+      - url: https://replicate.com/
+        type: Documentation
+    description: >-
+      AI can do extraordinary things, but its still too hard to use. We don't
+      believe AI is inherently hard. We just don't have the right tools and
+      abstractions yet. Were building tools so all software engineers can use
+      AI as if it were normal software. You should be able to import an image
+      generator the same way you import an npm package. You should be able to
+      customize a model as easily as you can fork something on GitHub.
+name: Replicate
+tags:
+  - Artificial Intelligence
+type: Contract
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+access: 3rd-Party
+created: '2024-11-13'
+modified: '2025-01-02'
+position: Consuming
+description: >-
+  AI can do extraordinary things, but its still too hard to use. We don't
+  believe AI is inherently hard. We just don't have the right tools and
+  abstractions yet. Were building tools so all software engineers can use AI as
+  if it were normal software. You should be able to import an image generator
+  the same way you import an npm package. You should be able to customize a
+  model as easily as you can fork something on GitHub.
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com
+specificationVersion: '0.19'
