@@ -5,13 +5,27 @@ apis:
   - aid: replicate:replicate
     name: Replicate
     tags:
+      - Accounts
+      - ' Collections'
+      - ' Slug'
+      - ' Deployments'
+      - ' Owner'
+      - ' Name'
+      - ' Predictions'
+      - ' Hardware'
+      - ' Model'
+      - ' Version'
+      - ' Cancel'
+      - ' Training'
+      - ' Webhooks'
+      - ' Secrets'
       - Artificial Intelligence
     humanURL: https://replicate.com/
     properties:
       - url: https://replicate.com/
         type: Documentation
-      - type: OpenAPI
-        url: properties/replicate-openapi.yml
+      - url: properties/replicate-openapi.yml
+        type: OpenAPI
     description: >-
       AI can do extraordinary things, but its still too hard to use. We don't
       believe AI is inherently hard. We just don't have the right tools and
