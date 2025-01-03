@@ -10,11 +10,13 @@ apis:
     properties:
       - url: https://replicate.com/
         type: Documentation
+      - type: OpenAPI
+        url: properties/replicate-openapi.yml
     description: >-
-      AI can do extraordinary things, but its still too hard to use. We don't
+      AI can do extraordinary things, but its still too hard to use. We don't
       believe AI is inherently hard. We just don't have the right tools and
-      abstractions yet. Were building tools so all software engineers can use
-      AI as if it were normal software. You should be able to import an image
+      abstractions yet. Were building tools so all software engineers can use AI
+      as if it were normal software. You should be able to import an image
       generator the same way you import an npm package. You should be able to
       customize a model as easily as you can fork something on GitHub.
 name: Replicate
@@ -27,9 +29,9 @@ created: '2024-11-13'
 modified: '2025-01-02'
 position: Consuming
 description: >-
-  AI can do extraordinary things, but its still too hard to use. We don't
+  AI can do extraordinary things, but its still too hard to use. We don't
   believe AI is inherently hard. We just don't have the right tools and
-  abstractions yet. Were building tools so all software engineers can use AI as
+  abstractions yet. Were building tools so all software engineers can use AI as
   if it were normal software. You should be able to import an image generator
   the same way you import an npm package. You should be able to customize a
   model as easily as you can fork something on GitHub.
