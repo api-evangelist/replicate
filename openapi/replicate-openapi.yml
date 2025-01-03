@@ -339,9 +339,15 @@ externalDocs:
 info:
   contact:
     email: team@replicate.com
-  description: A web service for running Replicate models
+  description: >-
+    AI can do extraordinary things, but its still too hard to use. We don't
+    believe AI is inherently hard. We just don't have the right tools and
+    abstractions yet. Were building tools so all software engineers can use AI
+    as if it were normal software. You should be able to import an image
+    generator the same way you import an npm package. You should be able to
+    customize a model as easily as you can fork something on GitHub.
   termsOfService: https://replicate.com/terms
-  title: Replicate HTTP API
+  title: Replicate
   version: 1.0.0-a1
 openapi: 3.1.0
 paths:
@@ -402,6 +408,8 @@ paths:
                 type: object
           description: Success
       summary: Get the authenticated account
+      tags:
+        - Accounts
   /collections:
     get:
       description: |
@@ -433,6 +441,8 @@ paths:
         '200':
           description: Success
       summary: List collections of models
+      tags:
+        - Collections
   /collections/{collection_slug}:
     get:
       description: >
@@ -476,6 +486,9 @@ paths:
         '200':
           description: Success
       summary: Get a collection of models
+      tags:
+        - Collections
+        - Slug
   /deployments:
     get:
       description: >
@@ -625,6 +638,8 @@ paths:
                 type: object
           description: Success
       summary: List deployments
+      tags:
+        - Deployments
     post:
       description: |
         Create a new deployment:
@@ -785,6 +800,8 @@ paths:
                 type: object
           description: Success
       summary: Create a deployment
+      tags:
+        - Deployments
   /deployments/{deployment_owner}/{deployment_name}:
     delete:
       description: >
@@ -831,6 +848,10 @@ paths:
         '204':
           description: Success
       summary: Delete a deployment
+      tags:
+        - Deployments
+        - Owner
+        - Name
     get:
       description: >
         Get information about a deployment by name including the current
@@ -962,6 +983,10 @@ paths:
                 type: object
           description: Success
       summary: Get a deployment
+      tags:
+        - Deployments
+        - Owner
+        - Name
     patch:
       description: >
         Update properties of an existing deployment, including hardware, min/max
@@ -1125,6 +1150,10 @@ paths:
                 type: object
           description: Success
       summary: Update a deployment
+      tags:
+        - Deployments
+        - Owner
+        - Name
   /deployments/{deployment_owner}/{deployment_name}/predictions:
     post:
       description: >
@@ -1183,6 +1212,11 @@ paths:
         '202':
           description: Prediction has been created but does not yet have all outputs
       summary: Create a prediction using a deployment
+      tags:
+        - Deployments
+        - Owner
+        - Name
+        - Predictions
   /hardware:
     get:
       description: |
@@ -1222,6 +1256,8 @@ paths:
                 type: array
           description: Success
       summary: List available hardware for models
+      tags:
+        - Hardware
   /models:
     get:
       description: >
@@ -1286,6 +1322,7 @@ paths:
         '200':
           description: Success
       summary: List public models
+      tags: []
     post:
       description: >
         Create a model.
@@ -1393,6 +1430,7 @@ paths:
         '201':
           description: Success
       summary: Create a model
+      tags: []
     query:
       description: >
         Get a list of public models matching a search query.
@@ -1466,6 +1504,7 @@ paths:
         '200':
           description: Success
       summary: Search public models
+      tags: []
   /models/{model_owner}/{model_name}:
     delete:
       description: >
@@ -1518,6 +1557,10 @@ paths:
         '204':
           description: Success
       summary: Delete a model
+      tags:
+        - Model
+        - Owner
+        - Name
     get:
       description: >
         Example cURL request:
@@ -1595,6 +1638,10 @@ paths:
         '200':
           description: Success
       summary: Get a model
+      tags:
+        - Model
+        - Owner
+        - Name
   /models/{model_owner}/{model_name}/predictions:
     post:
       description: >
@@ -1653,6 +1700,11 @@ paths:
         '202':
           description: Prediction has been created but does not yet have all outputs
       summary: Create a prediction using an official model
+      tags:
+        - Model
+        - Owner
+        - Name
+        - Predictions
   /models/{model_owner}/{model_name}/versions:
     get:
       description: >
@@ -1707,6 +1759,10 @@ paths:
         '200':
           description: Success
       summary: List model versions
+      tags:
+        - Model
+        - Owner
+        - Name
   /models/{model_owner}/{model_name}/versions/{version_id}:
     delete:
       description: >
@@ -1775,6 +1831,11 @@ paths:
             Deletion request has been accepted. It might take a few minutes to
             be processed.
       summary: Delete a model version
+      tags:
+        - Model
+        - Owner
+        - Name
+        - Version
     get:
       description: >
         Example cURL request:
@@ -1878,6 +1939,11 @@ paths:
         '200':
           description: Success
       summary: Get a model version
+      tags:
+        - Model
+        - Owner
+        - Name
+        - Version
   /models/{model_owner}/{model_name}/versions/{version_id}/trainings:
     post:
       description: >
@@ -1985,6 +2051,11 @@ paths:
         '201':
           description: Success
       summary: Create a training
+      tags:
+        - Model
+        - Owner
+        - Name
+        - Version
   /predictions:
     get:
       description: >
@@ -2079,6 +2150,8 @@ paths:
         '200':
           description: Success
       summary: List predictions
+      tags:
+        - Predictions
     post:
       description: >
         Create a prediction for the model version and inputs you provide.
@@ -2122,6 +2195,8 @@ paths:
         '202':
           description: Prediction has been created but does not yet have all outputs
       summary: Create a prediction
+      tags:
+        - Predictions
   /predictions/{prediction_id}:
     get:
       description: >
@@ -2229,6 +2304,8 @@ paths:
         '200':
           description: Success
       summary: Get a prediction
+      tags:
+        - Predictions
   /predictions/{prediction_id}/cancel:
     post:
       operationId: predictions.cancel
@@ -2244,6 +2321,9 @@ paths:
         '200':
           description: Success
       summary: Cancel a prediction
+      tags:
+        - Predictions
+        - Cancel
   /trainings:
     get:
       description: >
@@ -2329,6 +2409,7 @@ paths:
         '200':
           description: Success
       summary: List trainings
+      tags: []
   /trainings/{training_id}:
     get:
       description: >
@@ -2423,6 +2504,8 @@ paths:
         '200':
           description: Success
       summary: Get a training
+      tags:
+        - Training
   /trainings/{training_id}/cancel:
     post:
       operationId: trainings.cancel
@@ -2438,6 +2521,9 @@ paths:
         '200':
           description: Success
       summary: Cancel a training
+      tags:
+        - Training
+        - Cancel
   /webhooks/default/secret:
     get:
       description: >
@@ -2479,6 +2565,10 @@ paths:
                 type: object
           description: Success
       summary: Get the signing secret for the default webhook
+      tags:
+        - Webhooks
+        - Default
+        - Secrets
 security:
   - bearerAuth: []
 servers:
