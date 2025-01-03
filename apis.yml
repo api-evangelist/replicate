@@ -6,20 +6,20 @@ apis:
     name: Replicate
     tags:
       - Accounts
-      - ' Collections'
-      - ' Slug'
-      - ' Deployments'
-      - ' Owner'
-      - ' Name'
-      - ' Predictions'
-      - ' Hardware'
-      - ' Model'
-      - ' Version'
-      - ' Cancel'
-      - ' Training'
-      - ' Webhooks'
-      - ' Secrets'
-      - Artificial Intelligence
+      - '  Collections'
+      - '  Slug'
+      - '  Deployments'
+      - '  Owner'
+      - '  Name'
+      - '  Predictions'
+      - '  Hardware'
+      - '  Version'
+      - '  Cancel'
+      - '  Training'
+      - '  Webhooks'
+      - '  Secrets'
+      - ' Artificial Intelligence'
+      - Models
     humanURL: https://replicate.com/
     properties:
       - url: https://replicate.com/
