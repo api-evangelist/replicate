@@ -407,7 +407,7 @@ paths:
                     type: string
                 type: object
           description: Success
-      summary: Get the authenticated account
+      summary: Replicate Get the authenticated account
       tags:
         - Accounts
   /collections:
@@ -440,7 +440,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: List collections of models
+      summary: Replicate List collections of models
       tags:
         - Collections
   /collections/{collection_slug}:
@@ -485,7 +485,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: Get a collection of models
+      summary: Replicate Get a collection of models
       tags:
         - Collections
         - Slug
@@ -637,7 +637,7 @@ paths:
                     type: array
                 type: object
           description: Success
-      summary: List deployments
+      summary: Replicate List deployments
       tags:
         - Deployments
     post:
@@ -799,7 +799,7 @@ paths:
                     type: string
                 type: object
           description: Success
-      summary: Create a deployment
+      summary: Replicate Create a deployment
       tags:
         - Deployments
   /deployments/{deployment_owner}/{deployment_name}:
@@ -847,7 +847,7 @@ paths:
       responses:
         '204':
           description: Success
-      summary: Delete a deployment
+      summary: Replicate Delete a deployment
       tags:
         - Deployments
         - Owner
@@ -982,7 +982,7 @@ paths:
                     type: string
                 type: object
           description: Success
-      summary: Get a deployment
+      summary: Replicate Get a deployment
       tags:
         - Deployments
         - Owner
@@ -1149,7 +1149,7 @@ paths:
                     type: string
                 type: object
           description: Success
-      summary: Update a deployment
+      summary: Replicate Update a deployment
       tags:
         - Deployments
         - Owner
@@ -1211,7 +1211,7 @@ paths:
             provided it will contain the final output.
         '202':
           description: Prediction has been created but does not yet have all outputs
-      summary: Create a prediction using a deployment
+      summary: Replicate Create a prediction using a deployment
       tags:
         - Deployments
         - Owner
@@ -1255,7 +1255,7 @@ paths:
                   type: object
                 type: array
           description: Success
-      summary: List available hardware for models
+      summary: Replicate List available hardware for models
       tags:
         - Hardware
   /models:
@@ -1321,7 +1321,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: List public models
+      summary: Replicate List public models
       tags: []
     post:
       description: >
@@ -1429,7 +1429,7 @@ paths:
       responses:
         '201':
           description: Success
-      summary: Create a model
+      summary: Replicate Create a model
       tags: []
     query:
       description: >
@@ -1556,7 +1556,7 @@ paths:
       responses:
         '204':
           description: Success
-      summary: Delete a model
+      summary: Replicate Delete a model
       tags:
         - Model
         - Owner
@@ -1637,7 +1637,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: Get a model
+      summary: Replicate Get a model
       tags:
         - Model
         - Owner
@@ -1699,7 +1699,7 @@ paths:
             provided it will contain the final output.
         '202':
           description: Prediction has been created but does not yet have all outputs
-      summary: Create a prediction using an official model
+      summary: Replicate Create a prediction using an official model
       tags:
         - Model
         - Owner
@@ -1758,7 +1758,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: List model versions
+      summary: Replicate List model versions
       tags:
         - Model
         - Owner
@@ -1830,7 +1830,7 @@ paths:
           description: >-
             Deletion request has been accepted. It might take a few minutes to
             be processed.
-      summary: Delete a model version
+      summary: Replicate Delete a model version
       tags:
         - Model
         - Owner
@@ -1938,7 +1938,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: Get a model version
+      summary: Replicate Get a model version
       tags:
         - Model
         - Owner
@@ -2050,7 +2050,7 @@ paths:
       responses:
         '201':
           description: Success
-      summary: Create a training
+      summary: Replicate Create a training
       tags:
         - Model
         - Owner
@@ -2149,7 +2149,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: List predictions
+      summary: Replicate List predictions
       tags:
         - Predictions
     post:
@@ -2194,7 +2194,7 @@ paths:
             provided it will contain the final output.
         '202':
           description: Prediction has been created but does not yet have all outputs
-      summary: Create a prediction
+      summary: Replicate Create a prediction
       tags:
         - Predictions
   /predictions/{prediction_id}:
@@ -2303,7 +2303,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: Get a prediction
+      summary: Replicate Get a prediction
       tags:
         - Predictions
   /predictions/{prediction_id}/cancel:
@@ -2320,7 +2320,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: Cancel a prediction
+      summary: Replicate Cancel a prediction
       tags:
         - Predictions
         - Cancel
@@ -2408,7 +2408,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: List trainings
+      summary: Replicate List trainings
       tags: []
   /trainings/{training_id}:
     get:
@@ -2503,7 +2503,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: Get a training
+      summary: Replicate Get a training
       tags:
         - Training
   /trainings/{training_id}/cancel:
@@ -2520,7 +2520,7 @@ paths:
       responses:
         '200':
           description: Success
-      summary: Cancel a training
+      summary: Replicate Cancel a training
       tags:
         - Training
         - Cancel
@@ -2564,7 +2564,7 @@ paths:
                     type: string
                 type: object
           description: Success
-      summary: Get the signing secret for the default webhook
+      summary: Replicate Get the signing secret for the default webhook
       tags:
         - Webhooks
         - Default
