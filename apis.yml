@@ -21,12 +21,12 @@ apis:
     name: Replicate
     tags:
       - Accounts
+      - Artificial Intelligence
       - Collections
       - Deployments
-      - Predictions
       - Hardware
-      - Artificial Intelligence
       - Models
+      - Predictions
     humanURL: https://replicate.com/
     properties:
       - url: https://replicate.com/docs
