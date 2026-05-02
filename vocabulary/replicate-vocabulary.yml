@@ -1,0 +1,142 @@
+name: Replicate Vocabulary
+description: >-
+  Vocabulary and taxonomy for the Replicate machine learning platform API.
+  Covers model inference, deployment, training, and platform concepts.
+version: "1.0.0"
+created: "2026-05-02"
+modified: "2026-05-02"
+
+categories:
+  - name: Core Concepts
+    description: Fundamental concepts of the Replicate platform.
+    terms:
+      - term: Prediction
+        definition: >-
+          A single inference run against a machine learning model. A prediction
+          takes input, runs the model, and produces output. Predictions can be
+          synchronous (wait mode) or asynchronous (webhook-based).
+        related: [Model, Version, Deployment]
+
+      - term: Model
+        definition: >-
+          A machine learning model hosted on Replicate. Models are identified
+          by owner/name (e.g., stability-ai/sdxl) and can be public or private.
+          Each model has one or more versions.
+        related: [Version, Prediction, Training]
+
+      - term: Version
+        definition: >-
+          An immutable snapshot of a model at a specific point in time.
+          Identified by a SHA256 hash. Predictions run against a specific
+          version for reproducibility.
+        related: [Model, Prediction, Cog]
+
+      - term: Deployment
+        definition: >-
+          A production-ready, auto-scaling instance of a model version.
+          Deployments provide lower latency and guaranteed capacity.
+          Configured with hardware type and min/max instance counts.
+        related: [Model, Version, Hardware]
+
+      - term: Training
+        definition: >-
+          A fine-tuning job that customizes a base model with new data.
+          Trainings create new model versions. Replicate supports fine-tuning
+          with LoRA and other parameter-efficient methods.
+        related: [Model, Version, Prediction]
+
+  - name: Lifecycle States
+    description: Status values for predictions and trainings.
+    terms:
+      - term: starting
+        definition: "The prediction or training has been created but not yet started."
+        applies_to: [Prediction, Training]
+
+      - term: processing
+        definition: "The prediction or training is currently running."
+        applies_to: [Prediction, Training]
+
+      - term: succeeded
+        definition: "The prediction or training completed successfully with output."
+        applies_to: [Prediction, Training]
+
+      - term: failed
+        definition: "The prediction or training failed with an error."
+        applies_to: [Prediction, Training]
+
+      - term: canceled
+        definition: "The prediction or training was canceled by the user."
+        applies_to: [Prediction, Training]
+
+  - name: Infrastructure
+    description: Hardware and deployment infrastructure concepts.
+    terms:
+      - term: Hardware
+        definition: >-
+          The GPU hardware type used to run a model. Options include T4, A40,
+          A100, H100 GPUs at various price points. Hardware is specified when
+          creating models and deployments.
+        related: [Model, Deployment]
+
+      - term: Cog
+        definition: >-
+          Replicate's open-source tool for packaging machine learning models
+          into containers. Models are built with Cog and pushed to Replicate.
+        url: https://github.com/replicate/cog
+        related: [Model, Version]
+
+      - term: Auto-scaling
+        definition: >-
+          The ability for deployments to automatically add or remove instances
+          based on demand. Configured via min_instances and max_instances.
+        related: [Deployment]
+
+  - name: Integration Patterns
+    description: Common patterns for integrating with the Replicate API.
+    terms:
+      - term: Webhook
+        definition: >-
+          An HTTPS callback URL that Replicate calls when a prediction or
+          training has new output. Enables asynchronous notification without
+          polling.
+        related: [Prediction, Training]
+
+      - term: Webhook Events Filter
+        definition: >-
+          A filter that controls which prediction lifecycle events trigger
+          webhook calls. Events include: start, output, logs, completed.
+        related: [Webhook, Prediction]
+
+      - term: Wait Mode
+        definition: >-
+          A synchronous prediction mode where the API request stays open until
+          the model finishes. Enabled via the Prefer header (e.g., wait=5).
+          Useful for fast models.
+        related: [Prediction]
+
+      - term: Streaming
+        definition: >-
+          Real-time output streaming via Server-Sent Events (SSE). The prediction
+          URL contains a stream entry for models that support streaming output.
+        related: [Prediction]
+
+      - term: Signing Secret
+        definition: >-
+          A shared secret used to verify that incoming webhook payloads
+          are genuinely from Replicate. Retrieved via /webhooks/default/secret.
+        related: [Webhook]
+
+  - name: Collections
+    description: Model discovery and curation concepts.
+    terms:
+      - term: Collection
+        definition: >-
+          A curated group of models organized by category or use case.
+          Examples include super-resolution, text-to-speech, image-restoration.
+        related: [Model]
+
+      - term: Slug
+        definition: >-
+          A URL-friendly identifier for a collection (e.g., super-resolution,
+          text-to-image). Used in API paths to identify collections.
+        related: [Collection]

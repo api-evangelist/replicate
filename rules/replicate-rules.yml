@@ -1,0 +1,137 @@
+extends:
+  - spectral:oas
+
+rules:
+  # Replicate API conventions:
+  # - All paths use kebab-case with dot-separated operationIds (e.g. account.get, models.versions.list)
+  # - Bearer auth via Authorization header
+  # - Paginated list responses use {next, previous, results} envelope
+  # - Predictions and Trainings follow same lifecycle (create, get, cancel)
+  # - Version IDs are opaque strings
+  # - Webhook support for async operations
+
+  replicate-operation-id-dot-notation:
+    description: Replicate operationIds must use dot-notation (e.g. predictions.create, models.versions.list)
+    message: "OperationId '{{value}}' must use dot-notation like 'resource.action' or 'resource.subresource.action'"
+    severity: warn
+    given: "$.paths.*.*"
+    then:
+      field: operationId
+      function: pattern
+      functionOptions:
+        match: "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$"
+
+  replicate-operation-id-required:
+    description: All Replicate operations must have an operationId
+    message: "Operation must have an operationId"
+    severity: error
+    given: "$.paths.*[get,post,put,patch,delete]"
+    then:
+      field: operationId
+      function: truthy
+
+  replicate-summary-title-case:
+    description: Operation summaries must use Title Case
+    message: "Summary '{{value}}' must use Title Case"
+    severity: warn
+    given: "$.paths.*.*"
+    then:
+      field: summary
+      function: pattern
+      functionOptions:
+        match: "^[A-Z]"
+
+  replicate-bearer-auth:
+    description: Replicate API uses Bearer token authentication
+    message: "Security scheme must be of type 'http' with scheme 'bearer'"
+    severity: error
+    given: "$.components.securitySchemes.*"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          properties:
+            type:
+              const: http
+            scheme:
+              const: bearer
+
+  replicate-paginated-list-response:
+    description: List operations should return a paginated response with next, previous, and results fields
+    message: "List operations should include 'next', 'previous', and 'results' fields in response schema"
+    severity: hint
+    given: "$.paths.*[get][responses][200][content][application/json][schema][properties]"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          if:
+            properties:
+              results:
+                type: object
+          then:
+            required:
+              - next
+              - previous
+              - results
+
+  replicate-path-kebab-case:
+    description: Path segments must use kebab-case or be path parameters
+    message: "Path segment '{{value}}' must use kebab-case"
+    severity: warn
+    given: "$.paths"
+    then:
+      field: "@key"
+      function: pattern
+      functionOptions:
+        match: "^(\\/([a-z][a-z0-9-]*|\\{[a-z_]+\\}))+$"
+
+  replicate-200-or-204-response:
+    description: Operations must define at least one 200 or 204 response
+    message: "Operation must define a 200 or 204 success response"
+    severity: warn
+    given: "$.paths.*[get,post,put,patch,delete][responses]"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          anyOf:
+            - required: ["200"]
+            - required: ["204"]
+
+  replicate-tags-title-case:
+    description: All tags must use Title Case
+    message: "Tag '{{value}}' must use Title Case"
+    severity: warn
+    given: "$.paths.*.*.tags.*"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[A-Z]"
+
+  replicate-version-id-string:
+    description: Version ID parameters must be string type
+    message: "Version ID path parameter must be of type string"
+    severity: warn
+    given: "$.paths.*.*[parameters][?(@.name == 'version_id')]"
+    then:
+      field: schema.type
+      function: enumeration
+      functionOptions:
+        values:
+          - string
+
+  replicate-cancel-path-convention:
+    description: Cancel operations must follow the /cancel path convention
+    message: "Cancel operation path must end with '/cancel'"
+    severity: hint
+    given: "$.paths"
+    then:
+      field: "@key"
+      function: schema
+      functionOptions:
+        schema:
+          if:
+            pattern: cancel
+          then:
+            pattern: ".*\\/cancel$"

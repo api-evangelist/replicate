@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-evangelist.github.io/replicate/json-schema/replicate-prediction-schema.json",
+  "title": "Replicate Prediction",
+  "description": "A prediction represents a single inference run against a machine learning model on Replicate.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the prediction."
+    },
+    "version": {
+      "type": ["string", "null"],
+      "description": "The ID of the model version used for this prediction."
+    },
+    "model": {
+      "type": ["string", "null"],
+      "description": "The model owner/name used for official model predictions."
+    },
+    "urls": {
+      "type": "object",
+      "description": "URLs associated with the prediction.",
+      "properties": {
+        "get": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to poll for prediction status."
+        },
+        "cancel": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to cancel the prediction."
+        },
+        "stream": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL for streaming output via SSE."
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["starting", "processing", "succeeded", "failed", "canceled"],
+      "description": "The current status of the prediction."
+    },
+    "input": {
+      "type": "object",
+      "description": "The input provided to the model as a JSON object."
+    },
+    "output": {
+      "description": "The output of the prediction. Type depends on the model."
+    },
+    "error": {
+      "type": ["string", "null"],
+      "description": "Error message if the prediction failed."
+    },
+    "logs": {
+      "type": ["string", "null"],
+      "description": "Log output from the prediction."
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Performance metrics for the prediction.",
+      "properties": {
+        "predict_time": {
+          "type": "number",
+          "description": "Time taken for the prediction in seconds."
+        },
+        "total_time": {
+          "type": "number",
+          "description": "Total wall clock time in seconds."
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the prediction was created."
+    },
+    "started_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Timestamp when the prediction started processing."
+    },
+    "completed_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Timestamp when the prediction completed."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["api", "web"],
+      "description": "How the prediction was created."
+    },
+    "webhook": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "Webhook URL to receive prediction updates."
+    },
+    "webhook_events_filter": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["start", "output", "logs", "completed"]
+      },
+      "description": "Event types that trigger webhook calls."
+    }
+  },
+  "required": ["id", "status", "created_at"]
+}

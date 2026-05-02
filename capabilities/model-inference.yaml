@@ -1,0 +1,267 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "Replicate Model Inference"
+  description: >-
+    Workflow capability for running AI model inference on Replicate. Covers
+    creating predictions against versioned models and production deployments,
+    monitoring prediction status, and canceling running jobs. Designed for
+    developers integrating AI generation into applications.
+  tags:
+    - Artificial Intelligence
+    - Machine Learning
+    - Model Inference
+    - Predictions
+    - Deployments
+  created: "2026-05-02"
+  modified: "2026-05-02"
+
+binds:
+  - namespace: env
+    keys:
+      REPLICATE_API_TOKEN: REPLICATE_API_TOKEN
+
+capability:
+  consumes:
+    - import: replicate
+      location: ./shared/replicate.yaml
+
+  exposes:
+    - type: rest
+      port: 8080
+      namespace: replicate-inference-api
+      description: "Unified REST API for running ML model inference on Replicate."
+      resources:
+        - path: /v1/predictions
+          name: predictions
+          description: "Create and manage model inference predictions."
+          operations:
+            - method: GET
+              name: list-predictions
+              description: "List all predictions."
+              call: "replicate.list-predictions"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: POST
+              name: create-prediction
+              description: "Create a new inference prediction."
+              call: "replicate.create-prediction"
+              with:
+                version: "rest.version"
+                input: "rest.input"
+                webhook: "rest.webhook"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+        - path: /v1/predictions/{id}
+          name: prediction
+          description: "Get or cancel a specific prediction."
+          operations:
+            - method: GET
+              name: get-prediction
+              description: "Get prediction status and output."
+              call: "replicate.get-prediction"
+              with:
+                prediction_id: "rest.id"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: DELETE
+              name: cancel-prediction
+              description: "Cancel a running prediction."
+              call: "replicate.cancel-prediction"
+              with:
+                prediction_id: "rest.id"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+        - path: /v1/models/{owner}/{name}/predictions
+          name: model-predictions
+          description: "Create predictions using official models."
+          operations:
+            - method: POST
+              name: create-model-prediction
+              description: "Run inference on an official Replicate model."
+              call: "replicate.create-model-prediction"
+              with:
+                model_owner: "rest.owner"
+                model_name: "rest.name"
+                input: "rest.input"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+        - path: /v1/deployments/{owner}/{name}/predictions
+          name: deployment-predictions
+          description: "Create predictions using production deployments."
+          operations:
+            - method: POST
+              name: create-deployment-prediction
+              description: "Run inference against a production deployment."
+              call: "replicate.create-deployment-prediction"
+              with:
+                deployment_owner: "rest.owner"
+                deployment_name: "rest.name"
+                input: "rest.input"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+        - path: /v1/hardware
+          name: hardware
+          description: "Available GPU hardware options."
+          operations:
+            - method: GET
+              name: list-hardware
+              description: "List available hardware for running models."
+              call: "replicate.list-hardware"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+        - path: /v1/collections
+          name: collections
+          description: "Curated model collections."
+          operations:
+            - method: GET
+              name: list-collections
+              description: "List all curated model collections."
+              call: "replicate.list-collections"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+        - path: /v1/collections/{slug}
+          name: collection
+          description: "Specific model collection."
+          operations:
+            - method: GET
+              name: get-collection
+              description: "Get a specific model collection."
+              call: "replicate.get-collection"
+              with:
+                collection_slug: "rest.slug"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9090
+      namespace: replicate-inference-mcp
+      transport: http
+      description: "MCP server for AI-assisted model inference on Replicate."
+      tools:
+        - name: list-predictions
+          description: "List all inference predictions for the account."
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "replicate.list-predictions"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: create-prediction
+          description: "Run a new AI model inference prediction by specifying a model version and input."
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "replicate.create-prediction"
+          with:
+            version: "tools.version"
+            input: "tools.input"
+            webhook: "tools.webhook"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: get-prediction
+          description: "Get the status and output of a prediction."
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "replicate.get-prediction"
+          with:
+            prediction_id: "tools.prediction_id"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: cancel-prediction
+          description: "Cancel a currently running prediction."
+          hints:
+            readOnly: false
+            destructive: true
+            idempotent: true
+          call: "replicate.cancel-prediction"
+          with:
+            prediction_id: "tools.prediction_id"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: create-model-prediction
+          description: "Run inference on an official Replicate model (no version required)."
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "replicate.create-model-prediction"
+          with:
+            model_owner: "tools.model_owner"
+            model_name: "tools.model_name"
+            input: "tools.input"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: create-deployment-prediction
+          description: "Run inference against a production deployment for lower latency."
+          hints:
+            readOnly: false
+            destructive: false
+            idempotent: false
+          call: "replicate.create-deployment-prediction"
+          with:
+            deployment_owner: "tools.deployment_owner"
+            deployment_name: "tools.deployment_name"
+            input: "tools.input"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: list-hardware
+          description: "List available GPU hardware options for running models."
+          hints:
+            readOnly: true
+            openWorld: false
+          call: "replicate.list-hardware"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: list-collections
+          description: "Browse curated model collections by category."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "replicate.list-collections"
+          outputParameters:
+            - type: object
+              mapping: "$."
+
+        - name: get-collection
+          description: "Get all models in a specific curated collection."
+          hints:
+            readOnly: true
+            openWorld: true
+          call: "replicate.get-collection"
+          with:
+            collection_slug: "tools.collection_slug"
+          outputParameters:
+            - type: object
+              mapping: "$."

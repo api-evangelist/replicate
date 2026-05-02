@@ -1,0 +1,140 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "schema": "https://schema.org/",
+    "replicate": "https://replicate.com/docs/reference/http#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "Prediction": {
+      "@id": "replicate:Prediction",
+      "@type": "schema:Action"
+    },
+    "Model": {
+      "@id": "replicate:Model",
+      "@type": "schema:SoftwareApplication"
+    },
+    "ModelVersion": {
+      "@id": "replicate:ModelVersion",
+      "@type": "schema:SoftwareApplication"
+    },
+    "Deployment": {
+      "@id": "replicate:Deployment",
+      "@type": "schema:WebAPI"
+    },
+    "Training": {
+      "@id": "replicate:Training",
+      "@type": "schema:Action"
+    },
+
+    "id": "@id",
+    "type": "@type",
+
+    "predictionId": {
+      "@id": "schema:identifier",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "schema:actionStatus",
+      "@type": "@vocab",
+      "@context": {
+        "starting": "schema:ActiveActionStatus",
+        "processing": "schema:ActiveActionStatus",
+        "succeeded": "schema:CompletedActionStatus",
+        "failed": "schema:FailedActionStatus",
+        "canceled": "schema:CanceledEventStatus"
+      }
+    },
+    "input": {
+      "@id": "schema:object"
+    },
+    "output": {
+      "@id": "schema:result"
+    },
+    "error": {
+      "@id": "schema:errorMessage"
+    },
+    "logs": {
+      "@id": "schema:description"
+    },
+    "createdAt": {
+      "@id": "schema:dateCreated",
+      "@type": "xsd:dateTime"
+    },
+    "startedAt": {
+      "@id": "schema:startTime",
+      "@type": "xsd:dateTime"
+    },
+    "completedAt": {
+      "@id": "schema:endTime",
+      "@type": "xsd:dateTime"
+    },
+
+    "modelName": {
+      "@id": "schema:name"
+    },
+    "owner": {
+      "@id": "schema:author",
+      "@type": "schema:Person"
+    },
+    "description": {
+      "@id": "schema:description"
+    },
+    "visibility": {
+      "@id": "schema:accessMode"
+    },
+    "githubUrl": {
+      "@id": "schema:codeRepository",
+      "@type": "xsd:anyURI"
+    },
+    "paperUrl": {
+      "@id": "schema:citation",
+      "@type": "xsd:anyURI"
+    },
+    "runCount": {
+      "@id": "schema:numberOfPages",
+      "@type": "xsd:integer"
+    },
+
+    "hardware": {
+      "@id": "replicate:hardware"
+    },
+    "minInstances": {
+      "@id": "replicate:minInstances",
+      "@type": "xsd:integer"
+    },
+    "maxInstances": {
+      "@id": "replicate:maxInstances",
+      "@type": "xsd:integer"
+    },
+
+    "version": {
+      "@id": "schema:version"
+    },
+    "cogVersion": {
+      "@id": "replicate:cogVersion"
+    },
+    "openApiSchema": {
+      "@id": "schema:documentation"
+    },
+
+    "destination": {
+      "@id": "replicate:trainingDestination"
+    },
+    "predictTime": {
+      "@id": "replicate:predictTime",
+      "@type": "xsd:decimal"
+    },
+    "totalTime": {
+      "@id": "replicate:totalTime",
+      "@type": "xsd:decimal"
+    },
+
+    "webhook": {
+      "@id": "schema:url",
+      "@type": "xsd:anyURI"
+    },
+    "webhookEventsFilter": {
+      "@id": "replicate:webhookEventsFilter"
+    }
+  }
+}

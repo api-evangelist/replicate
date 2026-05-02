@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-evangelist.github.io/replicate/json-schema/replicate-model-schema.json",
+  "title": "Replicate Model",
+  "description": "A machine learning model hosted on Replicate.",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL of the model on Replicate."
+    },
+    "owner": {
+      "type": "string",
+      "description": "The account that owns the model."
+    },
+    "name": {
+      "type": "string",
+      "description": "The model name."
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "A description of the model."
+    },
+    "visibility": {
+      "type": "string",
+      "enum": ["public", "private"],
+      "description": "The visibility of the model."
+    },
+    "github_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL of the model's source code on GitHub."
+    },
+    "paper_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL of the research paper for this model."
+    },
+    "license_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL of the model's license."
+    },
+    "run_count": {
+      "type": "integer",
+      "description": "How many times this model has been run."
+    },
+    "cover_image_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL for the model's cover image."
+    },
+    "default_example": {
+      "type": ["object", "null"],
+      "description": "Example prediction showcasing the model."
+    },
+    "featured": {
+      "type": "boolean",
+      "description": "Whether the model is featured on Replicate."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags categorizing the model."
+    },
+    "latest_version": {
+      "$ref": "#/$defs/ModelVersion"
+    }
+  },
+  "required": ["owner", "name"],
+  "$defs": {
+    "ModelVersion": {
+      "type": "object",
+      "title": "Model Version",
+      "description": "A specific version of a Replicate model.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the model version."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the version was created."
+        },
+        "cog_version": {
+          "type": ["string", "null"],
+          "description": "The version of Cog used to build this version."
+        },
+        "openapi_schema": {
+          "type": "object",
+          "description": "OpenAPI schema describing the model's inputs and outputs."
+        }
+      },
+      "required": ["id", "created_at"]
+    }
+  }
+}

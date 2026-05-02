@@ -1,0 +1,50 @@
+{
+  "title": "Create a Prediction",
+  "description": "Example of creating a prediction to run Stable Diffusion XL for image generation.",
+  "request": {
+    "method": "POST",
+    "url": "https://api.replicate.com/v1/predictions",
+    "headers": {
+      "Authorization": "Bearer $REPLICATE_API_TOKEN",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "version": "da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf",
+      "input": {
+        "prompt": "An astronaut riding a rainbow unicorn, cinematic, dramatic lighting",
+        "negative_prompt": "ugly, blurry, low quality",
+        "width": 1024,
+        "height": 1024,
+        "num_inference_steps": 30
+      },
+      "webhook": "https://example.com/webhook",
+      "webhook_events_filter": ["completed"]
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "id": "xyz1234abc5678",
+      "version": "da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf",
+      "urls": {
+        "get": "https://api.replicate.com/v1/predictions/xyz1234abc5678",
+        "cancel": "https://api.replicate.com/v1/predictions/xyz1234abc5678/cancel"
+      },
+      "created_at": "2026-05-02T10:00:00.000Z",
+      "started_at": null,
+      "completed_at": null,
+      "status": "starting",
+      "input": {
+        "prompt": "An astronaut riding a rainbow unicorn, cinematic, dramatic lighting",
+        "negative_prompt": "ugly, blurry, low quality",
+        "width": 1024,
+        "height": 1024,
+        "num_inference_steps": 30
+      },
+      "output": null,
+      "error": null,
+      "logs": null,
+      "metrics": {}
+    }
+  }
+}
