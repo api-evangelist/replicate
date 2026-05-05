@@ -1,0 +1,39 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Replicate
+providerId: replicate
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - Rate Limiting
+  - ML Inference
+description: Replicate API rate limits per account.
+sources:
+  - https://replicate.com/pricing
+  - https://replicate.com/docs/reference/http
+headers:
+  retryAfter: Retry-After
+responseCodes:
+  throttled: 429
+limits:
+  - name: Predictions create (default)
+    scope: account
+    metric: predictions_per_second
+    limit: 10
+    timeFrame: second
+  - name: Predictions create (paid raised)
+    scope: account
+    metric: predictions_per_second
+    limit: 100
+    timeFrame: second
+  - name: Other endpoints
+    scope: account
+    metric: requests_per_second
+    limit: 60
+    timeFrame: second
+  - name: Concurrent predictions
+    scope: account
+    metric: concurrent
+    limit: varies

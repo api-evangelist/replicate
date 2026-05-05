@@ -1,0 +1,88 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Replicate
+providerId: replicate
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - AI
+  - ML
+  - GPU
+description: Replicate per-second hardware pricing for running open-source ML models.
+sources:
+  - https://replicate.com/pricing
+plans:
+  - id: replicate-t4
+    name: Nvidia T4 GPU
+    type: usage-based
+    description: $0.000225/sec.
+    entries:
+      - label: Per second
+        name: second
+        type: metered
+        metric: second
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: '0.000225'
+        userMultiplied: false
+    elements:
+      - name: Cheapest GPU option
+      - name: Best for small models / batch
+  - id: replicate-l40s
+    name: Nvidia L40S GPU
+    type: usage-based
+    description: $0.000975/sec.
+    entries:
+      - label: Per second
+        name: second
+        type: metered
+        metric: second
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: '0.000975'
+        userMultiplied: false
+    elements:
+      - name: Mid-tier GPU
+      - name: Good for image generation
+  - id: replicate-a100
+    name: Nvidia A100 (80GB) GPU
+    type: usage-based
+    description: $0.00140/sec.
+    entries:
+      - label: Per second
+        name: second
+        type: metered
+        metric: second
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: '0.001400'
+        userMultiplied: false
+    elements:
+      - name: High-performance GPU
+      - name: Best for medium-to-large models
+  - id: replicate-h100
+    name: Nvidia H100 GPU
+    type: usage-based
+    description: $0.001525/sec.
+    entries:
+      - label: Per second
+        name: second
+        type: metered
+        metric: second
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: '0.001525'
+        userMultiplied: false
+    elements:
+      - name: Top-tier GPU
+      - name: Best for large models / training
