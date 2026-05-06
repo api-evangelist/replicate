@@ -1,267 +1,726 @@
-naftiko: "1.0.0-alpha1"
-
+naftiko: 1.0.0-alpha2
 info:
-  label: "Replicate Model Inference"
-  description: >-
-    Workflow capability for running AI model inference on Replicate. Covers
-    creating predictions against versioned models and production deployments,
-    monitoring prediction status, and canceling running jobs. Designed for
-    developers integrating AI generation into applications.
+  label: Replicate Model Inference
+  description: Workflow capability for running AI model inference on Replicate. Covers creating predictions against versioned
+    models and production deployments, monitoring prediction status, and canceling running jobs. Designed for developers integrating
+    AI generation into applications.
   tags:
-    - Artificial Intelligence
-    - Machine Learning
-    - Model Inference
-    - Predictions
-    - Deployments
-  created: "2026-05-02"
-  modified: "2026-05-02"
-
+  - Artificial Intelligence
+  - Machine Learning
+  - Model Inference
+  - Predictions
+  - Deployments
+  created: '2026-05-02'
+  modified: '2026-05-06'
 binds:
-  - namespace: env
-    keys:
-      REPLICATE_API_TOKEN: REPLICATE_API_TOKEN
-
+- namespace: env
+  keys:
+    REPLICATE_API_TOKEN: REPLICATE_API_TOKEN
 capability:
   consumes:
-    - import: replicate
-      location: ./shared/replicate.yaml
-
+  - type: http
+    namespace: replicate
+    baseUri: https://api.replicate.com/v1
+    description: Replicate REST API for running ML models and managing resources.
+    authentication:
+      type: bearer
+      token: '{{REPLICATE_API_TOKEN}}'
+    resources:
+    - name: account
+      path: /account
+      description: Account information for the authenticated user or organization.
+      operations:
+      - name: get-account
+        method: GET
+        description: Get the authenticated account information.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: collections
+      path: /collections
+      description: Curated collections of models.
+      operations:
+      - name: list-collections
+        method: GET
+        description: List all collections of models.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-collection
+        method: GET
+        description: Get a specific collection of models by slug.
+        inputParameters:
+        - name: collection_slug
+          in: path
+          type: string
+          required: true
+          description: The slug of the collection.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: deployments
+      path: /deployments
+      description: Manage model deployments for production use.
+      operations:
+      - name: list-deployments
+        method: GET
+        description: List all deployments for the authenticated account.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-deployment
+        method: POST
+        description: Create a new model deployment.
+        body:
+          type: json
+          data:
+            name: '{{tools.name}}'
+            model: '{{tools.model}}'
+            version: '{{tools.version}}'
+            hardware: '{{tools.hardware}}'
+            min_instances: '{{tools.min_instances}}'
+            max_instances: '{{tools.max_instances}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-deployment
+        method: GET
+        description: Get a specific deployment by owner and name.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: update-deployment
+        method: PATCH
+        description: Update a deployment configuration.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        body:
+          type: json
+          data:
+            hardware: '{{tools.hardware}}'
+            min_instances: '{{tools.min_instances}}'
+            max_instances: '{{tools.max_instances}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: delete-deployment
+        method: DELETE
+        description: Delete a deployment.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-deployment-prediction
+        method: POST
+        description: Create a prediction using a deployment.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        body:
+          type: json
+          data:
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: hardware
+      path: /hardware
+      description: Available hardware options for running models.
+      operations:
+      - name: list-hardware
+        method: GET
+        description: List all available hardware options.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: models
+      path: /models
+      description: ML models hosted on Replicate.
+      operations:
+      - name: list-models
+        method: GET
+        description: List all public models.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-model
+        method: POST
+        description: Create a new model.
+        body:
+          type: json
+          data:
+            owner: '{{tools.owner}}'
+            name: '{{tools.name}}'
+            description: '{{tools.description}}'
+            visibility: '{{tools.visibility}}'
+            hardware: '{{tools.hardware}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: search-models
+        method: GET
+        description: Search public models.
+        inputParameters:
+        - name: query
+          in: query
+          type: string
+          required: false
+          description: Search query string.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-model
+        method: GET
+        description: Get a specific model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: delete-model
+        method: DELETE
+        description: Delete a model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-model-prediction
+        method: POST
+        description: Create a prediction using an official model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        body:
+          type: json
+          data:
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: list-model-versions
+        method: GET
+        description: List all versions of a model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-model-version
+        method: GET
+        description: Get a specific model version.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        - name: version_id
+          in: path
+          type: string
+          required: true
+          description: The version ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: delete-model-version
+        method: DELETE
+        description: Delete a specific model version.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        - name: version_id
+          in: path
+          type: string
+          required: true
+          description: The version ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: predictions
+      path: /predictions
+      description: Inference runs against ML models.
+      operations:
+      - name: list-predictions
+        method: GET
+        description: List all predictions for the authenticated account.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-prediction
+        method: POST
+        description: Create a new prediction.
+        body:
+          type: json
+          data:
+            version: '{{tools.version}}'
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+            webhook_events_filter: '{{tools.webhook_events_filter}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-prediction
+        method: GET
+        description: Get a specific prediction.
+        inputParameters:
+        - name: prediction_id
+          in: path
+          type: string
+          required: true
+          description: The prediction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: cancel-prediction
+        method: POST
+        description: Cancel a running prediction.
+        inputParameters:
+        - name: prediction_id
+          in: path
+          type: string
+          required: true
+          description: The prediction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: trainings
+      path: /trainings
+      description: Fine-tuning jobs for ML models.
+      operations:
+      - name: list-trainings
+        method: GET
+        description: List all trainings for the authenticated account.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-training
+        method: POST
+        description: Create a new training job on a model version.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        - name: version_id
+          in: path
+          type: string
+          required: true
+          description: The version ID to train.
+        body:
+          type: json
+          data:
+            destination: '{{tools.destination}}'
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-training
+        method: GET
+        description: Get a specific training job.
+        inputParameters:
+        - name: training_id
+          in: path
+          type: string
+          required: true
+          description: The training ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: cancel-training
+        method: POST
+        description: Cancel a running training job.
+        inputParameters:
+        - name: training_id
+          in: path
+          type: string
+          required: true
+          description: The training ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: webhooks
+      path: /webhooks/default/secret
+      description: Webhook signing secret management.
+      operations:
+      - name: get-webhook-secret
+        method: GET
+        description: Get the signing secret for the default webhook.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
   exposes:
-    - type: rest
-      port: 8080
-      namespace: replicate-inference-api
-      description: "Unified REST API for running ML model inference on Replicate."
-      resources:
-        - path: /v1/predictions
-          name: predictions
-          description: "Create and manage model inference predictions."
-          operations:
-            - method: GET
-              name: list-predictions
-              description: "List all predictions."
-              call: "replicate.list-predictions"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: POST
-              name: create-prediction
-              description: "Create a new inference prediction."
-              call: "replicate.create-prediction"
-              with:
-                version: "rest.version"
-                input: "rest.input"
-                webhook: "rest.webhook"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/predictions/{id}
-          name: prediction
-          description: "Get or cancel a specific prediction."
-          operations:
-            - method: GET
-              name: get-prediction
-              description: "Get prediction status and output."
-              call: "replicate.get-prediction"
-              with:
-                prediction_id: "rest.id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: DELETE
-              name: cancel-prediction
-              description: "Cancel a running prediction."
-              call: "replicate.cancel-prediction"
-              with:
-                prediction_id: "rest.id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/models/{owner}/{name}/predictions
-          name: model-predictions
-          description: "Create predictions using official models."
-          operations:
-            - method: POST
-              name: create-model-prediction
-              description: "Run inference on an official Replicate model."
-              call: "replicate.create-model-prediction"
-              with:
-                model_owner: "rest.owner"
-                model_name: "rest.name"
-                input: "rest.input"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/deployments/{owner}/{name}/predictions
-          name: deployment-predictions
-          description: "Create predictions using production deployments."
-          operations:
-            - method: POST
-              name: create-deployment-prediction
-              description: "Run inference against a production deployment."
-              call: "replicate.create-deployment-prediction"
-              with:
-                deployment_owner: "rest.owner"
-                deployment_name: "rest.name"
-                input: "rest.input"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/hardware
-          name: hardware
-          description: "Available GPU hardware options."
-          operations:
-            - method: GET
-              name: list-hardware
-              description: "List available hardware for running models."
-              call: "replicate.list-hardware"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/collections
-          name: collections
-          description: "Curated model collections."
-          operations:
-            - method: GET
-              name: list-collections
-              description: "List all curated model collections."
-              call: "replicate.list-collections"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/collections/{slug}
-          name: collection
-          description: "Specific model collection."
-          operations:
-            - method: GET
-              name: get-collection
-              description: "Get a specific model collection."
-              call: "replicate.get-collection"
-              with:
-                collection_slug: "rest.slug"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-    - type: mcp
-      port: 9090
-      namespace: replicate-inference-mcp
-      transport: http
-      description: "MCP server for AI-assisted model inference on Replicate."
-      tools:
-        - name: list-predictions
-          description: "List all inference predictions for the account."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.list-predictions"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: create-prediction
-          description: "Run a new AI model inference prediction by specifying a model version and input."
-          hints:
-            readOnly: false
-            destructive: false
-            idempotent: false
-          call: "replicate.create-prediction"
-          with:
-            version: "tools.version"
-            input: "tools.input"
-            webhook: "tools.webhook"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: get-prediction
-          description: "Get the status and output of a prediction."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.get-prediction"
-          with:
-            prediction_id: "tools.prediction_id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: cancel-prediction
-          description: "Cancel a currently running prediction."
-          hints:
-            readOnly: false
-            destructive: true
-            idempotent: true
-          call: "replicate.cancel-prediction"
-          with:
-            prediction_id: "tools.prediction_id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: create-model-prediction
-          description: "Run inference on an official Replicate model (no version required)."
-          hints:
-            readOnly: false
-            destructive: false
-            idempotent: false
-          call: "replicate.create-model-prediction"
-          with:
-            model_owner: "tools.model_owner"
-            model_name: "tools.model_name"
-            input: "tools.input"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: create-deployment-prediction
-          description: "Run inference against a production deployment for lower latency."
-          hints:
-            readOnly: false
-            destructive: false
-            idempotent: false
-          call: "replicate.create-deployment-prediction"
-          with:
-            deployment_owner: "tools.deployment_owner"
-            deployment_name: "tools.deployment_name"
-            input: "tools.input"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: list-hardware
-          description: "List available GPU hardware options for running models."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.list-hardware"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: list-collections
-          description: "Browse curated model collections by category."
-          hints:
-            readOnly: true
-            openWorld: true
-          call: "replicate.list-collections"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: get-collection
-          description: "Get all models in a specific curated collection."
-          hints:
-            readOnly: true
-            openWorld: true
-          call: "replicate.get-collection"
-          with:
-            collection_slug: "tools.collection_slug"
-          outputParameters:
-            - type: object
-              mapping: "$."
+  - type: rest
+    port: 8080
+    namespace: replicate-inference-api
+    description: Unified REST API for running ML model inference on Replicate.
+    resources:
+    - path: /v1/predictions
+      name: predictions
+      description: Create and manage model inference predictions.
+      operations:
+      - method: GET
+        name: list-predictions
+        description: List all predictions.
+        call: replicate.list-predictions
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: create-prediction
+        description: Create a new inference prediction.
+        call: replicate.create-prediction
+        with:
+          version: rest.version
+          input: rest.input
+          webhook: rest.webhook
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/predictions/{id}
+      name: prediction
+      description: Get or cancel a specific prediction.
+      operations:
+      - method: GET
+        name: get-prediction
+        description: Get prediction status and output.
+        call: replicate.get-prediction
+        with:
+          prediction_id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: cancel-prediction
+        description: Cancel a running prediction.
+        call: replicate.cancel-prediction
+        with:
+          prediction_id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{owner}/{name}/predictions
+      name: model-predictions
+      description: Create predictions using official models.
+      operations:
+      - method: POST
+        name: create-model-prediction
+        description: Run inference on an official Replicate model.
+        call: replicate.create-model-prediction
+        with:
+          model_owner: rest.owner
+          model_name: rest.name
+          input: rest.input
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployments/{owner}/{name}/predictions
+      name: deployment-predictions
+      description: Create predictions using production deployments.
+      operations:
+      - method: POST
+        name: create-deployment-prediction
+        description: Run inference against a production deployment.
+        call: replicate.create-deployment-prediction
+        with:
+          deployment_owner: rest.owner
+          deployment_name: rest.name
+          input: rest.input
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/hardware
+      name: hardware
+      description: Available GPU hardware options.
+      operations:
+      - method: GET
+        name: list-hardware
+        description: List available hardware for running models.
+        call: replicate.list-hardware
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/collections
+      name: collections
+      description: Curated model collections.
+      operations:
+      - method: GET
+        name: list-collections
+        description: List all curated model collections.
+        call: replicate.list-collections
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/collections/{slug}
+      name: collection
+      description: Specific model collection.
+      operations:
+      - method: GET
+        name: get-collection
+        description: Get a specific model collection.
+        call: replicate.get-collection
+        with:
+          collection_slug: rest.slug
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: replicate-inference-mcp
+    transport: http
+    description: MCP server for AI-assisted model inference on Replicate.
+    tools:
+    - name: list-predictions
+      description: List all inference predictions for the account.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.list-predictions
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-prediction
+      description: Run a new AI model inference prediction by specifying a model version and input.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate.create-prediction
+      with:
+        version: tools.version
+        input: tools.input
+        webhook: tools.webhook
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-prediction
+      description: Get the status and output of a prediction.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.get-prediction
+      with:
+        prediction_id: tools.prediction_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-prediction
+      description: Cancel a currently running prediction.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: replicate.cancel-prediction
+      with:
+        prediction_id: tools.prediction_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-model-prediction
+      description: Run inference on an official Replicate model (no version required).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate.create-model-prediction
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+        input: tools.input
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-deployment-prediction
+      description: Run inference against a production deployment for lower latency.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate.create-deployment-prediction
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+        input: tools.input
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-hardware
+      description: List available GPU hardware options for running models.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.list-hardware
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-collections
+      description: Browse curated model collections by category.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: replicate.list-collections
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-collection
+      description: Get all models in a specific curated collection.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: replicate.get-collection
+      with:
+        collection_slug: tools.collection_slug
+      outputParameters:
+      - type: object
+        mapping: $.

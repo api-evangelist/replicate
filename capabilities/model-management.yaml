@@ -1,416 +1,869 @@
-naftiko: "1.0.0-alpha1"
-
+naftiko: 1.0.0-alpha2
 info:
-  label: "Replicate Model Management"
-  description: >-
-    Workflow capability for managing ML models, versions, deployments, and
-    training jobs on Replicate. Covers the full model lifecycle from creation
-    through versioning, fine-tuning with training jobs, and production
-    deployment configuration. Designed for ML engineers and platform teams.
+  label: Replicate Model Management
+  description: Workflow capability for managing ML models, versions, deployments, and training jobs on Replicate. Covers the
+    full model lifecycle from creation through versioning, fine-tuning with training jobs, and production deployment configuration.
+    Designed for ML engineers and platform teams.
   tags:
-    - Artificial Intelligence
-    - Machine Learning
-    - Model Management
-    - Training
-    - Deployments
-  created: "2026-05-02"
-  modified: "2026-05-02"
-
+  - Artificial Intelligence
+  - Machine Learning
+  - Model Management
+  - Training
+  - Deployments
+  created: '2026-05-02'
+  modified: '2026-05-06'
 binds:
-  - namespace: env
-    keys:
-      REPLICATE_API_TOKEN: REPLICATE_API_TOKEN
-
+- namespace: env
+  keys:
+    REPLICATE_API_TOKEN: REPLICATE_API_TOKEN
 capability:
   consumes:
-    - import: replicate
-      location: ./shared/replicate.yaml
-
+  - type: http
+    namespace: replicate
+    baseUri: https://api.replicate.com/v1
+    description: Replicate REST API for running ML models and managing resources.
+    authentication:
+      type: bearer
+      token: '{{REPLICATE_API_TOKEN}}'
+    resources:
+    - name: account
+      path: /account
+      description: Account information for the authenticated user or organization.
+      operations:
+      - name: get-account
+        method: GET
+        description: Get the authenticated account information.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: collections
+      path: /collections
+      description: Curated collections of models.
+      operations:
+      - name: list-collections
+        method: GET
+        description: List all collections of models.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-collection
+        method: GET
+        description: Get a specific collection of models by slug.
+        inputParameters:
+        - name: collection_slug
+          in: path
+          type: string
+          required: true
+          description: The slug of the collection.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: deployments
+      path: /deployments
+      description: Manage model deployments for production use.
+      operations:
+      - name: list-deployments
+        method: GET
+        description: List all deployments for the authenticated account.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-deployment
+        method: POST
+        description: Create a new model deployment.
+        body:
+          type: json
+          data:
+            name: '{{tools.name}}'
+            model: '{{tools.model}}'
+            version: '{{tools.version}}'
+            hardware: '{{tools.hardware}}'
+            min_instances: '{{tools.min_instances}}'
+            max_instances: '{{tools.max_instances}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-deployment
+        method: GET
+        description: Get a specific deployment by owner and name.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: update-deployment
+        method: PATCH
+        description: Update a deployment configuration.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        body:
+          type: json
+          data:
+            hardware: '{{tools.hardware}}'
+            min_instances: '{{tools.min_instances}}'
+            max_instances: '{{tools.max_instances}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: delete-deployment
+        method: DELETE
+        description: Delete a deployment.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-deployment-prediction
+        method: POST
+        description: Create a prediction using a deployment.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          required: true
+          description: The deployment owner.
+        - name: deployment_name
+          in: path
+          type: string
+          required: true
+          description: The deployment name.
+        body:
+          type: json
+          data:
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: hardware
+      path: /hardware
+      description: Available hardware options for running models.
+      operations:
+      - name: list-hardware
+        method: GET
+        description: List all available hardware options.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: models
+      path: /models
+      description: ML models hosted on Replicate.
+      operations:
+      - name: list-models
+        method: GET
+        description: List all public models.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-model
+        method: POST
+        description: Create a new model.
+        body:
+          type: json
+          data:
+            owner: '{{tools.owner}}'
+            name: '{{tools.name}}'
+            description: '{{tools.description}}'
+            visibility: '{{tools.visibility}}'
+            hardware: '{{tools.hardware}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: search-models
+        method: GET
+        description: Search public models.
+        inputParameters:
+        - name: query
+          in: query
+          type: string
+          required: false
+          description: Search query string.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-model
+        method: GET
+        description: Get a specific model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: delete-model
+        method: DELETE
+        description: Delete a model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-model-prediction
+        method: POST
+        description: Create a prediction using an official model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        body:
+          type: json
+          data:
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: list-model-versions
+        method: GET
+        description: List all versions of a model.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-model-version
+        method: GET
+        description: Get a specific model version.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        - name: version_id
+          in: path
+          type: string
+          required: true
+          description: The version ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: delete-model-version
+        method: DELETE
+        description: Delete a specific model version.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        - name: version_id
+          in: path
+          type: string
+          required: true
+          description: The version ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: predictions
+      path: /predictions
+      description: Inference runs against ML models.
+      operations:
+      - name: list-predictions
+        method: GET
+        description: List all predictions for the authenticated account.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-prediction
+        method: POST
+        description: Create a new prediction.
+        body:
+          type: json
+          data:
+            version: '{{tools.version}}'
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+            webhook_events_filter: '{{tools.webhook_events_filter}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-prediction
+        method: GET
+        description: Get a specific prediction.
+        inputParameters:
+        - name: prediction_id
+          in: path
+          type: string
+          required: true
+          description: The prediction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: cancel-prediction
+        method: POST
+        description: Cancel a running prediction.
+        inputParameters:
+        - name: prediction_id
+          in: path
+          type: string
+          required: true
+          description: The prediction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: trainings
+      path: /trainings
+      description: Fine-tuning jobs for ML models.
+      operations:
+      - name: list-trainings
+        method: GET
+        description: List all trainings for the authenticated account.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-training
+        method: POST
+        description: Create a new training job on a model version.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          required: true
+          description: The model owner.
+        - name: model_name
+          in: path
+          type: string
+          required: true
+          description: The model name.
+        - name: version_id
+          in: path
+          type: string
+          required: true
+          description: The version ID to train.
+        body:
+          type: json
+          data:
+            destination: '{{tools.destination}}'
+            input: '{{tools.input}}'
+            webhook: '{{tools.webhook}}'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: get-training
+        method: GET
+        description: Get a specific training job.
+        inputParameters:
+        - name: training_id
+          in: path
+          type: string
+          required: true
+          description: The training ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: cancel-training
+        method: POST
+        description: Cancel a running training job.
+        inputParameters:
+        - name: training_id
+          in: path
+          type: string
+          required: true
+          description: The training ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: webhooks
+      path: /webhooks/default/secret
+      description: Webhook signing secret management.
+      operations:
+      - name: get-webhook-secret
+        method: GET
+        description: Get the signing secret for the default webhook.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
   exposes:
-    - type: rest
-      port: 8081
-      namespace: replicate-management-api
-      description: "Unified REST API for Replicate model and deployment management."
-      resources:
-        - path: /v1/models
-          name: models
-          description: "Browse and manage ML models."
-          operations:
-            - method: GET
-              name: list-models
-              description: "List all public models."
-              call: "replicate.list-models"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: POST
-              name: create-model
-              description: "Create a new model."
-              call: "replicate.create-model"
-              with:
-                owner: "rest.owner"
-                name: "rest.name"
-                description: "rest.description"
-                visibility: "rest.visibility"
-                hardware: "rest.hardware"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/models/search
-          name: model-search
-          description: "Search the model marketplace."
-          operations:
-            - method: GET
-              name: search-models
-              description: "Search public models by keyword."
-              call: "replicate.search-models"
-              with:
-                query: "rest.query"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/models/{owner}/{name}
-          name: model
-          description: "Manage a specific model."
-          operations:
-            - method: GET
-              name: get-model
-              description: "Get model details."
-              call: "replicate.get-model"
-              with:
-                model_owner: "rest.owner"
-                model_name: "rest.name"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: DELETE
-              name: delete-model
-              description: "Delete a model."
-              call: "replicate.delete-model"
-              with:
-                model_owner: "rest.owner"
-                model_name: "rest.name"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/models/{owner}/{name}/versions
-          name: model-versions
-          description: "Manage model versions."
-          operations:
-            - method: GET
-              name: list-model-versions
-              description: "List all versions of a model."
-              call: "replicate.list-model-versions"
-              with:
-                model_owner: "rest.owner"
-                model_name: "rest.name"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/models/{owner}/{name}/versions/{version_id}
-          name: model-version
-          description: "Manage a specific model version."
-          operations:
-            - method: GET
-              name: get-model-version
-              description: "Get details of a specific model version."
-              call: "replicate.get-model-version"
-              with:
-                model_owner: "rest.owner"
-                model_name: "rest.name"
-                version_id: "rest.version_id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: DELETE
-              name: delete-model-version
-              description: "Delete a model version."
-              call: "replicate.delete-model-version"
-              with:
-                model_owner: "rest.owner"
-                model_name: "rest.name"
-                version_id: "rest.version_id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/trainings
-          name: trainings
-          description: "Manage model fine-tuning jobs."
-          operations:
-            - method: GET
-              name: list-trainings
-              description: "List all training jobs."
-              call: "replicate.list-trainings"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/trainings/{id}
-          name: training
-          description: "Manage a specific training job."
-          operations:
-            - method: GET
-              name: get-training
-              description: "Get training job status."
-              call: "replicate.get-training"
-              with:
-                training_id: "rest.id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: DELETE
-              name: cancel-training
-              description: "Cancel a running training job."
-              call: "replicate.cancel-training"
-              with:
-                training_id: "rest.id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/deployments
-          name: deployments
-          description: "Manage production deployments."
-          operations:
-            - method: GET
-              name: list-deployments
-              description: "List all deployments."
-              call: "replicate.list-deployments"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: POST
-              name: create-deployment
-              description: "Create a new production deployment."
-              call: "replicate.create-deployment"
-              with:
-                name: "rest.name"
-                model: "rest.model"
-                version: "rest.version"
-                hardware: "rest.hardware"
-                min_instances: "rest.min_instances"
-                max_instances: "rest.max_instances"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-        - path: /v1/deployments/{owner}/{name}
-          name: deployment
-          description: "Manage a specific deployment."
-          operations:
-            - method: GET
-              name: get-deployment
-              description: "Get deployment configuration."
-              call: "replicate.get-deployment"
-              with:
-                deployment_owner: "rest.owner"
-                deployment_name: "rest.name"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: PATCH
-              name: update-deployment
-              description: "Update deployment scaling configuration."
-              call: "replicate.update-deployment"
-              with:
-                deployment_owner: "rest.owner"
-                deployment_name: "rest.name"
-                hardware: "rest.hardware"
-                min_instances: "rest.min_instances"
-                max_instances: "rest.max_instances"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: DELETE
-              name: delete-deployment
-              description: "Delete a deployment."
-              call: "replicate.delete-deployment"
-              with:
-                deployment_owner: "rest.owner"
-                deployment_name: "rest.name"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-    - type: mcp
-      port: 9091
-      namespace: replicate-management-mcp
-      transport: http
-      description: "MCP server for AI-assisted Replicate model and deployment management."
-      tools:
-        - name: list-models
-          description: "Browse all public ML models available on Replicate."
-          hints:
-            readOnly: true
-            openWorld: true
-          call: "replicate.list-models"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: search-models
-          description: "Search the Replicate model marketplace by keyword."
-          hints:
-            readOnly: true
-            openWorld: true
-          call: "replicate.search-models"
-          with:
-            query: "tools.query"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: get-model
-          description: "Get detailed information about a specific model."
-          hints:
-            readOnly: true
-            openWorld: true
-          call: "replicate.get-model"
-          with:
-            model_owner: "tools.model_owner"
-            model_name: "tools.model_name"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: create-model
-          description: "Create a new model on Replicate."
-          hints:
-            readOnly: false
-            destructive: false
-            idempotent: false
-          call: "replicate.create-model"
-          with:
-            owner: "tools.owner"
-            name: "tools.name"
-            description: "tools.description"
-            visibility: "tools.visibility"
-            hardware: "tools.hardware"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: list-model-versions
-          description: "List all versions of a model."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.list-model-versions"
-          with:
-            model_owner: "tools.model_owner"
-            model_name: "tools.model_name"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: get-model-version
-          description: "Get details and OpenAPI schema for a specific model version."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.get-model-version"
-          with:
-            model_owner: "tools.model_owner"
-            model_name: "tools.model_name"
-            version_id: "tools.version_id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: list-trainings
-          description: "List all fine-tuning training jobs."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.list-trainings"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: get-training
-          description: "Get the status and logs of a training job."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.get-training"
-          with:
-            training_id: "tools.training_id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: cancel-training
-          description: "Cancel a running model fine-tuning job."
-          hints:
-            readOnly: false
-            destructive: true
-            idempotent: true
-          call: "replicate.cancel-training"
-          with:
-            training_id: "tools.training_id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: list-deployments
-          description: "List all production model deployments."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.list-deployments"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: create-deployment
-          description: "Create a new production model deployment with auto-scaling."
-          hints:
-            readOnly: false
-            destructive: false
-            idempotent: false
-          call: "replicate.create-deployment"
-          with:
-            name: "tools.name"
-            model: "tools.model"
-            version: "tools.version"
-            hardware: "tools.hardware"
-            min_instances: "tools.min_instances"
-            max_instances: "tools.max_instances"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: get-deployment
-          description: "Get configuration details for a deployment."
-          hints:
-            readOnly: true
-            openWorld: false
-          call: "replicate.get-deployment"
-          with:
-            deployment_owner: "tools.deployment_owner"
-            deployment_name: "tools.deployment_name"
-          outputParameters:
-            - type: object
-              mapping: "$."
-
-        - name: update-deployment
-          description: "Update the scaling configuration of a deployment."
-          hints:
-            readOnly: false
-            destructive: false
-            idempotent: true
-          call: "replicate.update-deployment"
-          with:
-            deployment_owner: "tools.deployment_owner"
-            deployment_name: "tools.deployment_name"
-            hardware: "tools.hardware"
-            min_instances: "tools.min_instances"
-            max_instances: "tools.max_instances"
-          outputParameters:
-            - type: object
-              mapping: "$."
+  - type: rest
+    port: 8081
+    namespace: replicate-management-api
+    description: Unified REST API for Replicate model and deployment management.
+    resources:
+    - path: /v1/models
+      name: models
+      description: Browse and manage ML models.
+      operations:
+      - method: GET
+        name: list-models
+        description: List all public models.
+        call: replicate.list-models
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: create-model
+        description: Create a new model.
+        call: replicate.create-model
+        with:
+          owner: rest.owner
+          name: rest.name
+          description: rest.description
+          visibility: rest.visibility
+          hardware: rest.hardware
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/search
+      name: model-search
+      description: Search the model marketplace.
+      operations:
+      - method: GET
+        name: search-models
+        description: Search public models by keyword.
+        call: replicate.search-models
+        with:
+          query: rest.query
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{owner}/{name}
+      name: model
+      description: Manage a specific model.
+      operations:
+      - method: GET
+        name: get-model
+        description: Get model details.
+        call: replicate.get-model
+        with:
+          model_owner: rest.owner
+          model_name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-model
+        description: Delete a model.
+        call: replicate.delete-model
+        with:
+          model_owner: rest.owner
+          model_name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{owner}/{name}/versions
+      name: model-versions
+      description: Manage model versions.
+      operations:
+      - method: GET
+        name: list-model-versions
+        description: List all versions of a model.
+        call: replicate.list-model-versions
+        with:
+          model_owner: rest.owner
+          model_name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{owner}/{name}/versions/{version_id}
+      name: model-version
+      description: Manage a specific model version.
+      operations:
+      - method: GET
+        name: get-model-version
+        description: Get details of a specific model version.
+        call: replicate.get-model-version
+        with:
+          model_owner: rest.owner
+          model_name: rest.name
+          version_id: rest.version_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-model-version
+        description: Delete a model version.
+        call: replicate.delete-model-version
+        with:
+          model_owner: rest.owner
+          model_name: rest.name
+          version_id: rest.version_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/trainings
+      name: trainings
+      description: Manage model fine-tuning jobs.
+      operations:
+      - method: GET
+        name: list-trainings
+        description: List all training jobs.
+        call: replicate.list-trainings
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/trainings/{id}
+      name: training
+      description: Manage a specific training job.
+      operations:
+      - method: GET
+        name: get-training
+        description: Get training job status.
+        call: replicate.get-training
+        with:
+          training_id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: cancel-training
+        description: Cancel a running training job.
+        call: replicate.cancel-training
+        with:
+          training_id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployments
+      name: deployments
+      description: Manage production deployments.
+      operations:
+      - method: GET
+        name: list-deployments
+        description: List all deployments.
+        call: replicate.list-deployments
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: create-deployment
+        description: Create a new production deployment.
+        call: replicate.create-deployment
+        with:
+          name: rest.name
+          model: rest.model
+          version: rest.version
+          hardware: rest.hardware
+          min_instances: rest.min_instances
+          max_instances: rest.max_instances
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployments/{owner}/{name}
+      name: deployment
+      description: Manage a specific deployment.
+      operations:
+      - method: GET
+        name: get-deployment
+        description: Get deployment configuration.
+        call: replicate.get-deployment
+        with:
+          deployment_owner: rest.owner
+          deployment_name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: update-deployment
+        description: Update deployment scaling configuration.
+        call: replicate.update-deployment
+        with:
+          deployment_owner: rest.owner
+          deployment_name: rest.name
+          hardware: rest.hardware
+          min_instances: rest.min_instances
+          max_instances: rest.max_instances
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-deployment
+        description: Delete a deployment.
+        call: replicate.delete-deployment
+        with:
+          deployment_owner: rest.owner
+          deployment_name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9091
+    namespace: replicate-management-mcp
+    transport: http
+    description: MCP server for AI-assisted Replicate model and deployment management.
+    tools:
+    - name: list-models
+      description: Browse all public ML models available on Replicate.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: replicate.list-models
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: search-models
+      description: Search the Replicate model marketplace by keyword.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: replicate.search-models
+      with:
+        query: tools.query
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-model
+      description: Get detailed information about a specific model.
+      hints:
+        readOnly: true
+        openWorld: true
+      call: replicate.get-model
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-model
+      description: Create a new model on Replicate.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate.create-model
+      with:
+        owner: tools.owner
+        name: tools.name
+        description: tools.description
+        visibility: tools.visibility
+        hardware: tools.hardware
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-model-versions
+      description: List all versions of a model.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.list-model-versions
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-model-version
+      description: Get details and OpenAPI schema for a specific model version.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.get-model-version
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+        version_id: tools.version_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-trainings
+      description: List all fine-tuning training jobs.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.list-trainings
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-training
+      description: Get the status and logs of a training job.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.get-training
+      with:
+        training_id: tools.training_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-training
+      description: Cancel a running model fine-tuning job.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: replicate.cancel-training
+      with:
+        training_id: tools.training_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-deployments
+      description: List all production model deployments.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.list-deployments
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-deployment
+      description: Create a new production model deployment with auto-scaling.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate.create-deployment
+      with:
+        name: tools.name
+        model: tools.model
+        version: tools.version
+        hardware: tools.hardware
+        min_instances: tools.min_instances
+        max_instances: tools.max_instances
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-deployment
+      description: Get configuration details for a deployment.
+      hints:
+        readOnly: true
+        openWorld: false
+      call: replicate.get-deployment
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-deployment
+      description: Update the scaling configuration of a deployment.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: replicate.update-deployment
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+        hardware: tools.hardware
+        min_instances: tools.min_instances
+        max_instances: tools.max_instances
+      outputParameters:
+      - type: object
+        mapping: $.
