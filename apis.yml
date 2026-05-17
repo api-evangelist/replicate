@@ -71,7 +71,7 @@ common:
     url: https://replicate.com/signin
   - type: Playground
     url: https://replicate.com/explore
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/replicate
   - type: SDKs
     url: https://replicate.com/docs/reference/client-libraries
@@ -85,7 +85,7 @@ common:
     url: https://github.com/replicate/replicate-swift
   - type: Cog
     url: https://github.com/replicate/cog
-  - type: Status
+  - type: StatusPage
     url: https://status.replicate.com
   - type: Features
     data:
