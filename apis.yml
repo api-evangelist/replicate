@@ -1,9 +1,6 @@
 aid: replicate
 name: Replicate
-description: Replicate lets you run machine learning models in the cloud with a simple API. Thousands
-  of open-source models are available, and you can run your own custom models at scale. Run image generation,
-  language models, audio synthesis, video generation, and more with a few lines of code. Replicate makes
-  AI accessible to every software engineer.
+description: Replicate lets you run machine learning models in the cloud with a simple API. Thousands of open-source models are available, and you can run your own custom models at scale. Run image generation, language models, audio synthesis, video generation, and more with a few lines of code. Replicate makes AI accessible to every software engineer.
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
@@ -14,15 +11,12 @@ tags:
   - Model Deployment
 url: https://raw.githubusercontent.com/api-evangelist/replicate/refs/heads/main/apis.yml
 created: '2024-11-13'
-modified: '2026-05-04'
+modified: '2026-05-19'
 specificationVersion: '0.19'
 apis:
   - aid: replicate:replicate
     name: Replicate
-    description: Replicate lets you run machine learning models in the cloud with a simple REST API. Access
-      thousands of open-source models for image generation, language modeling, audio synthesis, video
-      generation, upscaling, and more. Create predictions, manage deployments, fine-tune models, and run
-      training jobs via a clean API with webhooks and streaming support.
+    description: Replicate lets you run machine learning models in the cloud with a simple REST API. Access thousands of open-source models for image generation, language modeling, audio synthesis, video generation, upscaling, and more. Create predictions, manage deployments, fine-tune models, and run training jobs via a clean API with webhooks and streaming support.
     humanURL: https://replicate.com/
     tags:
       - Accounts
@@ -108,6 +102,12 @@ common:
     sources:
       - https://replicate.com/pricing
     updated: '2026-05-04'
+  - name: MCP Server
+    url: https://github.com/replicate/replicate-mcp-code-mode
+    type: MCPServer
+  - name: Agent Skills
+    url: https://github.com/replicate/skills
+    type: AgentSkill
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
