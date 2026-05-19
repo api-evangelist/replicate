@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Replicate — Hardware
+  description: 'Replicate — Hardware. 1 operations. Lead operation: List Available Hardware for Models. Self-contained Naftiko
+    capability covering one Replicate business surface.'
+  tags:
+  - Replicate
+  - Hardware
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    REPLICATE_API_KEY: REPLICATE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: replicate-hardware
+    baseUri: https://api.replicate.com/v1
+    description: Replicate — Hardware business capability. Self-contained, no shared references.
+    resources:
+    - name: hardware
+      path: /hardware
+      operations:
+      - name: hardwarelist
+        method: GET
+        description: List Available Hardware for Models
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.REPLICATE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: replicate-hardware-rest
+    port: 8080
+    description: REST adapter for Replicate — Hardware. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/hardware
+      name: hardware
+      description: REST surface for hardware.
+      operations:
+      - method: GET
+        name: hardwarelist
+        description: List Available Hardware for Models
+        call: replicate-hardware.hardwarelist
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: replicate-hardware-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Replicate — Hardware. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-available-hardware-models
+      description: List Available Hardware for Models
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-hardware.hardwarelist
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,122 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Replicate — Training
+  description: 'Replicate — Training. 2 operations. Lead operation: Get a Training. Self-contained Naftiko capability covering
+    one Replicate business surface.'
+  tags:
+  - Replicate
+  - Training
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    REPLICATE_API_KEY: REPLICATE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: replicate-training
+    baseUri: https://api.replicate.com/v1
+    description: Replicate — Training business capability. Self-contained, no shared references.
+    resources:
+    - name: trainings-training_id
+      path: /trainings/{training_id}
+      operations:
+      - name: trainingsget
+        method: GET
+        description: Get a Training
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: training_id
+          in: path
+          type: string
+          description: The ID of the training to get.
+          required: true
+    - name: trainings-training_id-cancel
+      path: /trainings/{training_id}/cancel
+      operations:
+      - name: trainingscancel
+        method: POST
+        description: Cancel a Training
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: training_id
+          in: path
+          type: string
+          description: The ID of the training you want to cancel.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.REPLICATE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: replicate-training-rest
+    port: 8080
+    description: REST adapter for Replicate — Training. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/trainings/{training-id}
+      name: trainings-training-id
+      description: REST surface for trainings-training_id.
+      operations:
+      - method: GET
+        name: trainingsget
+        description: Get a Training
+        call: replicate-training.trainingsget
+        with:
+          training_id: rest.training_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/trainings/{training-id}/cancel
+      name: trainings-training-id-cancel
+      description: REST surface for trainings-training_id-cancel.
+      operations:
+      - method: POST
+        name: trainingscancel
+        description: Cancel a Training
+        call: replicate-training.trainingscancel
+        with:
+          training_id: rest.training_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: replicate-training-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Replicate — Training. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: get-training
+      description: Get a Training
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-training.trainingsget
+      with:
+        training_id: tools.training_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-training
+      description: Cancel a Training
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-training.trainingscancel
+      with:
+        training_id: tools.training_id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,598 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Replicate — Name
+  description: 'Replicate — Name. 11 operations. Lead operation: Delete a Deployment. Self-contained Naftiko capability covering
+    one Replicate business surface.'
+  tags:
+  - Replicate
+  - Name
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    REPLICATE_API_KEY: REPLICATE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: replicate-name
+    baseUri: https://api.replicate.com/v1
+    description: Replicate — Name business capability. Self-contained, no shared references.
+    resources:
+    - name: deployments-deployment_owner-deployment_name
+      path: /deployments/{deployment_owner}/{deployment_name}
+      operations:
+      - name: deploymentsdelete
+        method: DELETE
+        description: Delete a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+      - name: deploymentsget
+        method: GET
+        description: Get a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+      - name: deploymentsupdate
+        method: PATCH
+        description: Update a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: deployments-deployment_owner-deployment_name-predictions
+      path: /deployments/{deployment_owner}/{deployment_name}/predictions
+      operations:
+      - name: deploymentspredictionscreate
+        method: POST
+        description: Create a Prediction Using a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: models-model_owner-model_name
+      path: /models/{model_owner}/{model_name}
+      operations:
+      - name: modelsdelete
+        method: DELETE
+        description: Delete a Model
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the model.
+          required: true
+        - name: model_name
+          in: path
+          type: string
+          description: The name of the model.
+          required: true
+      - name: modelsget
+        method: GET
+        description: Get a Model
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the model.
+          required: true
+        - name: model_name
+          in: path
+          type: string
+          description: The name of the model.
+          required: true
+    - name: models-model_owner-model_name-predictions
+      path: /models/{model_owner}/{model_name}/predictions
+      operations:
+      - name: modelspredictionscreate
+        method: POST
+        description: Create a Prediction Using an Official Model
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the model.
+          required: true
+        - name: model_name
+          in: path
+          type: string
+          description: The name of the model.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: models-model_owner-model_name-versions
+      path: /models/{model_owner}/{model_name}/versions
+      operations:
+      - name: modelsversionslist
+        method: GET
+        description: List Model Versions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the model.
+          required: true
+        - name: model_name
+          in: path
+          type: string
+          description: The name of the model.
+          required: true
+    - name: models-model_owner-model_name-versions-version_id
+      path: /models/{model_owner}/{model_name}/versions/{version_id}
+      operations:
+      - name: modelsversionsdelete
+        method: DELETE
+        description: Delete a Model Version
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the model.
+          required: true
+        - name: model_name
+          in: path
+          type: string
+          description: The name of the model.
+          required: true
+        - name: version_id
+          in: path
+          type: string
+          description: The ID of the version.
+          required: true
+      - name: modelsversionsget
+        method: GET
+        description: Get a Model Version
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the model.
+          required: true
+        - name: model_name
+          in: path
+          type: string
+          description: The name of the model.
+          required: true
+        - name: version_id
+          in: path
+          type: string
+          description: The ID of the version.
+          required: true
+    - name: models-model_owner-model_name-versions-version_id-trainings
+      path: /models/{model_owner}/{model_name}/versions/{version_id}/trainings
+      operations:
+      - name: trainingscreate
+        method: POST
+        description: Create a Training
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the model.
+          required: true
+        - name: model_name
+          in: path
+          type: string
+          description: The name of the model.
+          required: true
+        - name: version_id
+          in: path
+          type: string
+          description: The ID of the version.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.REPLICATE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: replicate-name-rest
+    port: 8080
+    description: REST adapter for Replicate — Name. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/deployments/{deployment-owner}/{deployment-name}
+      name: deployments-deployment-owner-deployment-name
+      description: REST surface for deployments-deployment_owner-deployment_name.
+      operations:
+      - method: DELETE
+        name: deploymentsdelete
+        description: Delete a Deployment
+        call: replicate-name.deploymentsdelete
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: deploymentsget
+        description: Get a Deployment
+        call: replicate-name.deploymentsget
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: deploymentsupdate
+        description: Update a Deployment
+        call: replicate-name.deploymentsupdate
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployments/{deployment-owner}/{deployment-name}/predictions
+      name: deployments-deployment-owner-deployment-name-predictions
+      description: REST surface for deployments-deployment_owner-deployment_name-predictions.
+      operations:
+      - method: POST
+        name: deploymentspredictionscreate
+        description: Create a Prediction Using a Deployment
+        call: replicate-name.deploymentspredictionscreate
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{model-owner}/{model-name}
+      name: models-model-owner-model-name
+      description: REST surface for models-model_owner-model_name.
+      operations:
+      - method: DELETE
+        name: modelsdelete
+        description: Delete a Model
+        call: replicate-name.modelsdelete
+        with:
+          model_owner: rest.model_owner
+          model_name: rest.model_name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: modelsget
+        description: Get a Model
+        call: replicate-name.modelsget
+        with:
+          model_owner: rest.model_owner
+          model_name: rest.model_name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{model-owner}/{model-name}/predictions
+      name: models-model-owner-model-name-predictions
+      description: REST surface for models-model_owner-model_name-predictions.
+      operations:
+      - method: POST
+        name: modelspredictionscreate
+        description: Create a Prediction Using an Official Model
+        call: replicate-name.modelspredictionscreate
+        with:
+          model_owner: rest.model_owner
+          model_name: rest.model_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{model-owner}/{model-name}/versions
+      name: models-model-owner-model-name-versions
+      description: REST surface for models-model_owner-model_name-versions.
+      operations:
+      - method: GET
+        name: modelsversionslist
+        description: List Model Versions
+        call: replicate-name.modelsversionslist
+        with:
+          model_owner: rest.model_owner
+          model_name: rest.model_name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{model-owner}/{model-name}/versions/{version-id}
+      name: models-model-owner-model-name-versions-version-id
+      description: REST surface for models-model_owner-model_name-versions-version_id.
+      operations:
+      - method: DELETE
+        name: modelsversionsdelete
+        description: Delete a Model Version
+        call: replicate-name.modelsversionsdelete
+        with:
+          model_owner: rest.model_owner
+          model_name: rest.model_name
+          version_id: rest.version_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: modelsversionsget
+        description: Get a Model Version
+        call: replicate-name.modelsversionsget
+        with:
+          model_owner: rest.model_owner
+          model_name: rest.model_name
+          version_id: rest.version_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{model-owner}/{model-name}/versions/{version-id}/trainings
+      name: models-model-owner-model-name-versions-version-id-trainings
+      description: REST surface for models-model_owner-model_name-versions-version_id-trainings.
+      operations:
+      - method: POST
+        name: trainingscreate
+        description: Create a Training
+        call: replicate-name.trainingscreate
+        with:
+          model_owner: rest.model_owner
+          model_name: rest.model_name
+          version_id: rest.version_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: replicate-name-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Replicate — Name. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: delete-deployment
+      description: Delete a Deployment
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: replicate-name.deploymentsdelete
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-deployment
+      description: Get a Deployment
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-name.deploymentsget
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-deployment
+      description: Update a Deployment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: replicate-name.deploymentsupdate
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-prediction-using-deployment
+      description: Create a Prediction Using a Deployment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-name.deploymentspredictionscreate
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-model
+      description: Delete a Model
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: replicate-name.modelsdelete
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-model
+      description: Get a Model
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-name.modelsget
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-prediction-using-official-model
+      description: Create a Prediction Using an Official Model
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-name.modelspredictionscreate
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-model-versions
+      description: List Model Versions
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-name.modelsversionslist
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-model-version
+      description: Delete a Model Version
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: replicate-name.modelsversionsdelete
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+        version_id: tools.version_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-model-version
+      description: Get a Model Version
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-name.modelsversionsget
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+        version_id: tools.version_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-training
+      description: Create a Training
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-name.trainingscreate
+      with:
+        model_owner: tools.model_owner
+        model_name: tools.model_name
+        version_id: tools.version_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

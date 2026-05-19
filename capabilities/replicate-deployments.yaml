@@ -1,0 +1,301 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Replicate — Deployments
+  description: 'Replicate — Deployments. 6 operations. Lead operation: List Deployments. Self-contained Naftiko capability
+    covering one Replicate business surface.'
+  tags:
+  - Replicate
+  - Deployments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    REPLICATE_API_KEY: REPLICATE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: replicate-deployments
+    baseUri: https://api.replicate.com/v1
+    description: Replicate — Deployments business capability. Self-contained, no shared references.
+    resources:
+    - name: deployments
+      path: /deployments
+      operations:
+      - name: deploymentslist
+        method: GET
+        description: List Deployments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deploymentscreate
+        method: POST
+        description: Create a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: deployments-deployment_owner-deployment_name
+      path: /deployments/{deployment_owner}/{deployment_name}
+      operations:
+      - name: deploymentsdelete
+        method: DELETE
+        description: Delete a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+      - name: deploymentsget
+        method: GET
+        description: Get a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+      - name: deploymentsupdate
+        method: PATCH
+        description: Update a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: deployments-deployment_owner-deployment_name-predictions
+      path: /deployments/{deployment_owner}/{deployment_name}/predictions
+      operations:
+      - name: deploymentspredictionscreate
+        method: POST
+        description: Create a Prediction Using a Deployment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: deployment_owner
+          in: path
+          type: string
+          description: The name of the user or organization that owns the deployment.
+          required: true
+        - name: deployment_name
+          in: path
+          type: string
+          description: The name of the deployment.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: bearer
+      token: '{{env.REPLICATE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: replicate-deployments-rest
+    port: 8080
+    description: REST adapter for Replicate — Deployments. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/deployments
+      name: deployments
+      description: REST surface for deployments.
+      operations:
+      - method: GET
+        name: deploymentslist
+        description: List Deployments
+        call: replicate-deployments.deploymentslist
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: deploymentscreate
+        description: Create a Deployment
+        call: replicate-deployments.deploymentscreate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployments/{deployment-owner}/{deployment-name}
+      name: deployments-deployment-owner-deployment-name
+      description: REST surface for deployments-deployment_owner-deployment_name.
+      operations:
+      - method: DELETE
+        name: deploymentsdelete
+        description: Delete a Deployment
+        call: replicate-deployments.deploymentsdelete
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: deploymentsget
+        description: Get a Deployment
+        call: replicate-deployments.deploymentsget
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: deploymentsupdate
+        description: Update a Deployment
+        call: replicate-deployments.deploymentsupdate
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/deployments/{deployment-owner}/{deployment-name}/predictions
+      name: deployments-deployment-owner-deployment-name-predictions
+      description: REST surface for deployments-deployment_owner-deployment_name-predictions.
+      operations:
+      - method: POST
+        name: deploymentspredictionscreate
+        description: Create a Prediction Using a Deployment
+        call: replicate-deployments.deploymentspredictionscreate
+        with:
+          deployment_owner: rest.deployment_owner
+          deployment_name: rest.deployment_name
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: replicate-deployments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Replicate — Deployments. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-deployments
+      description: List Deployments
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-deployments.deploymentslist
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-deployment
+      description: Create a Deployment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-deployments.deploymentscreate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-deployment
+      description: Delete a Deployment
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: replicate-deployments.deploymentsdelete
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-deployment
+      description: Get a Deployment
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: replicate-deployments.deploymentsget
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-deployment
+      description: Update a Deployment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: replicate-deployments.deploymentsupdate
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-prediction-using-deployment
+      description: Create a Prediction Using a Deployment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-deployments.deploymentspredictionscreate
+      with:
+        deployment_owner: tools.deployment_owner
+        deployment_name: tools.deployment_name
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

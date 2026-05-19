@@ -1,0 +1,122 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Replicate — Cancel
+  description: 'Replicate — Cancel. 2 operations. Lead operation: Cancel a Prediction. Self-contained Naftiko capability covering
+    one Replicate business surface.'
+  tags:
+  - Replicate
+  - Cancel
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    REPLICATE_API_KEY: REPLICATE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: replicate-cancel
+    baseUri: https://api.replicate.com/v1
+    description: Replicate — Cancel business capability. Self-contained, no shared references.
+    resources:
+    - name: predictions-prediction_id-cancel
+      path: /predictions/{prediction_id}/cancel
+      operations:
+      - name: predictionscancel
+        method: POST
+        description: Cancel a Prediction
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: prediction_id
+          in: path
+          type: string
+          description: The ID of the prediction to cancel.
+          required: true
+    - name: trainings-training_id-cancel
+      path: /trainings/{training_id}/cancel
+      operations:
+      - name: trainingscancel
+        method: POST
+        description: Cancel a Training
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: training_id
+          in: path
+          type: string
+          description: The ID of the training you want to cancel.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.REPLICATE_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: replicate-cancel-rest
+    port: 8080
+    description: REST adapter for Replicate — Cancel. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/predictions/{prediction-id}/cancel
+      name: predictions-prediction-id-cancel
+      description: REST surface for predictions-prediction_id-cancel.
+      operations:
+      - method: POST
+        name: predictionscancel
+        description: Cancel a Prediction
+        call: replicate-cancel.predictionscancel
+        with:
+          prediction_id: rest.prediction_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/trainings/{training-id}/cancel
+      name: trainings-training-id-cancel
+      description: REST surface for trainings-training_id-cancel.
+      operations:
+      - method: POST
+        name: trainingscancel
+        description: Cancel a Training
+        call: replicate-cancel.trainingscancel
+        with:
+          training_id: rest.training_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: replicate-cancel-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Replicate — Cancel. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: cancel-prediction
+      description: Cancel a Prediction
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-cancel.predictionscancel
+      with:
+        prediction_id: tools.prediction_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-training
+      description: Cancel a Training
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: replicate-cancel.trainingscancel
+      with:
+        training_id: tools.training_id
+      outputParameters:
+      - type: object
+        mapping: $.
