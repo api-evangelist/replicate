@@ -1,0 +1,312 @@
+{
+  "provider": "Replicate",
+  "providerId": "replicate",
+  "kind": "json-structure",
+  "description": "Structural overview of the Replicate API surface; extracted from openapi/.",
+  "schemaCount": 3,
+  "operationCount": 27,
+  "schemas": [
+    {
+      "name": "schemas_prediction_request",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "input"
+      ]
+    },
+    {
+      "name": "schemas_training_request",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "destination",
+        "input"
+      ]
+    },
+    {
+      "name": "schemas_version_prediction_request",
+      "type": "object",
+      "propertyCount": 5,
+      "required": [
+        "version",
+        "input"
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/account",
+      "operationId": "account.get",
+      "summary": "Get the Authenticated Account",
+      "tags": [
+        "Accounts"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections",
+      "operationId": "collections.list",
+      "summary": "List Collections of Models",
+      "tags": [
+        "Collections"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/collections/{collection_slug}",
+      "operationId": "collections.get",
+      "summary": "Get a Collection of Models",
+      "tags": [
+        "Collections",
+        "Slug"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/deployments",
+      "operationId": "deployments.list",
+      "summary": "List Deployments",
+      "tags": [
+        "Deployments"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/deployments",
+      "operationId": "deployments.create",
+      "summary": "Create a Deployment",
+      "tags": [
+        "Deployments"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/deployments/{deployment_owner}/{deployment_name}",
+      "operationId": "deployments.get",
+      "summary": "Get a Deployment",
+      "tags": [
+        "Deployments",
+        "Name",
+        "Owner"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/deployments/{deployment_owner}/{deployment_name}",
+      "operationId": "deployments.delete",
+      "summary": "Delete a Deployment",
+      "tags": [
+        "Deployments",
+        "Name",
+        "Owner"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/deployments/{deployment_owner}/{deployment_name}",
+      "operationId": "deployments.update",
+      "summary": "Update a Deployment",
+      "tags": [
+        "Deployments",
+        "Name",
+        "Owner"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/deployments/{deployment_owner}/{deployment_name}/predictions",
+      "operationId": "deployments.predictions.create",
+      "summary": "Create a Prediction Using a Deployment",
+      "tags": [
+        "Deployments",
+        "Name",
+        "Owner",
+        "Predictions"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/hardware",
+      "operationId": "hardware.list",
+      "summary": "List Available Hardware for Models",
+      "tags": [
+        "Hardware"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models",
+      "operationId": "models.list",
+      "summary": "List Public Models",
+      "tags": [
+        "Models"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/models",
+      "operationId": "models.create",
+      "summary": "Create a Model",
+      "tags": [
+        "Models"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models/{model_owner}/{model_name}",
+      "operationId": "models.get",
+      "summary": "Get a Model",
+      "tags": [
+        "Model",
+        "Name",
+        "Owner"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/models/{model_owner}/{model_name}",
+      "operationId": "models.delete",
+      "summary": "Delete a Model",
+      "tags": [
+        "Model",
+        "Name",
+        "Owner"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/models/{model_owner}/{model_name}/predictions",
+      "operationId": "models.predictions.create",
+      "summary": "Create a Prediction Using an Official Model",
+      "tags": [
+        "Model",
+        "Name",
+        "Owner",
+        "Predictions"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models/{model_owner}/{model_name}/versions",
+      "operationId": "models.versions.list",
+      "summary": "List Model Versions",
+      "tags": [
+        "Model",
+        "Name",
+        "Owner"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models/{model_owner}/{model_name}/versions/{version_id}",
+      "operationId": "models.versions.get",
+      "summary": "Get a Model Version",
+      "tags": [
+        "Model",
+        "Name",
+        "Owner",
+        "Version"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/models/{model_owner}/{model_name}/versions/{version_id}",
+      "operationId": "models.versions.delete",
+      "summary": "Delete a Model Version",
+      "tags": [
+        "Model",
+        "Name",
+        "Owner",
+        "Version"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/models/{model_owner}/{model_name}/versions/{version_id}/trainings",
+      "operationId": "trainings.create",
+      "summary": "Create a Training",
+      "tags": [
+        "Model",
+        "Name",
+        "Owner",
+        "Version"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/predictions",
+      "operationId": "predictions.list",
+      "summary": "List Predictions",
+      "tags": [
+        "Predictions"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/predictions",
+      "operationId": "predictions.create",
+      "summary": "Create a Prediction",
+      "tags": [
+        "Predictions"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/predictions/{prediction_id}",
+      "operationId": "predictions.get",
+      "summary": "Get a Prediction",
+      "tags": [
+        "Predictions"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/predictions/{prediction_id}/cancel",
+      "operationId": "predictions.cancel",
+      "summary": "Cancel a Prediction",
+      "tags": [
+        "Cancel",
+        "Predictions"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/trainings",
+      "operationId": "trainings.list",
+      "summary": "List Trainings",
+      "tags": [
+        "Trainings"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/trainings/{training_id}",
+      "operationId": "trainings.get",
+      "summary": "Get a Training",
+      "tags": [
+        "Training"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/trainings/{training_id}/cancel",
+      "operationId": "trainings.cancel",
+      "summary": "Cancel a Training",
+      "tags": [
+        "Cancel",
+        "Training"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/webhooks/default/secret",
+      "operationId": "webhooks.default.secret.get",
+      "summary": "Get the Signing Secret for the Default Webhook",
+      "tags": [
+        "Secrets",
+        "Webhooks"
+      ]
+    }
+  ]
+}
