@@ -142,6 +142,8 @@ common:
 - name: Agent Skills
   url: https://github.com/replicate/skills
   type: AgentSkill
+- type: LLMsTxt
+  url: https://replicate.com/llms.txt
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
