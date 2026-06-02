@@ -13,7 +13,7 @@ tags:
 - Model Deployment
 url: https://raw.githubusercontent.com/api-evangelist/replicate/refs/heads/main/apis.yml
 created: '2024-11-13'
-modified: '2026-05-19'
+modified: '2026-05-29'
 specificationVersion: '0.19'
 apis:
 - aid: replicate:replicate
@@ -40,6 +40,8 @@ apis:
     type: OpenAPI Documentation
   - url: openapi/replicate-openapi.yml
     type: OpenAPI
+  - url: asyncapi/replicate-asyncapi.yml
+    type: AsyncAPI
   - url: rules/replicate-rules.yml
     type: SpectralRuleset
   - url: vocabulary/replicate-vocabulary.yml

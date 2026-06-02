@@ -1,0 +1,455 @@
+asyncapi: 2.6.0
+info:
+  title: Replicate Streaming and Webhooks API
+  version: 1.0.0
+  description: |
+    AsyncAPI definition for Replicate's event-driven surfaces:
+
+      - Server-Sent Events (SSE) stream returned for predictions where the
+        model supports streaming output. The stream URL is published by the
+        Predictions API as `urls.stream` on the prediction object and is
+        served from `https://stream.replicate.com`.
+      - Outbound webhook callbacks delivered to a customer-controlled URL
+        when a prediction (or training) changes state. Replicate signs each
+        webhook with HMAC-SHA256 using a per-account signing secret.
+
+    Every event, header, payload field, and status value in this document is
+    taken directly from the official Replicate documentation:
+
+      - https://replicate.com/docs/topics/predictions/streaming
+      - https://replicate.com/docs/topics/webhooks
+      - https://replicate.com/docs/topics/webhooks/setup-webhook
+      - https://replicate.com/docs/topics/webhooks/receive-webhook
+      - https://replicate.com/docs/topics/webhooks/verify-webhook
+      - https://replicate.com/docs/reference/http
+  contact:
+    name: Replicate Support
+    url: https://replicate.com/docs
+  license:
+    name: Replicate Terms of Service
+    url: https://replicate.com/terms
+
+defaultContentType: application/json
+
+servers:
+  api:
+    url: https://api.replicate.com/v1
+    protocol: https
+    description: |
+      Replicate REST API base. Predictions are created against this server
+      via `POST /predictions` (or `POST /models/{owner}/{name}/predictions`).
+      Streaming-capable predictions return a `urls.stream` value pointing at
+      the `stream.replicate.com` SSE endpoint.
+    security:
+      - bearerToken: []
+  stream:
+    url: stream.replicate.com
+    protocol: https
+    description: |
+      Server-Sent Events host for prediction output streams. The full stream
+      URL (including the unique file identifier path) is provided per
+      prediction at `urls.stream`. There is a 30 second timeout on the event
+      stream endpoint; on timeout an empty `:408: 408 Request Timeout`
+      comment is emitted.
+    bindings:
+      http:
+        headers:
+          type: object
+          properties:
+            Accept:
+              type: string
+              const: text/event-stream
+            Authorization:
+              type: string
+              description: Bearer token, e.g. `Bearer $REPLICATE_API_TOKEN`.
+    security:
+      - bearerToken: []
+  webhookReceiver:
+    url: '{webhookUrl}'
+    protocol: https
+    description: |
+      Customer-controlled HTTPS endpoint that Replicate POSTs prediction
+      events to. The URL is specified per-prediction via the `webhook`
+      parameter and may include arbitrary query parameters for correlation.
+    variables:
+      webhookUrl:
+        default: https://example.com/replicate/webhook
+        description: HTTPS URL configured on the prediction's `webhook` field.
+
+channels:
+  predictions.stream:
+    description: |
+      SSE stream of a single prediction's output. Returned per-prediction at
+      `urls.stream` when the model supports streaming. Three event types are
+      emitted: `output` (plain text, token/chunk-by-chunk), `error` (JSON
+      with `detail`), and `done` (JSON, optionally including `reason`).
+    bindings:
+      http:
+        method: GET
+        bindingVersion: '0.3.0'
+    subscribe:
+      summary: Consume prediction SSE stream
+      operationId: subscribePredictionStream
+      message:
+        oneOf:
+          - $ref: '#/components/messages/SseOutputEvent'
+          - $ref: '#/components/messages/SseErrorEvent'
+          - $ref: '#/components/messages/SseDoneEvent'
+
+  webhooks.prediction:
+    description: |
+      Outbound webhook callbacks for a prediction. Which of the four event
+      types fire is controlled by the prediction's `webhook_events_filter`
+      array (`start`, `output`, `logs`, `completed`). Default behavior
+      (without filters) fires whenever there are new outputs or the
+      prediction has finished. `output` and `logs` are throttled to at most
+      once per 500ms; `start` and `completed` always send.
+    bindings:
+      http:
+        method: POST
+        bindingVersion: '0.3.0'
+    publish:
+      summary: Receive prediction webhook callbacks
+      operationId: receivePredictionWebhook
+      message:
+        oneOf:
+          - $ref: '#/components/messages/WebhookPredictionStart'
+          - $ref: '#/components/messages/WebhookPredictionOutput'
+          - $ref: '#/components/messages/WebhookPredictionLogs'
+          - $ref: '#/components/messages/WebhookPredictionCompleted'
+
+components:
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: |
+        Replicate API token sent as `Authorization: Bearer $REPLICATE_API_TOKEN`.
+        Required to open the SSE stream URL.
+
+  messages:
+    # --------------------------------------------------------------
+    # SSE messages (stream.replicate.com)
+    # --------------------------------------------------------------
+    SseOutputEvent:
+      name: output
+      title: SSE output event
+      summary: |
+        Emitted when the prediction returns new output. Streaming text
+        models emit one `output` event per token / chunk.
+      contentType: text/plain
+      bindings:
+        http:
+          headers:
+            type: object
+            properties:
+              event:
+                type: string
+                const: output
+              id:
+                type: string
+                description: 'Event id in the form `[timestamp]:[sequence]`.'
+      payload:
+        type: string
+        description: |
+          Raw text chunk emitted by the model. Concatenating the `data`
+          fields of consecutive `output` events reconstructs the full
+          model output.
+      examples:
+        - name: tokenChunk
+          summary: A single streamed token from a text model
+          payload: "Hello"
+
+    SseErrorEvent:
+      name: error
+      title: SSE error event
+      summary: Emitted when the prediction returns an error.
+      contentType: application/json
+      bindings:
+        http:
+          headers:
+            type: object
+            properties:
+              event:
+                type: string
+                const: error
+      payload:
+        $ref: '#/components/schemas/SseErrorPayload'
+      examples:
+        - name: modelError
+          payload:
+            detail: "Prediction failed: out of memory"
+
+    SseDoneEvent:
+      name: done
+      title: SSE done event
+      summary: |
+        Emitted when the prediction finishes. The payload is an empty
+        object `{}` on success, or contains a `reason` of `canceled` or
+        `error` for non-success terminations.
+      contentType: application/json
+      bindings:
+        http:
+          headers:
+            type: object
+            properties:
+              event:
+                type: string
+                const: done
+      payload:
+        $ref: '#/components/schemas/SseDonePayload'
+      examples:
+        - name: success
+          payload: {}
+        - name: canceled
+          payload:
+            reason: canceled
+        - name: errored
+          payload:
+            reason: error
+
+    # --------------------------------------------------------------
+    # Webhook messages (POSTed to customer URL)
+    # --------------------------------------------------------------
+    WebhookPredictionStart:
+      name: prediction.start
+      title: Prediction start webhook
+      summary: |
+        Sent immediately on prediction start. Corresponds to the `start`
+        value of `webhook_events_filter`. Not throttled.
+      contentType: application/json
+      headers:
+        $ref: '#/components/schemas/WebhookHeaders'
+      payload:
+        $ref: '#/components/schemas/Prediction'
+
+    WebhookPredictionOutput:
+      name: prediction.output
+      title: Prediction output webhook
+      summary: |
+        Sent each time a prediction generates an output (predictions can
+        generate multiple outputs). Corresponds to the `output` value of
+        `webhook_events_filter`. Throttled to at most once per 500ms.
+      contentType: application/json
+      headers:
+        $ref: '#/components/schemas/WebhookHeaders'
+      payload:
+        $ref: '#/components/schemas/Prediction'
+
+    WebhookPredictionLogs:
+      name: prediction.logs
+      title: Prediction logs webhook
+      summary: |
+        Sent each time log output is generated by a prediction.
+        Corresponds to the `logs` value of `webhook_events_filter`.
+        Throttled to at most once per 500ms.
+      contentType: application/json
+      headers:
+        $ref: '#/components/schemas/WebhookHeaders'
+      payload:
+        $ref: '#/components/schemas/Prediction'
+
+    WebhookPredictionCompleted:
+      name: prediction.completed
+      title: Prediction completed webhook
+      summary: |
+        Sent when the prediction reaches a terminal state. The `status`
+        field will be one of `succeeded`, `failed`, or `canceled`.
+        Corresponds to the `completed` value of `webhook_events_filter`.
+        Not throttled. Retried with exponential backoff on non-2xx
+        responses, with final retry approximately 1 minute after
+        completion. Intermediate-state webhooks are not retried.
+      contentType: application/json
+      headers:
+        $ref: '#/components/schemas/WebhookHeaders'
+      payload:
+        $ref: '#/components/schemas/PredictionTerminal'
+
+  schemas:
+    # --------------------------------------------------------------
+    # SSE payload schemas
+    # --------------------------------------------------------------
+    SseErrorPayload:
+      type: object
+      required: [detail]
+      properties:
+        detail:
+          type: string
+          description: Human-readable error message.
+
+    SseDonePayload:
+      type: object
+      description: |
+        Empty object on success; includes `reason` when the prediction
+        ended in a non-success terminal state.
+      properties:
+        reason:
+          type: string
+          enum: [canceled, error]
+          description: |
+            Present when the prediction did not succeed. `canceled` if the
+            prediction was canceled; `error` if it failed.
+
+    # --------------------------------------------------------------
+    # Webhook signature headers
+    # --------------------------------------------------------------
+    WebhookHeaders:
+      type: object
+      description: |
+        Replicate signs each webhook with HMAC-SHA256 using the account's
+        signing secret (retrievable via `GET /v1/webhooks/default/secret`).
+        Verification: concatenate `webhook-id.webhook-timestamp.<raw body>`,
+        HMAC-SHA256 with the portion of the secret following the `whsec_`
+        prefix, base64-encode the result, and compare (constant-time)
+        against the value(s) in `webhook-signature` after stripping the
+        `v1,` version prefix. Validate `webhook-timestamp` against
+        wall-clock time to prevent replay.
+      required:
+        - webhook-id
+        - webhook-timestamp
+        - webhook-signature
+      properties:
+        webhook-id:
+          type: string
+          description: |
+            Unique identifier for the webhook message. Stable across
+            retries of the same delivery.
+        webhook-timestamp:
+          type: string
+          description: Unix epoch timestamp in seconds.
+        webhook-signature:
+          type: string
+          description: |
+            Space-delimited list of base64-encoded signatures, each
+            prefixed with a version identifier (e.g. `v1,`).
+
+    # --------------------------------------------------------------
+    # Prediction object (shared between webhook payloads)
+    # --------------------------------------------------------------
+    Prediction:
+      type: object
+      description: |
+        Replicate prediction object as delivered in the webhook body.
+        Mirrors the response from `GET /v1/predictions/{prediction_id}`.
+      required:
+        - id
+        - model
+        - version
+        - input
+        - status
+        - created_at
+        - urls
+      properties:
+        id:
+          type: string
+          description: Unique prediction identifier.
+        model:
+          type: string
+          description: Model identifier in the form `{owner}/{name}`.
+        version:
+          type: string
+          description: 64-character model version ID.
+        input:
+          type: object
+          description: Model inputs as JSON. Schema varies by model.
+          additionalProperties: true
+        output:
+          description: |
+            Model output as HTTPS URL(s), string, or arbitrary JSON value.
+            Null until output is generated, and null again after data
+            removal.
+          nullable: true
+        status:
+          type: string
+          enum: [starting, processing, succeeded, failed, canceled]
+          description: Current prediction state.
+        error:
+          type: string
+          nullable: true
+          description: Error message when `status` is `failed`.
+        logs:
+          type: string
+          description: Standard output / error captured from the prediction.
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the prediction was created.
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO 8601 timestamp when processing began.
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO 8601 timestamp when the prediction finished.
+        urls:
+          $ref: '#/components/schemas/PredictionUrls'
+        metrics:
+          $ref: '#/components/schemas/PredictionMetrics'
+        webhook:
+          type: string
+          format: uri
+          description: HTTPS endpoint receiving these callbacks.
+        webhook_events_filter:
+          type: array
+          description: Events that trigger webhook delivery for this prediction.
+          items:
+            type: string
+            enum: [start, output, logs, completed]
+        source:
+          type: string
+          enum: [web, api]
+          description: How the prediction was created.
+        data_removed:
+          type: boolean
+          description: Whether input/output have been deleted after expiration.
+
+    PredictionTerminal:
+      allOf:
+        - $ref: '#/components/schemas/Prediction'
+        - type: object
+          description: |
+            Prediction payload as delivered in the `completed` webhook;
+            `status` is always one of the terminal values.
+          properties:
+            status:
+              type: string
+              enum: [succeeded, failed, canceled]
+
+    PredictionUrls:
+      type: object
+      description: Convenience URLs associated with a prediction.
+      properties:
+        web:
+          type: string
+          format: uri
+          description: Prediction webpage on replicate.com.
+        get:
+          type: string
+          format: uri
+          description: API endpoint to retrieve this prediction.
+        cancel:
+          type: string
+          format: uri
+          description: API endpoint to cancel this prediction.
+        stream:
+          type: string
+          format: uri
+          description: |
+            Server-sent events URL for this prediction (present only when
+            the model supports streaming). Served from
+            `stream.replicate.com`.
+
+    PredictionMetrics:
+      type: object
+      description: |
+        Performance metrics. Populated only on terminated predictions.
+      properties:
+        predict_time:
+          type: number
+          description: Prediction execution time, in seconds.
+        total_time:
+          type: number
+          description: Total wall-clock time, in seconds.
