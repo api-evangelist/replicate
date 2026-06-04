@@ -1,0 +1,153 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Start a Training and Poll Until Complete
+  summary: Start a fine-tuning run from a base model version, then poll until the training finishes.
+  description: >-
+    Fine-tuning a model on Replicate creates a long-running training that
+    produces a new model version at a destination model. This workflow confirms
+    the base version exists, starts a training with a destination and training
+    input, then polls the training until it reaches a terminal state, surfacing
+    the resulting version on success. Every step spells out its request inline
+    so the flow can be read and executed without opening the underlying OpenAPI
+    description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: train-model-and-poll
+  summary: Start a training from a base version and poll it until it finishes.
+  description: >-
+    Verifies the base model version, creates a training that writes to a
+    destination model, and polls the training until it succeeds, fails, or is
+    canceled, returning the trained output version on success.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - modelOwner
+    - modelName
+    - versionId
+    - destination
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      modelOwner:
+        type: string
+        description: The owner of the base model being trained.
+      modelName:
+        type: string
+        description: The name of the base model being trained.
+      versionId:
+        type: string
+        description: The ID of the base model version to train.
+      destination:
+        type: string
+        description: The destination model in the form {owner}/{name} to push the trained version to.
+      input:
+        type: object
+        description: Inputs to the Cog model's train() function.
+      webhook:
+        type: string
+        description: Optional HTTPS URL to receive a webhook when the training completes.
+  steps:
+  - stepId: getBaseVersion
+    description: >-
+      Confirm the base model version exists and is trainable before starting a
+      training run.
+    operationId: models.versions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: model_owner
+      in: path
+      value: $inputs.modelOwner
+    - name: model_name
+      in: path
+      value: $inputs.modelName
+    - name: version_id
+      in: path
+      value: $inputs.versionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      baseVersionId: $response.body#/id
+  - stepId: createTraining
+    description: >-
+      Start a training of the base version, writing the resulting version to the
+      destination model. The training is returned in a starting state.
+    operationId: trainings.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: model_owner
+      in: path
+      value: $inputs.modelOwner
+    - name: model_name
+      in: path
+      value: $inputs.modelName
+    - name: version_id
+      in: path
+      value: $inputs.versionId
+    requestBody:
+      contentType: application/json
+      payload:
+        destination: $inputs.destination
+        input: $inputs.input
+        webhook: $inputs.webhook
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      trainingId: $response.body#/id
+      initialStatus: $response.body#/status
+  - stepId: getTraining
+    description: >-
+      Retrieve the training state, repeating via the retry branch until the
+      training reaches a terminal status.
+    operationId: trainings.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: training_id
+      in: path
+      value: $steps.createTraining.outputs.trainingId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+      trainedVersion: $response.body#/output/version
+      error: $response.body#/error
+    onSuccess:
+    - name: trainingSucceeded
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded"
+        type: jsonpath
+    - name: trainingEndedWithoutSuccess
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 10
+      retryLimit: 120
+      stepId: getTraining
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    trainingId: $steps.createTraining.outputs.trainingId
+    status: $steps.getTraining.outputs.status
+    trainedVersion: $steps.getTraining.outputs.trainedVersion
+    error: $steps.getTraining.outputs.error

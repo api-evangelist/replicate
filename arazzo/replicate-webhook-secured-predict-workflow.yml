@@ -1,0 +1,119 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Fetch Webhook Secret and Run a Webhook Prediction
+  summary: Retrieve the default webhook signing secret, then create a prediction that posts to a webhook.
+  description: >-
+    Predictions can notify a webhook on completion, and incoming webhook
+    requests are verified with the account's default signing secret. This
+    workflow retrieves that signing secret so the consumer can verify callbacks,
+    then creates a prediction configured with a webhook URL and event filter,
+    and polls the prediction until it reaches a terminal state. Every step
+    spells out its request inline so the flow can be read and executed without
+    opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: webhook-secured-predict
+  summary: Get the default webhook secret, then run a prediction that posts to a webhook.
+  description: >-
+    Fetches the default webhook signing secret used to verify Replicate
+    callbacks, creates a prediction wired to a webhook URL with a completed event
+    filter, and polls the prediction until it reaches a terminal status.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - version
+    - input
+    - webhook
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      version:
+        type: string
+        description: The ID of the model version that you want to run.
+      input:
+        type: object
+        description: The model's input as a JSON object matching the version's input schema.
+      webhook:
+        type: string
+        description: HTTPS URL that will receive the prediction webhook callbacks.
+  steps:
+  - stepId: getWebhookSecret
+    description: >-
+      Retrieve the signing secret for the default webhook endpoint so the
+      consumer can verify that callbacks originate from Replicate.
+    operationId: webhooks.default.secret.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      signingKey: $response.body#/key
+  - stepId: createPrediction
+    description: >-
+      Create a prediction configured with a webhook URL and a completed event
+      filter so Replicate posts to the webhook when the prediction finishes.
+    operationId: predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    requestBody:
+      contentType: application/json
+      payload:
+        version: $inputs.version
+        input: $inputs.input
+        webhook: $inputs.webhook
+        webhook_events_filter:
+        - start
+        - completed
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+  - stepId: getPrediction
+    description: >-
+      Retrieve the prediction state, repeating via the retry branch until the
+      prediction reaches a terminal status. The webhook will also fire on
+      completion.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+    onSuccess:
+    - name: predictionDone
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded" || $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 60
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    signingKey: $steps.getWebhookSecret.outputs.signingKey
+    predictionId: $steps.createPrediction.outputs.predictionId
+    status: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output

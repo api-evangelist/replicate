@@ -1,0 +1,131 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Run an Official Model and Poll
+  summary: Run a prediction against an official model by name, then poll until complete.
+  description: >-
+    Official Replicate models are run by owner and name without specifying a
+    version. This workflow confirms the model exists, creates a prediction
+    through the official model prediction endpoint, and polls the prediction
+    until it reaches a terminal state, branching on success versus failure.
+    Every step spells out its request inline so the flow can be read and
+    executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: official-model-predict
+  summary: Run an official model by name and poll its prediction to completion.
+  description: >-
+    Reads the model, creates a prediction through the official model endpoint
+    (no version required), then polls the prediction until it succeeds, fails,
+    or is canceled.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - modelOwner
+    - modelName
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      modelOwner:
+        type: string
+        description: The name of the user or organization that owns the model.
+      modelName:
+        type: string
+        description: The name of the model.
+      input:
+        type: object
+        description: The model's input as a JSON object matching the model's input schema.
+  steps:
+  - stepId: getModel
+    description: >-
+      Confirm the official model exists before submitting a prediction against
+      it.
+    operationId: models.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: model_owner
+      in: path
+      value: $inputs.modelOwner
+    - name: model_name
+      in: path
+      value: $inputs.modelName
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      modelName: $response.body#/name
+  - stepId: createPrediction
+    description: >-
+      Create a prediction using the official model endpoint, which selects the
+      model's active version automatically.
+    operationId: models.predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: model_owner
+      in: path
+      value: $inputs.modelOwner
+    - name: model_name
+      in: path
+      value: $inputs.modelName
+    requestBody:
+      contentType: application/json
+      payload:
+        input: $inputs.input
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+  - stepId: getPrediction
+    description: >-
+      Retrieve the prediction state, repeating via the retry branch until the
+      prediction reaches a terminal status.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+      error: $response.body#/error
+    onSuccess:
+    - name: predictionSucceeded
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded"
+        type: jsonpath
+    - name: predictionEndedWithoutSuccess
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 60
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    predictionId: $steps.createPrediction.outputs.predictionId
+    status: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output
+    error: $steps.getPrediction.outputs.error

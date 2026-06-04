@@ -79,6 +79,39 @@ apis:
   - type: NaftikoCapability
     url: capabilities/replicate-webhooks.yaml
 common:
+- type: ArazzoWorkflows
+  url: arazzo/
+  workflows:
+  - url: arazzo/replicate-collection-predict-workflow.yml
+    name: Replicate Pick a Model from a Collection and Predict
+    summary: Read a curated collection, confirm a chosen model, run its latest version, and poll the prediction.
+  - url: arazzo/replicate-deploy-and-predict-workflow.yml
+    name: Replicate Create a Deployment and Run a Prediction Through It
+    summary: Pick hardware, create a deployment for a model version, then run a prediction via the deployment.
+  - url: arazzo/replicate-model-version-predict-workflow.yml
+    name: Replicate Resolve Latest Version and Predict
+    summary: Look up a model, pick its latest version, run a prediction, and poll to completion.
+  - url: arazzo/replicate-official-model-predict-workflow.yml
+    name: Replicate Run an Official Model and Poll
+    summary: Run a prediction against an official model by name, then poll until complete.
+  - url: arazzo/replicate-predict-and-poll-workflow.yml
+    name: Replicate Create Prediction and Poll Until Complete
+    summary: Run a model version, then poll the prediction until it reaches a terminal state.
+  - url: arazzo/replicate-predict-with-timeout-cancel-workflow.yml
+    name: Replicate Run a Prediction with Bounded Wait and Cancel
+    summary: Create a prediction, poll a bounded number of times, and cancel it if it has not finished.
+  - url: arazzo/replicate-scale-deployment-and-predict-workflow.yml
+    name: Replicate Scale a Deployment and Run a Prediction
+    summary: Read a deployment, update its version and instance bounds, then run a prediction through it.
+  - url: arazzo/replicate-search-model-and-predict-workflow.yml
+    name: Replicate Search for a Model and Run a Prediction
+    summary: Search public models by query, run a prediction on the top match's latest version, and poll it.
+  - url: arazzo/replicate-train-model-and-poll-workflow.yml
+    name: Replicate Start a Training and Poll Until Complete
+    summary: Start a fine-tuning run from a base model version, then poll until the training finishes.
+  - url: arazzo/replicate-webhook-secured-predict-workflow.yml
+    name: Replicate Fetch Webhook Secret and Run a Webhook Prediction
+    summary: Retrieve the default webhook signing secret, then create a prediction that posts to a webhook.
 - type: LinkedIn
   url: https://www.linkedin.com/company/replicate
 - type: Website

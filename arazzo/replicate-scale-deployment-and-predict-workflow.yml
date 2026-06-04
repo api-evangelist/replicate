@@ -1,0 +1,162 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Scale a Deployment and Run a Prediction
+  summary: Read a deployment, update its version and instance bounds, then run a prediction through it.
+  description: >-
+    Operating an existing deployment often means rolling it to a new model
+    version and adjusting its autoscaling before sending traffic. This workflow
+    reads the current deployment, patches it with a new version and instance
+    bounds, then runs a prediction through the updated deployment and polls it to
+    completion. Every step spells out its request inline so the flow can be read
+    and executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: scale-deployment-and-predict
+  summary: Update a deployment's version and scaling, then run a prediction through it.
+  description: >-
+    Reads the existing deployment, patches its version and min/max instances,
+    submits a prediction through the updated deployment, and polls until the
+    prediction reaches a terminal status.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - deploymentOwner
+    - deploymentName
+    - version
+    - minInstances
+    - maxInstances
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      deploymentOwner:
+        type: string
+        description: The owner of the deployment to update.
+      deploymentName:
+        type: string
+        description: The name of the deployment to update.
+      version:
+        type: string
+        description: The model version ID to deploy.
+      minInstances:
+        type: integer
+        description: The minimum number of instances for scaling.
+      maxInstances:
+        type: integer
+        description: The maximum number of instances for scaling.
+      input:
+        type: object
+        description: The model's input as a JSON object for the prediction.
+  steps:
+  - stepId: getDeployment
+    description: >-
+      Read the current deployment release so its existing configuration is known
+      before updating it.
+    operationId: deployments.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: deployment_owner
+      in: path
+      value: $inputs.deploymentOwner
+    - name: deployment_name
+      in: path
+      value: $inputs.deploymentName
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      currentVersion: $response.body#/current_release/version
+      currentNumber: $response.body#/current_release/number
+  - stepId: updateDeployment
+    description: >-
+      Patch the deployment with the new version and instance bounds. This
+      increments the release number.
+    operationId: deployments.update
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: deployment_owner
+      in: path
+      value: $inputs.deploymentOwner
+    - name: deployment_name
+      in: path
+      value: $inputs.deploymentName
+    requestBody:
+      contentType: application/json
+      payload:
+        version: $inputs.version
+        min_instances: $inputs.minInstances
+        max_instances: $inputs.maxInstances
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      newVersion: $response.body#/current_release/version
+      newNumber: $response.body#/current_release/number
+  - stepId: createDeploymentPrediction
+    description: >-
+      Run a prediction through the updated deployment.
+    operationId: deployments.predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: deployment_owner
+      in: path
+      value: $inputs.deploymentOwner
+    - name: deployment_name
+      in: path
+      value: $inputs.deploymentName
+    requestBody:
+      contentType: application/json
+      payload:
+        input: $inputs.input
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+  - stepId: getPrediction
+    description: >-
+      Retrieve the prediction state, repeating via the retry branch until the
+      prediction reaches a terminal status.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createDeploymentPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+    onSuccess:
+    - name: predictionDone
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded" || $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 60
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    newReleaseNumber: $steps.updateDeployment.outputs.newNumber
+    predictionId: $steps.createDeploymentPrediction.outputs.predictionId
+    status: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output

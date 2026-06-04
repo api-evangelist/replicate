@@ -1,0 +1,159 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Create a Deployment and Run a Prediction Through It
+  summary: Pick hardware, create a deployment for a model version, then run a prediction via the deployment.
+  description: >-
+    Deployments give a model version a stable name with autoscaling. This
+    workflow lists available hardware SKUs, creates a deployment that pins a
+    model version to chosen hardware and instance bounds, then runs a prediction
+    through the new deployment and polls it until it completes. Every step
+    spells out its request inline so the flow can be read and executed without
+    opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: deploy-and-predict
+  summary: Create a deployment for a model version and run a prediction through it.
+  description: >-
+    Lists hardware to confirm the requested SKU, creates a deployment pinning a
+    model version to that hardware with instance bounds, submits a prediction
+    through the deployment, and polls the prediction to completion.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - name
+    - model
+    - version
+    - hardware
+    - minInstances
+    - maxInstances
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      name:
+        type: string
+        description: The name of the deployment to create.
+      model:
+        type: string
+        description: The full name of the model to deploy e.g. stability-ai/sdxl.
+      version:
+        type: string
+        description: The 64-character model version ID to deploy.
+      hardware:
+        type: string
+        description: The hardware SKU to run the model on (from hardware.list).
+      minInstances:
+        type: integer
+        description: The minimum number of instances for scaling.
+      maxInstances:
+        type: integer
+        description: The maximum number of instances for scaling.
+      input:
+        type: object
+        description: The model's input as a JSON object for the prediction.
+  steps:
+  - stepId: listHardware
+    description: >-
+      List the available hardware SKUs so the requested hardware can be
+      validated before creating the deployment.
+    operationId: hardware.list
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      firstSku: $response.body#/0/sku
+  - stepId: createDeployment
+    description: >-
+      Create the deployment, pinning the model version to the chosen hardware
+      and instance bounds.
+    operationId: deployments.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    requestBody:
+      contentType: application/json
+      payload:
+        name: $inputs.name
+        model: $inputs.model
+        version: $inputs.version
+        hardware: $inputs.hardware
+        min_instances: $inputs.minInstances
+        max_instances: $inputs.maxInstances
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      deploymentOwner: $response.body#/owner
+      deploymentName: $response.body#/name
+  - stepId: createDeploymentPrediction
+    description: >-
+      Run a prediction through the newly created deployment using its owner and
+      name.
+    operationId: deployments.predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: deployment_owner
+      in: path
+      value: $steps.createDeployment.outputs.deploymentOwner
+    - name: deployment_name
+      in: path
+      value: $steps.createDeployment.outputs.deploymentName
+    requestBody:
+      contentType: application/json
+      payload:
+        input: $inputs.input
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+  - stepId: getPrediction
+    description: >-
+      Retrieve the prediction state, repeating via the retry branch until the
+      prediction reaches a terminal status.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createDeploymentPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+      error: $response.body#/error
+    onSuccess:
+    - name: predictionDone
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded" || $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 60
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    deploymentOwner: $steps.createDeployment.outputs.deploymentOwner
+    deploymentName: $steps.createDeployment.outputs.deploymentName
+    predictionId: $steps.createDeploymentPrediction.outputs.predictionId
+    status: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output

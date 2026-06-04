@@ -1,0 +1,141 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Resolve Latest Version and Predict
+  summary: Look up a model, pick its latest version, run a prediction, and poll to completion.
+  description: >-
+    Resolves a model by owner and name, lists its versions to select the most
+    recent one, then creates a prediction against that exact version and polls
+    the prediction until it reaches a terminal state. This avoids hardcoding a
+    version ID and always runs the freshest published version. Every step spells
+    out its request inline so the flow can be read and executed without opening
+    the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: resolve-version-and-predict
+  summary: Resolve a model's latest version and run a prediction against it.
+  description: >-
+    Reads the model object, lists its versions to grab the most recent version
+    ID, submits a prediction for that version, and polls the prediction until it
+    succeeds, fails, or is canceled.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - modelOwner
+    - modelName
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      modelOwner:
+        type: string
+        description: The name of the user or organization that owns the model.
+      modelName:
+        type: string
+        description: The name of the model.
+      input:
+        type: object
+        description: The model's input as a JSON object matching the version's input schema.
+  steps:
+  - stepId: getModel
+    description: >-
+      Read the model object to confirm it exists and capture its latest version
+      reference before listing versions.
+    operationId: models.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: model_owner
+      in: path
+      value: $inputs.modelOwner
+    - name: model_name
+      in: path
+      value: $inputs.modelName
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      modelName: $response.body#/name
+      latestVersionId: $response.body#/latest_version/id
+  - stepId: listVersions
+    description: >-
+      List the model's versions, which are returned most recent first, and
+      capture the newest version ID to run.
+    operationId: models.versions.list
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: model_owner
+      in: path
+      value: $inputs.modelOwner
+    - name: model_name
+      in: path
+      value: $inputs.modelName
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      versionId: $response.body#/results/0/id
+  - stepId: createPrediction
+    description: >-
+      Create a prediction for the resolved version and supplied input. The
+      prediction is returned in a starting state to be polled.
+    operationId: predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    requestBody:
+      contentType: application/json
+      payload:
+        version: $steps.listVersions.outputs.versionId
+        input: $inputs.input
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+  - stepId: getPrediction
+    description: >-
+      Retrieve the prediction state, repeating via the retry branch until the
+      prediction reaches a terminal status.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+      error: $response.body#/error
+    onSuccess:
+    - name: predictionDone
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded" || $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 60
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    versionId: $steps.listVersions.outputs.versionId
+    predictionId: $steps.createPrediction.outputs.predictionId
+    status: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output
+    error: $steps.getPrediction.outputs.error

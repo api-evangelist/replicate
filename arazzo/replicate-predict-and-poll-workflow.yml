@@ -1,0 +1,115 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Create Prediction and Poll Until Complete
+  summary: Run a model version, then poll the prediction until it reaches a terminal state.
+  description: >-
+    The core asynchronous Replicate pattern. The workflow creates a prediction
+    for a specific model version and input, then polls the get prediction
+    endpoint until the prediction reaches a terminal status. It branches on the
+    returned status so a succeeded prediction surfaces its output while a failed
+    or canceled prediction surfaces its error. Every step spells out its request
+    inline so the flow can be read and executed without opening the underlying
+    OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: predict-and-poll
+  summary: Create a prediction from a model version and poll it until it finishes.
+  description: >-
+    Submits a prediction request for the supplied model version and input, then
+    repeatedly retrieves the prediction until its status is succeeded, failed,
+    or canceled, returning the final output or error.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - version
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      version:
+        type: string
+        description: The ID of the model version that you want to run.
+      input:
+        type: object
+        description: The model's input as a JSON object matching the version's input schema.
+      webhook:
+        type: string
+        description: Optional HTTPS URL to receive webhook callbacks for the prediction.
+  steps:
+  - stepId: createPrediction
+    description: >-
+      Create a prediction for the supplied model version and input. Replicate
+      returns the prediction in a starting state which must then be polled.
+    operationId: predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    requestBody:
+      contentType: application/json
+      payload:
+        version: $inputs.version
+        input: $inputs.input
+        webhook: $inputs.webhook
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+      initialStatus: $response.body#/status
+  - stepId: getPrediction
+    description: >-
+      Retrieve the current state of the prediction. This step is repeated by the
+      retry branch until the prediction reaches a terminal status.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+      error: $response.body#/error
+    onSuccess:
+    - name: predictionSucceeded
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded"
+        type: jsonpath
+    - name: predictionFailed
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "failed"
+        type: jsonpath
+    - name: predictionCanceled
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 60
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    predictionId: $steps.createPrediction.outputs.predictionId
+    status: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output
+    error: $steps.getPrediction.outputs.error

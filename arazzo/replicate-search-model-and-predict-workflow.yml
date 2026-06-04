@@ -1,0 +1,115 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Search for a Model and Run a Prediction
+  summary: Search public models by query, run a prediction on the top match's latest version, and poll it.
+  description: >-
+    Discovery-driven inference. The workflow searches public models with a free
+    text query, takes the top result's latest version, runs a prediction
+    against that version, and polls the prediction until it reaches a terminal
+    state. This is useful for agents that resolve a model from a description
+    rather than a known ID. Every step spells out its request inline so the flow
+    can be read and executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: search-model-and-predict
+  summary: Search public models and run a prediction on the top match's latest version.
+  description: >-
+    Runs a model search, selects the latest version of the first result, submits
+    a prediction against it, and polls the prediction until it succeeds, fails,
+    or is canceled.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - query
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      query:
+        type: string
+        description: The free text search query for public models.
+      input:
+        type: object
+        description: The model's input as a JSON object for the prediction.
+  steps:
+  - stepId: searchModels
+    description: >-
+      Search public models with the supplied query and capture the latest
+      version ID of the top result. The request body is a plain text query.
+    operationId: models.search
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    requestBody:
+      contentType: text/plain
+      payload: $inputs.query
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      topModelName: $response.body#/results/0/name
+      topVersionId: $response.body#/results/0/latest_version/id
+  - stepId: createPrediction
+    description: >-
+      Create a prediction for the top result's latest version with the supplied
+      input.
+    operationId: predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    requestBody:
+      contentType: application/json
+      payload:
+        version: $steps.searchModels.outputs.topVersionId
+        input: $inputs.input
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+  - stepId: getPrediction
+    description: >-
+      Retrieve the prediction state, repeating via the retry branch until the
+      prediction reaches a terminal status.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+      error: $response.body#/error
+    onSuccess:
+    - name: predictionDone
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded" || $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 60
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  outputs:
+    topModelName: $steps.searchModels.outputs.topModelName
+    topVersionId: $steps.searchModels.outputs.topVersionId
+    predictionId: $steps.createPrediction.outputs.predictionId
+    status: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output

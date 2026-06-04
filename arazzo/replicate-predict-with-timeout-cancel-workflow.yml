@@ -1,0 +1,112 @@
+arazzo: 1.0.1
+info:
+  title: Replicate Run a Prediction with Bounded Wait and Cancel
+  summary: Create a prediction, poll a bounded number of times, and cancel it if it has not finished.
+  description: >-
+    A guardrail pattern for cost and latency control. The workflow creates a
+    prediction and polls it a bounded number of times; if the prediction reaches
+    a terminal state it ends, but if it is still running when the poll budget is
+    exhausted it cancels the prediction to stop billing for a stuck run. Every
+    step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: replicateApi
+  url: ../openapi/replicate-openapi.yml
+  type: openapi
+workflows:
+- workflowId: predict-with-timeout-cancel
+  summary: Create a prediction, poll within a bounded budget, and cancel it if still running.
+  description: >-
+    Submits a prediction, polls it a limited number of times, and on exhausting
+    the poll budget while still starting or processing, cancels the prediction
+    and reports the canceled state.
+  inputs:
+    type: object
+    required:
+    - apiToken
+    - version
+    - input
+    properties:
+      apiToken:
+        type: string
+        description: Replicate API token used as a Bearer credential.
+      version:
+        type: string
+        description: The ID of the model version that you want to run.
+      input:
+        type: object
+        description: The model's input as a JSON object matching the version's input schema.
+  steps:
+  - stepId: createPrediction
+    description: >-
+      Create a prediction for the supplied model version and input.
+    operationId: predictions.create
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    requestBody:
+      contentType: application/json
+      payload:
+        version: $inputs.version
+        input: $inputs.input
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      predictionId: $response.body#/id
+  - stepId: getPrediction
+    description: >-
+      Retrieve the prediction state, retrying a bounded number of times. If the
+      budget is exhausted while still running, control falls through to the
+      cancel step.
+    operationId: predictions.get
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      output: $response.body#/output
+    onSuccess:
+    - name: predictionDone
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded" || $.status == "failed" || $.status == "canceled"
+        type: jsonpath
+    - name: keepPolling
+      type: retry
+      retryAfter: 2
+      retryLimit: 10
+      stepId: getPrediction
+      criteria:
+      - context: $response.body
+        condition: $.status == "starting" || $.status == "processing"
+        type: jsonpath
+  - stepId: cancelPrediction
+    description: >-
+      Cancel the prediction because it did not finish within the bounded poll
+      budget, stopping further compute usage.
+    operationId: predictions.cancel
+    parameters:
+    - name: Authorization
+      in: header
+      value: Bearer $inputs.apiToken
+    - name: prediction_id
+      in: path
+      value: $steps.createPrediction.outputs.predictionId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      canceledStatus: $response.body#/status
+  outputs:
+    predictionId: $steps.createPrediction.outputs.predictionId
+    finalStatus: $steps.getPrediction.outputs.status
+    output: $steps.getPrediction.outputs.output
+    canceledStatus: $steps.cancelPrediction.outputs.canceledStatus
