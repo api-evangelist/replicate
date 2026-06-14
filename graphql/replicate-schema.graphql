@@ -1,0 +1,808 @@
+# Replicate GraphQL Schema
+# Conceptual schema derived from Replicate's REST API (https://replicate.com/docs/reference/http)
+# No public GraphQL endpoint exists; this models Replicate's domain in GraphQL terms.
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+# ─── Enumerations ──────────────────────────────────────────────────────────────
+
+enum PredictionStatus {
+  starting
+  processing
+  succeeded
+  failed
+  canceled
+}
+
+enum TrainingStatus {
+  starting
+  processing
+  succeeded
+  failed
+  canceled
+}
+
+enum WebhookEvent {
+  start
+  output
+  logs
+  completed
+}
+
+enum Visibility {
+  public
+  private
+}
+
+enum AccountType {
+  user
+  organization
+}
+
+enum HardwareClass {
+  cpu
+  gpu
+}
+
+enum FileStorageStatus {
+  created
+  processing
+  ready
+  failed
+  deleted
+}
+
+enum DeploymentScalingStrategy {
+  manual
+  auto
+}
+
+enum TokenScope {
+  read
+  write
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+enum ModelSortBy {
+  last_modified
+  created
+  run_count
+  name
+}
+
+enum CogRuntimeType {
+  python
+  docker
+}
+
+enum OpenAPISchemaType {
+  string
+  number
+  integer
+  boolean
+  array
+  object
+}
+
+# ─── Scalars ───────────────────────────────────────────────────────────────────
+
+scalar DateTime
+scalar JSON
+scalar URL
+scalar ID
+
+# ─── Pagination ────────────────────────────────────────────────────────────────
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+input PaginationInput {
+  first: Int
+  after: String
+  last: Int
+  before: String
+}
+
+# ─── Account ───────────────────────────────────────────────────────────────────
+
+type Account implements Node {
+  id: ID!
+  type: AccountType!
+  username: String!
+  name: String!
+  githubUrl: URL
+  email: String
+  bio: String
+  website: URL
+  createdAt: DateTime!
+  models(pagination: PaginationInput, visibility: Visibility): ModelConnection!
+  tokens: [Token!]!
+  collections: [Collection!]!
+  deployments(pagination: PaginationInput): DeploymentConnection!
+  predictions(pagination: PaginationInput): PredictionConnection!
+}
+
+# ─── Token ─────────────────────────────────────────────────────────────────────
+
+type Token implements Node {
+  id: ID!
+  key: String!
+  description: String
+  scopes: [TokenScope!]!
+  lastUsedAt: DateTime
+  createdAt: DateTime!
+  expiresAt: DateTime
+  owner: Account!
+}
+
+input CreateTokenInput {
+  description: String
+  scopes: [TokenScope!]
+  expiresAt: DateTime
+}
+
+# ─── Hardware ──────────────────────────────────────────────────────────────────
+
+type Hardware implements Node {
+  id: ID!
+  name: String!
+  sku: String!
+  class: HardwareClass!
+  memory: String
+  cpuCores: Int
+  gpuMemory: String
+  gpuModel: String
+  pricePerSecond: Float!
+  available: Boolean!
+  description: String
+}
+
+type HardwareEdge {
+  node: Hardware!
+  cursor: String!
+}
+
+type HardwareConnection {
+  edges: [HardwareEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─── Model ─────────────────────────────────────────────────────────────────────
+
+type Model implements Node {
+  id: ID!
+  url: URL!
+  owner: String!
+  name: String!
+  fullName: String!
+  description: String
+  visibility: Visibility!
+  githubUrl: URL
+  paperUrl: URL
+  licenseUrl: URL
+  coverImageUrl: URL
+  defaultExampleInput: JSON
+  defaultExampleOutput: JSON
+  latestVersion: ModelVersion
+  runCount: Int!
+  tags: [String!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  versions(pagination: PaginationInput): ModelVersionConnection!
+  deployments(pagination: PaginationInput): DeploymentConnection!
+  predictions(pagination: PaginationInput): PredictionConnection!
+  collections: [Collection!]!
+}
+
+type ModelEdge {
+  node: Model!
+  cursor: String!
+}
+
+type ModelConnection {
+  edges: [ModelEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input CreateModelInput {
+  owner: String!
+  name: String!
+  description: String
+  visibility: Visibility!
+  githubUrl: URL
+  paperUrl: URL
+  licenseUrl: URL
+  coverImageUrl: URL
+}
+
+input UpdateModelInput {
+  description: String
+  visibility: Visibility
+  githubUrl: URL
+  paperUrl: URL
+  licenseUrl: URL
+  coverImageUrl: URL
+}
+
+# ─── ModelVersion ──────────────────────────────────────────────────────────────
+
+type ModelVersion implements Node {
+  id: ID!
+  model: Model!
+  versionId: String!
+  createdAt: DateTime!
+  cogVersion: String
+  openApiSchema: OpenAPISpec
+  inputSchema: [SchemaProperty!]!
+  outputSchema: [SchemaProperty!]!
+  supportsStreaming: Boolean!
+  supportsTraining: Boolean!
+  hardware: Hardware
+  predictions(pagination: PaginationInput): PredictionConnection!
+  trainings(pagination: PaginationInput): TrainingConnection!
+}
+
+type ModelVersionEdge {
+  node: ModelVersion!
+  cursor: String!
+}
+
+type ModelVersionConnection {
+  edges: [ModelVersionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─── OpenAPISpec ───────────────────────────────────────────────────────────────
+
+type OpenAPISpec {
+  openapi: String!
+  info: OpenAPIInfo
+  input: OpenAPISchemaObject
+  output: OpenAPISchemaObject
+  raw: JSON
+}
+
+type OpenAPIInfo {
+  title: String
+  version: String
+  description: String
+}
+
+type OpenAPISchemaObject {
+  type: OpenAPISchemaType
+  properties: [SchemaProperty!]
+  required: [String!]
+  additionalProperties: Boolean
+  description: String
+  title: String
+}
+
+# ─── SchemaProperty ────────────────────────────────────────────────────────────
+
+type SchemaProperty {
+  name: String!
+  type: OpenAPISchemaType
+  title: String
+  description: String
+  default: JSON
+  required: Boolean!
+  minimum: Float
+  maximum: Float
+  minLength: Int
+  maxLength: Int
+  enum: [String!]
+  items: SchemaProperty
+  allOf: [SchemaProperty!]
+  oneOf: [SchemaProperty!]
+  format: String
+  xOrder: Int
+}
+
+# ─── Prediction ────────────────────────────────────────────────────────────────
+
+type Prediction implements Node {
+  id: ID!
+  version: ModelVersion
+  model: Model
+  status: PredictionStatus!
+  input: JSON
+  output: JSON
+  error: String
+  logs: String
+  metrics: PredictionMetrics
+  urls: PredictionURLs!
+  webhookUrl: URL
+  webhookEventsFilter: [WebhookEvent!]!
+  createdAt: DateTime!
+  startedAt: DateTime
+  completedAt: DateTime
+  source: String
+  deployment: Deployment
+}
+
+type PredictionMetrics {
+  predictTime: Float
+  totalTime: Float
+  inputTokenCount: Int
+  outputTokenCount: Int
+  imageCount: Int
+  outputFileSize: Int
+}
+
+type PredictionURLs {
+  get: URL!
+  cancel: URL
+  stream: URL
+}
+
+type PredictionEdge {
+  node: Prediction!
+  cursor: String!
+}
+
+type PredictionConnection {
+  edges: [PredictionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input CreatePredictionInput {
+  version: String
+  model: String
+  input: JSON!
+  webhook: URL
+  webhookEventsFilter: [WebhookEvent!]
+  stream: Boolean
+}
+
+input CreateVersionPredictionInput {
+  version: String!
+  input: JSON!
+  webhook: URL
+  webhookEventsFilter: [WebhookEvent!]
+  stream: Boolean
+}
+
+# ─── Training ──────────────────────────────────────────────────────────────────
+
+type Training implements Node {
+  id: ID!
+  version: ModelVersion!
+  status: TrainingStatus!
+  input: JSON
+  output: JSON
+  error: String
+  logs: String
+  metrics: TrainingMetrics
+  urls: TrainingURLs!
+  destination: String!
+  destinationVersion: ModelVersion
+  webhookUrl: URL
+  webhookEventsFilter: [WebhookEvent!]!
+  createdAt: DateTime!
+  startedAt: DateTime
+  completedAt: DateTime
+}
+
+type TrainingMetrics {
+  predictTime: Float
+  totalTime: Float
+  stepCount: Int
+}
+
+type TrainingURLs {
+  get: URL!
+  cancel: URL
+}
+
+type TrainingVersion {
+  id: String!
+  createdAt: DateTime!
+  model: Model!
+}
+
+type TrainingEdge {
+  node: Training!
+  cursor: String!
+}
+
+type TrainingConnection {
+  edges: [TrainingEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input CreateTrainingInput {
+  modelOwner: String!
+  modelName: String!
+  versionId: String!
+  destination: String!
+  input: JSON!
+  webhook: URL
+  webhookEventsFilter: [WebhookEvent!]
+}
+
+# ─── Deployment ────────────────────────────────────────────────────────────────
+
+type Deployment implements Node {
+  id: ID!
+  name: String!
+  owner: Account!
+  model: Model!
+  version: ModelVersion!
+  hardware: Hardware!
+  minInstances: Int!
+  maxInstances: Int!
+  currentInstanceCount: Int!
+  scalingStrategy: DeploymentScalingStrategy!
+  scalingConfig: DeploymentScalingConfig
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  predictions(pagination: PaginationInput): PredictionConnection!
+}
+
+type DeploymentScalingConfig {
+  targetConcurrency: Int
+  scaleUpThreshold: Float
+  scaleDownThreshold: Float
+  scaleUpDelay: Int
+  scaleDownDelay: Int
+}
+
+type DeploymentEdge {
+  node: Deployment!
+  cursor: String!
+}
+
+type DeploymentConnection {
+  edges: [DeploymentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input CreateDeploymentInput {
+  name: String!
+  model: String!
+  version: String!
+  hardwareSku: String!
+  minInstances: Int!
+  maxInstances: Int!
+  scalingStrategy: DeploymentScalingStrategy
+  scalingConfig: DeploymentScalingConfigInput
+}
+
+input UpdateDeploymentInput {
+  version: String
+  hardwareSku: String
+  minInstances: Int
+  maxInstances: Int
+  scalingStrategy: DeploymentScalingStrategy
+  scalingConfig: DeploymentScalingConfigInput
+}
+
+input DeploymentScalingConfigInput {
+  targetConcurrency: Int
+  scaleUpThreshold: Float
+  scaleDownThreshold: Float
+  scaleUpDelay: Int
+  scaleDownDelay: Int
+}
+
+input CreateDeploymentPredictionInput {
+  input: JSON!
+  webhook: URL
+  webhookEventsFilter: [WebhookEvent!]
+  stream: Boolean
+}
+
+# ─── Collection ────────────────────────────────────────────────────────────────
+
+type Collection implements Node {
+  id: ID!
+  slug: String!
+  name: String!
+  description: String!
+  coverImageUrl: URL
+  models(pagination: PaginationInput): ModelConnection!
+  modelCount: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CollectionEdge {
+  node: Collection!
+  cursor: String!
+}
+
+type CollectionConnection {
+  edges: [CollectionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─── Webhook ───────────────────────────────────────────────────────────────────
+
+type Webhook {
+  defaultSigningSecret: WebhookSigningSecret!
+}
+
+type WebhookSigningSecret {
+  key: String!
+  algorithm: String!
+}
+
+# ─── FileObject ────────────────────────────────────────────────────────────────
+
+type FileObject implements Node {
+  id: ID!
+  name: String!
+  contentType: String!
+  size: Int!
+  etag: String
+  checksum: String
+  status: FileStorageStatus!
+  urls: FileURLs!
+  createdAt: DateTime!
+  expiresAt: DateTime
+}
+
+type FileURLs {
+  get: URL!
+}
+
+type FileEdge {
+  node: FileObject!
+  cursor: String!
+}
+
+type FileConnection {
+  edges: [FileEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input CreateFileInput {
+  name: String!
+  contentType: String!
+  size: Int!
+  content: String
+}
+
+# ─── Cog ───────────────────────────────────────────────────────────────────────
+
+type CogModel {
+  name: String!
+  runtime: CogRuntimeType!
+  predictor: CogPredictor
+  trainer: CogTrainer
+  build: CogBuild
+  image: String
+  cogVersion: String!
+  predict: String
+  train: String
+}
+
+type CogPredictor {
+  input: [SchemaProperty!]!
+  output: [SchemaProperty!]!
+  setupTime: Float
+  predictTime: Float
+  supportsStreaming: Boolean!
+}
+
+type CogTrainer {
+  input: [SchemaProperty!]!
+  output: [SchemaProperty!]!
+  setupTime: Float
+  trainTime: Float
+}
+
+type CogBuild {
+  gpu: Boolean!
+  pythonVersion: String
+  pythonPackages: [String!]
+  systemPackages: [String!]
+  cudaVersion: String
+  preInstall: [String!]
+  run: [String!]
+}
+
+# ─── Benchmark ─────────────────────────────────────────────────────────────────
+
+type BenchmarkRun implements Node {
+  id: ID!
+  model: Model!
+  version: ModelVersion!
+  hardware: Hardware!
+  startedAt: DateTime!
+  completedAt: DateTime
+  results: [BenchmarkResult!]!
+  summary: BenchmarkSummary
+}
+
+type BenchmarkResult {
+  runId: String!
+  status: PredictionStatus!
+  setupTime: Float
+  predictTime: Float
+  totalTime: Float
+  outputSize: Int
+  error: String
+}
+
+type BenchmarkSummary {
+  averagePredictTime: Float
+  minPredictTime: Float
+  maxPredictTime: Float
+  p50PredictTime: Float
+  p95PredictTime: Float
+  successRate: Float
+  totalRuns: Int!
+}
+
+# ─── PredictionLog ─────────────────────────────────────────────────────────────
+
+type PredictionLog {
+  predictionId: ID!
+  lines: [LogLine!]!
+  cursor: String
+}
+
+type LogLine {
+  timestamp: DateTime!
+  level: String
+  message: String!
+  source: String
+}
+
+# ─── Input / Output helpers ────────────────────────────────────────────────────
+
+type Input {
+  schema: [SchemaProperty!]!
+  example: JSON
+}
+
+type Output {
+  schema: SchemaProperty
+  example: JSON
+  supportsStreaming: Boolean!
+}
+
+# ─── Search ────────────────────────────────────────────────────────────────────
+
+type SearchResult {
+  models: ModelConnection!
+  collections: CollectionConnection!
+}
+
+input ModelSearchInput {
+  query: String
+  owner: String
+  tags: [String!]
+  visibility: Visibility
+  sortBy: ModelSortBy
+  sortOrder: SortOrder
+  pagination: PaginationInput
+}
+
+# ─── Query ─────────────────────────────────────────────────────────────────────
+
+type Query {
+  # Account
+  account: Account!
+  accountByUsername(username: String!): Account
+
+  # Models
+  model(owner: String!, name: String!): Model
+  models(input: ModelSearchInput): ModelConnection!
+  searchModels(query: String!, pagination: PaginationInput): ModelConnection!
+
+  # Model Versions
+  modelVersion(owner: String!, name: String!, versionId: String!): ModelVersion
+  modelVersions(owner: String!, name: String!, pagination: PaginationInput): ModelVersionConnection!
+  latestModelVersion(owner: String!, name: String!): ModelVersion
+
+  # Predictions
+  prediction(id: ID!): Prediction
+  predictions(pagination: PaginationInput): PredictionConnection!
+
+  # Trainings
+  training(id: ID!): Training
+  trainings(pagination: PaginationInput): TrainingConnection!
+
+  # Deployments
+  deployment(owner: String!, name: String!): Deployment
+  deployments(pagination: PaginationInput): DeploymentConnection!
+
+  # Collections
+  collection(slug: String!): Collection
+  collections(pagination: PaginationInput): CollectionConnection!
+
+  # Hardware
+  hardwareList: HardwareConnection!
+  hardware(sku: String!): Hardware
+
+  # Files
+  file(id: ID!): FileObject
+  files(pagination: PaginationInput): FileConnection!
+
+  # Webhooks
+  webhookDefaultSigningSecret: WebhookSigningSecret!
+
+  # Tokens
+  tokens: [Token!]!
+
+  # Search
+  search(query: String!): SearchResult!
+}
+
+# ─── Mutation ──────────────────────────────────────────────────────────────────
+
+type Mutation {
+  # Predictions
+  createPrediction(input: CreatePredictionInput!): Prediction!
+  createVersionPrediction(input: CreateVersionPredictionInput!): Prediction!
+  cancelPrediction(id: ID!): Prediction!
+
+  # Trainings
+  createTraining(input: CreateTrainingInput!): Training!
+  cancelTraining(id: ID!): Training!
+
+  # Models
+  createModel(input: CreateModelInput!): Model!
+  updateModel(owner: String!, name: String!, input: UpdateModelInput!): Model!
+  deleteModel(owner: String!, name: String!): Boolean!
+  deleteModelVersion(owner: String!, name: String!, versionId: String!): Boolean!
+
+  # Deployments
+  createDeployment(input: CreateDeploymentInput!): Deployment!
+  updateDeployment(owner: String!, name: String!, input: UpdateDeploymentInput!): Deployment!
+  deleteDeployment(owner: String!, name: String!): Boolean!
+  createDeploymentPrediction(owner: String!, name: String!, input: CreateDeploymentPredictionInput!): Prediction!
+
+  # Files
+  createFile(input: CreateFileInput!): FileObject!
+  deleteFile(id: ID!): Boolean!
+
+  # Tokens
+  createToken(input: CreateTokenInput!): Token!
+  deleteToken(id: ID!): Boolean!
+
+  # Webhook
+  refreshWebhookSigningSecret: WebhookSigningSecret!
+}
+
+# ─── Subscription ──────────────────────────────────────────────────────────────
+
+type Subscription {
+  # Stream prediction output and status updates
+  predictionUpdated(id: ID!): Prediction!
+
+  # Stream training status updates
+  trainingUpdated(id: ID!): Training!
+
+  # Stream logs for a prediction
+  predictionLogs(id: ID!): LogLine!
+
+  # Stream logs for a training run
+  trainingLogs(id: ID!): LogLine!
+}

@@ -1,8 +1,10 @@
 aid: replicate
 name: Replicate
-description: Replicate lets you run machine learning models in the cloud with a simple API. Thousands of open-source models
-  are available, and you can run your own custom models at scale. Run image generation, language models, audio synthesis,
-  video generation, and more with a few lines of code. Replicate makes AI accessible to every software engineer.
+description: Replicate lets you run machine learning models in the cloud with a simple
+  API. Thousands of open-source models are available, and you can run your own custom
+  models at scale. Run image generation, language models, audio synthesis, video generation,
+  and more with a few lines of code. Replicate makes AI accessible to every software
+  engineer.
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
@@ -18,9 +20,11 @@ specificationVersion: '0.19'
 apis:
 - aid: replicate:replicate
   name: Replicate
-  description: Replicate lets you run machine learning models in the cloud with a simple REST API. Access thousands of open-source
-    models for image generation, language modeling, audio synthesis, video generation, upscaling, and more. Create predictions,
-    manage deployments, fine-tune models, and run training jobs via a clean API with webhooks and streaming support.
+  description: Replicate lets you run machine learning models in the cloud with a
+    simple REST API. Access thousands of open-source models for image generation,
+    language modeling, audio synthesis, video generation, upscaling, and more. Create
+    predictions, manage deployments, fine-tune models, and run training jobs via a
+    clean API with webhooks and streaming support.
   humanURL: https://replicate.com/
   tags:
   - Accounts
@@ -46,72 +50,53 @@ apis:
     type: SpectralRuleset
   - url: vocabulary/replicate-vocabulary.yml
     type: Vocabulary
-  - type: NaftikoCapability
-    url: capabilities/replicate-accounts.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-cancel.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-collections.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-deployments.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-hardware.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-model.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-models.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-name.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-owner.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-predictions.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-secrets.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-slug.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-training.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-trainings.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-version.yaml
-  - type: NaftikoCapability
-    url: capabilities/replicate-webhooks.yaml
+  - url: graphql/replicate-graphql.md
+    type: GraphQL
 common:
+- type: PostmanWorkspace
+  url: https://www.postman.com/kinlaneapi/replicate/overview
 - type: ArazzoWorkflows
   url: arazzo/
   workflows:
   - url: arazzo/replicate-collection-predict-workflow.yml
     name: Replicate Pick a Model from a Collection and Predict
-    summary: Read a curated collection, confirm a chosen model, run its latest version, and poll the prediction.
+    summary: Read a curated collection, confirm a chosen model, run its latest version,
+      and poll the prediction.
   - url: arazzo/replicate-deploy-and-predict-workflow.yml
     name: Replicate Create a Deployment and Run a Prediction Through It
-    summary: Pick hardware, create a deployment for a model version, then run a prediction via the deployment.
+    summary: Pick hardware, create a deployment for a model version, then run a prediction
+      via the deployment.
   - url: arazzo/replicate-model-version-predict-workflow.yml
     name: Replicate Resolve Latest Version and Predict
-    summary: Look up a model, pick its latest version, run a prediction, and poll to completion.
+    summary: Look up a model, pick its latest version, run a prediction, and poll
+      to completion.
   - url: arazzo/replicate-official-model-predict-workflow.yml
     name: Replicate Run an Official Model and Poll
     summary: Run a prediction against an official model by name, then poll until complete.
   - url: arazzo/replicate-predict-and-poll-workflow.yml
     name: Replicate Create Prediction and Poll Until Complete
-    summary: Run a model version, then poll the prediction until it reaches a terminal state.
+    summary: Run a model version, then poll the prediction until it reaches a terminal
+      state.
   - url: arazzo/replicate-predict-with-timeout-cancel-workflow.yml
     name: Replicate Run a Prediction with Bounded Wait and Cancel
-    summary: Create a prediction, poll a bounded number of times, and cancel it if it has not finished.
+    summary: Create a prediction, poll a bounded number of times, and cancel it if
+      it has not finished.
   - url: arazzo/replicate-scale-deployment-and-predict-workflow.yml
     name: Replicate Scale a Deployment and Run a Prediction
-    summary: Read a deployment, update its version and instance bounds, then run a prediction through it.
+    summary: Read a deployment, update its version and instance bounds, then run a
+      prediction through it.
   - url: arazzo/replicate-search-model-and-predict-workflow.yml
     name: Replicate Search for a Model and Run a Prediction
-    summary: Search public models by query, run a prediction on the top match's latest version, and poll it.
+    summary: Search public models by query, run a prediction on the top match's latest
+      version, and poll it.
   - url: arazzo/replicate-train-model-and-poll-workflow.yml
     name: Replicate Start a Training and Poll Until Complete
-    summary: Start a fine-tuning run from a base model version, then poll until the training finishes.
+    summary: Start a fine-tuning run from a base model version, then poll until the
+      training finishes.
   - url: arazzo/replicate-webhook-secured-predict-workflow.yml
     name: Replicate Fetch Webhook Secret and Run a Webhook Prediction
-    summary: Retrieve the default webhook signing secret, then create a prediction that posts to a webhook.
+    summary: Retrieve the default webhook signing secret, then create a prediction
+      that posts to a webhook.
 - type: LinkedIn
   url: https://www.linkedin.com/company/replicate
 - type: Website
