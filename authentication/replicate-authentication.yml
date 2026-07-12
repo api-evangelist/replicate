@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/replicate-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: |
+    All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
+    Example: `Authorization: Bearer r8_Hw***********************************`
+    Find your tokens at https://replicate.com/account/api-tokens
+  sources:
+  - openapi/replicate-openapi.yml
