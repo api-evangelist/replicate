@@ -53,6 +53,8 @@ apis:
   - url: graphql/replicate-graphql.md
     type: GraphQL
 common:
+- type: AgenticAccess
+  url: agentic-access/replicate-agentic-access.yml
 - type: DomainSecurity
   url: security/replicate-domain-security.yml
 - type: Authentication
