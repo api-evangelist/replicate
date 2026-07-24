@@ -1,0 +1,61 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: team@replicate.com
+  description: AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.
+  termsOfService: https://replicate.com/terms
+  title: Replicate Accounts API
+  version: 1.0.0-a1
+servers:
+- url: https://api.replicate.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Accounts
+paths:
+  /account:
+    get:
+      description: "Returns information about the user or organization associated with the provided API token.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/account\n```\n\nThe response will be a JSON object describing the account:\n\n```json\n{\n  \"type\": \"organization\",\n  \"username\": \"acme\",\n  \"name\": \"Acme Corp, Inc.\",\n  \"github_url\": \"https://github.com/acme\",\n}\n```\n"
+      operationId: account.get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  github_url:
+                    description: The GitHub URL of the account.
+                    format: uri
+                    type: string
+                  name:
+                    description: The name of the account.
+                    type: string
+                  type:
+                    description: The account type. Can be a user or an organization.
+                    enum:
+                    - organization
+                    - user
+                    type: string
+                  username:
+                    description: The username of the account.
+                    type: string
+                type: object
+          description: Success
+      summary: Get the Authenticated Account
+      tags:
+      - Accounts
+components:
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: 'All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
+
+        Example: `Authorization: Bearer r8_Hw***********************************`
+
+        Find your tokens at https://replicate.com/account/api-tokens
+
+        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Replicate HTTP API
+  url: https://replicate.com/docs/reference/http

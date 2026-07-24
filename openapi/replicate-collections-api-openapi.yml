@@ -1,0 +1,59 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: team@replicate.com
+  description: AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.
+  termsOfService: https://replicate.com/terms
+  title: Replicate Accounts Collections API
+  version: 1.0.0-a1
+servers:
+- url: https://api.replicate.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Collections
+paths:
+  /collections:
+    get:
+      description: "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/collections\n```\n\nThe response will be a paginated JSON list of collection objects:\n\n```json\n{\n  \"next\": \"null\",\n  \"previous\": null,\n  \"results\": [\n    {\n      \"name\": \"Super resolution\",\n      \"slug\": \"super-resolution\",\n      \"description\": \"Upscaling models that create high-quality images from low-quality images.\"\n    }\n  ]\n}\n```\n"
+      operationId: collections.list
+      responses:
+        '200':
+          description: Success
+      summary: List Collections of Models
+      tags:
+      - Collections
+  /collections/{collection_slug}:
+    get:
+      description: "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/collections/super-resolution\n```\n\nThe response will be a collection object with a nested list of the models in that collection:\n\n```json\n{\n  \"name\": \"Super resolution\",\n  \"slug\": \"super-resolution\",\n  \"description\": \"Upscaling models that create high-quality images from low-quality images.\",\n  \"models\": [...]\n}\n```\n"
+      operationId: collections.get
+      parameters:
+      - description: 'The slug of the collection, like `super-resolution` or `image-restoration`. See [replicate.com/collections](https://replicate.com/collections).
+
+          '
+        in: path
+        name: collection_slug
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      summary: Get a Collection of Models
+      tags:
+      - Collections
+components:
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: 'All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
+
+        Example: `Authorization: Bearer r8_Hw***********************************`
+
+        Find your tokens at https://replicate.com/account/api-tokens
+
+        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Replicate HTTP API
+  url: https://replicate.com/docs/reference/http

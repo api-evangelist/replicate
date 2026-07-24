@@ -1,0 +1,67 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: team@replicate.com
+  description: AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.
+  termsOfService: https://replicate.com/terms
+  title: Replicate Accounts Training API
+  version: 1.0.0-a1
+servers:
+- url: https://api.replicate.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Training
+paths:
+  /trainings/{training_id}:
+    get:
+      description: "Get the current state of a training.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/trainings/zz4ibbonubfz7carwiefibzgga\n```\n\nThe response will be the training object:\n\n```json\n{\n  \"completed_at\": \"2023-09-08T16:41:19.826523Z\",\n  \"created_at\": \"2023-09-08T16:32:57.018467Z\",\n  \"error\": null,\n  \"id\": \"zz4ibbonubfz7carwiefibzgga\",\n  \"input\": {\n    \"input_images\": \"https://example.com/my-input-images.zip\"\n  },\n  \"logs\": \"...\",\n  \"metrics\": {\n    \"predict_time\": 502.713876\n  },\n  \"output\": {\n    \"version\": \"...\",\n    \"weights\": \"...\"\n  },\n  \"started_at\": \"2023-09-08T16:32:57.112647Z\",\n  \"status\": \"succeeded\",\n  \"urls\": {\n    \"get\": \"https://api.replicate.com/v1/trainings/zz4ibbonubfz7carwiefibzgga\",\n    \"cancel\": \"https://api.replicate.com/v1/trainings/zz4ibbonubfz7carwiefibzgga/cancel\"\n  },\n  \"model\": \"stability-ai/sdxl\",\n  \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n}\n```\n\n`status` will be one of:\n\n- `starting`: the training is starting up. If this status lasts longer than a few seconds, then it's typically because a new worker is being started to run the training.\n- `processing`: the `train()` method of the model is currently running.\n- `succeeded`: the training completed successfully.\n- `failed`: the training encountered an error during processing.\n- `canceled`: the training was canceled by its creator.\n\nIn the case of success, `output` will be an object containing the output of the model. Any files will be represented as HTTPS URLs. You'll need to pass the `Authorization` header to request them.\n\nIn the case of failure, `error` will contain the error encountered during the training.\n\nTerminated trainings (with a status of `succeeded`, `failed`, or `canceled`) will include a `metrics` object with a `predict_time` property showing the amount of CPU or GPU time, in seconds, that the training used while running. It won't include time waiting for the training to start.\n"
+      operationId: trainings.get
+      parameters:
+      - description: 'The ID of the training to get.
+
+          '
+        in: path
+        name: training_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      summary: Get a Training
+      tags:
+      - Training
+  /trainings/{training_id}/cancel:
+    post:
+      operationId: trainings.cancel
+      parameters:
+      - description: 'The ID of the training you want to cancel.
+
+          '
+        in: path
+        name: training_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      summary: Cancel a Training
+      tags:
+      - Training
+components:
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: 'All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
+
+        Example: `Authorization: Bearer r8_Hw***********************************`
+
+        Find your tokens at https://replicate.com/account/api-tokens
+
+        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Replicate HTTP API
+  url: https://replicate.com/docs/reference/http

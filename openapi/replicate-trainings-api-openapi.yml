@@ -1,0 +1,40 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: team@replicate.com
+  description: AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.
+  termsOfService: https://replicate.com/terms
+  title: Replicate Accounts Trainings API
+  version: 1.0.0-a1
+servers:
+- url: https://api.replicate.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Trainings
+paths:
+  /trainings:
+    get:
+      description: "Get a paginated list of all trainings created by the user or organization associated with the provided API token.\n\nThis will include trainings created from the API and the website. It will return 100 records per page.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/trainings\n```\n\nThe response will be a paginated JSON array of training objects, sorted with the most recent training first:\n\n```json\n{\n  \"next\": null,\n  \"previous\": null,\n  \"results\": [\n    {\n      \"completed_at\": \"2023-09-08T16:41:19.826523Z\",\n      \"created_at\": \"2023-09-08T16:32:57.018467Z\",\n      \"error\": null,\n      \"id\": \"zz4ibbonubfz7carwiefibzgga\",\n      \"input\": {\n        \"input_images\": \"https://example.com/my-input-images.zip\"\n      },\n      \"metrics\": {\n        \"predict_time\": 502.713876\n      },\n      \"output\": {\n        \"version\": \"...\",\n        \"weights\": \"...\"\n      },\n      \"started_at\": \"2023-09-08T16:32:57.112647Z\",\n      \"source\": \"api\",\n      \"status\": \"succeeded\",\n      \"urls\": {\n        \"get\": \"https://api.replicate.com/v1/trainings/zz4ibbonubfz7carwiefibzgga\",\n        \"cancel\": \"https://api.replicate.com/v1/trainings/zz4ibbonubfz7carwiefibzgga/cancel\"\n      },\n      \"model\": \"stability-ai/sdxl\",\n      \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n    }\n  ]\n}\n```\n\n`id` will be the unique ID of the training.\n\n`source` will indicate how the training was created. Possible values are `web` or `api`.\n\n`status` will be the status of the training. Refer to [get a single training](#trainings.get) for possible values.\n\n`urls` will be a convenience object that can be used to construct new API requests for the given training.\n\n`version` will be the unique ID of model version used to create the training.\n"
+      operationId: trainings.list
+      responses:
+        '200':
+          description: Success
+      summary: List Trainings
+      tags:
+      - Trainings
+components:
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: 'All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
+
+        Example: `Authorization: Bearer r8_Hw***********************************`
+
+        Find your tokens at https://replicate.com/account/api-tokens
+
+        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Replicate HTTP API
+  url: https://replicate.com/docs/reference/http

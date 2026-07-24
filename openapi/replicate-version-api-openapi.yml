@@ -1,0 +1,169 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: team@replicate.com
+  description: AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.
+  termsOfService: https://replicate.com/terms
+  title: Replicate Accounts Version API
+  version: 1.0.0-a1
+servers:
+- url: https://api.replicate.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Version
+paths:
+  /models/{model_owner}/{model_name}/versions/{version_id}:
+    delete:
+      description: "Delete a model version and all associated predictions, including all output files.\n\nModel version deletion has some restrictions:\n\n- You can only delete versions from models you own.\n- You can only delete versions from private models.\n- You cannot delete a version if someone other than you has run predictions with it.\n- You cannot delete a version if it is being used as the base model for a fine tune/training.\n- You cannot delete a version if it has an associated deployment.\n- You cannot delete a version if another model version is overridden to use it.\n\nExample cURL request:\n\n```command\ncurl -s -X DELETE \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models/replicate/hello-world/versions/5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\n```\n\nThe response will be an empty 202, indicating the deletion request has been accepted. It might take a few minutes to be processed.\n"
+      operationId: models.versions.delete
+      parameters:
+      - description: 'The name of the user or organization that owns the model.
+
+          '
+        in: path
+        name: model_owner
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the model.
+
+          '
+        in: path
+        name: model_name
+        required: true
+        schema:
+          type: string
+      - description: 'The ID of the version.
+
+          '
+        in: path
+        name: version_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Deletion request has been accepted. It might take a few minutes to be processed.
+      summary: Delete a Model Version
+      tags:
+      - Version
+    get:
+      description: "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models/replicate/hello-world/versions/5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\n```\n\nThe response will be the version object:\n\n```json\n{\n  \"id\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\",\n  \"created_at\": \"2022-04-26T19:29:04.418669Z\",\n  \"cog_version\": \"0.3.0\",\n  \"openapi_schema\": {...}\n}\n```\n\nEvery model describes its inputs and outputs with [OpenAPI Schema Objects](https://spec.openapis.org/oas/latest.html#schemaObject) in the `openapi_schema` property.\n\nThe `openapi_schema.components.schemas.Input` property for the [replicate/hello-world](https://replicate.com/replicate/hello-world) model looks like this:\n\n```json\n{\n  \"type\": \"object\",\n  \"title\": \"Input\",\n  \"required\": [\n    \"text\"\n  ],\n  \"properties\": {\n    \"text\": {\n      \"x-order\": 0,\n      \"type\": \"string\",\n      \"title\": \"Text\",\n      \"description\": \"Text to prefix with 'hello '\"\n    }\n  }\n}\n```\n\nThe `openapi_schema.components.schemas.Output` property for the [replicate/hello-world](https://replicate.com/replicate/hello-world) model looks like this:\n\n```json\n{\n  \"type\": \"string\",\n  \"title\": \"Output\"\n}\n```\n\nFor more details, see the docs on [Cog's supported input and output types](https://github.com/replicate/cog/blob/75b7802219e7cd4cee845e34c4c22139558615d4/docs/python.md#input-and-output-types)\n"
+      operationId: models.versions.get
+      parameters:
+      - description: 'The name of the user or organization that owns the model.
+
+          '
+        in: path
+        name: model_owner
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the model.
+
+          '
+        in: path
+        name: model_name
+        required: true
+        schema:
+          type: string
+      - description: 'The ID of the version.
+
+          '
+        in: path
+        name: version_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      summary: Get a Model Version
+      tags:
+      - Version
+  /models/{model_owner}/{model_name}/versions/{version_id}/trainings:
+    post:
+      description: "Start a new training of the model version you specify.\n\nExample request body:\n\n```json\n{\n  \"destination\": \"{new_owner}/{new_name}\",\n  \"input\": {\n    \"train_data\": \"https://example.com/my-input-images.zip\",\n  },\n  \"webhook\": \"https://example.com/my-webhook\",\n}\n```\n\nExample cURL request:\n\n```console\ncurl -s -X POST \\\n  -d '{\"destination\": \"{new_owner}/{new_name}\", \"input\": {\"input_images\": \"https://example.com/my-input-images.zip\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/models/stability-ai/sdxl/versions/da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf/trainings\n```\n\nThe response will be the training object:\n\n```json\n{\n  \"id\": \"zz4ibbonubfz7carwiefibzgga\",\n  \"model\": \"stability-ai/sdxl\",\n  \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n  \"input\": {\n    \"input_images\": \"https://example.com/my-input-images.zip\"\n  },\n  \"logs\": \"\",\n  \"error\": null,\n  \"status\": \"starting\",\n  \"created_at\": \"2023-09-08T16:32:56.990893084Z\",\n  \"urls\": {\n    \"cancel\": \"https://api.replicate.com/v1/predictions/zz4ibbonubfz7carwiefibzgga/cancel\",\n    \"get\": \"https://api.replicate.com/v1/predictions/zz4ibbonubfz7carwiefibzgga\"\n  }\n}\n```\n\nAs models can take several minutes or more to train, the result will not be available immediately. To get the final result of the training you should either provide a `webhook` HTTPS URL for us to call when the results are ready, or poll the [get a training](#trainings.get) endpoint until it has finished.\n\nWhen a training completes, it creates a new [version](https://replicate.com/docs/how-does-replicate-work#terminology) of the model at the specified destination.\n\nTo find some models to train on, check out the [trainable language models collection](https://replicate.com/collections/trainable-language-models).\n"
+      operationId: trainings.create
+      parameters:
+      - description: 'The name of the user or organization that owns the model.
+
+          '
+        in: path
+        name: model_owner
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the model.
+
+          '
+        in: path
+        name: model_name
+        required: true
+        schema:
+          type: string
+      - description: 'The ID of the version.
+
+          '
+        in: path
+        name: version_id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/schemas_training_request'
+      responses:
+        '201':
+          description: Success
+      summary: Create a Training
+      tags:
+      - Version
+components:
+  schemas:
+    schemas_training_request:
+      properties:
+        destination:
+          description: 'A string representing the desired model to push to in the format `{destination_model_owner}/{destination_model_name}`. This should be an existing model owned by the user or organization making the API request. If the destination is invalid, the server will return an appropriate 4XX response.
+
+            '
+          type: string
+        input:
+          description: 'An object containing inputs to the Cog model''s `train()` function.
+
+            '
+          type: object
+        webhook:
+          description: An HTTPS URL for receiving a webhook when the training completes. The webhook will be a POST request where the request body is the same as the response body of the [get training](#trainings.get) operation. If there are network problems, we will retry the webhook a few times, so make sure it can be safely called more than once. Replicate will not follow redirects when sending webhook requests to your service, so be sure to specify a URL that will resolve without redirecting.
+          type: string
+        webhook_events_filter:
+          description: "By default, we will send requests to your webhook URL whenever there are new outputs or the training has finished. You can change which events trigger webhook requests by specifying `webhook_events_filter` in the training request:\n\n- `start`: immediately on training start\n- `output`: each time a training generates an output (note that trainings can generate multiple outputs)\n- `logs`: each time log output is generated by a training\n- `completed`: when the training reaches a terminal state (succeeded/canceled/failed)\n\nFor example, if you only wanted requests to be sent at the start and end of the training, you would provide:\n\n```json\n{\n  \"destination\": \"my-organization/my-model\",\n  \"input\": {\n    \"text\": \"Alice\"\n  },\n  \"webhook\": \"https://example.com/my-webhook\",\n  \"webhook_events_filter\": [\"start\", \"completed\"]\n}\n```\n\nRequests for event types `output` and `logs` will be sent at most once every 500ms. If you request `start` and `completed` webhooks, then they'll always be sent regardless of throttling.\n"
+          items:
+            enum:
+            - start
+            - output
+            - logs
+            - completed
+            type: string
+          type: array
+      required:
+      - destination
+      - input
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: 'All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
+
+        Example: `Authorization: Bearer r8_Hw***********************************`
+
+        Find your tokens at https://replicate.com/account/api-tokens
+
+        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Replicate HTTP API
+  url: https://replicate.com/docs/reference/http

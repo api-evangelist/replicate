@@ -1,0 +1,302 @@
+openapi: 3.1.0
+info:
+  contact:
+    email: team@replicate.com
+  description: AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.
+  termsOfService: https://replicate.com/terms
+  title: Replicate Accounts Predictions API
+  version: 1.0.0-a1
+servers:
+- url: https://api.replicate.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Predictions
+paths:
+  /deployments/{deployment_owner}/{deployment_name}/predictions:
+    post:
+      description: "Create a prediction for the deployment and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"input\": {\"prompt\": \"A photo of a bear riding a bicycle over the moon\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction will be returned in a `\"starting\"` state and need to be retrieved using the `predictions.get` endpiont.\n\nFor a complete overview of the `deployments.predictions.create` API check out our documentation on [creating a prediction](https://replicate.com/docs/topics/predictions/create-a-prediction) which covers a variety of use cases.\n"
+      operationId: deployments.predictions.create
+      parameters:
+      - description: 'The name of the user or organization that owns the deployment.
+
+          '
+        in: path
+        name: deployment_owner
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the deployment.
+
+          '
+        in: path
+        name: deployment_name
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/parameters_prefer_header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/schemas_prediction_request'
+      responses:
+        '201':
+          description: 'Prediction has been created. If the `Prefer: wait` header is provided it will contain the final output.'
+        '202':
+          description: Prediction has been created but does not yet have all outputs
+      summary: Create a Prediction Using a Deployment
+      tags:
+      - Predictions
+  /models/{model_owner}/{model_name}/predictions:
+    post:
+      description: "Create a prediction for the deployment and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"input\": {\"prompt\": \"Write a short poem about the weather.\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/models/meta/meta-llama-3-70b-instruct/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction will be returned in a `\"starting\"` state and need to be retrieved using the `predictions.get` endpiont.\n\nFor a complete overview of the `deployments.predictions.create` API check out our documentation on [creating a prediction](https://replicate.com/docs/topics/predictions/create-a-prediction) which covers a variety of use cases.\n"
+      operationId: models.predictions.create
+      parameters:
+      - description: 'The name of the user or organization that owns the model.
+
+          '
+        in: path
+        name: model_owner
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the model.
+
+          '
+        in: path
+        name: model_name
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/parameters_prefer_header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/schemas_prediction_request'
+      responses:
+        '201':
+          description: 'Prediction has been created. If the `Prefer: wait` header is provided it will contain the final output.'
+        '202':
+          description: Prediction has been created but does not yet have all outputs
+      summary: Create a Prediction Using an Official Model
+      tags:
+      - Predictions
+  /predictions:
+    get:
+      description: "Get a paginated list of all predictions created by the user or organization associated with the provided API token.\n\nThis will include predictions created from the API and the website. It will return 100 records per page.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/predictions\n```\n\nThe response will be a paginated JSON array of prediction objects, sorted with the most recent prediction first:\n\n```json\n{\n  \"next\": null,\n  \"previous\": null,\n  \"results\": [\n    {\n      \"completed_at\": \"2023-09-08T16:19:34.791859Z\",\n      \"created_at\": \"2023-09-08T16:19:34.907244Z\",\n      \"data_removed\": false,\n      \"error\": null,\n      \"id\": \"gm3qorzdhgbfurvjtvhg6dckhu\",\n      \"input\": {\n        \"text\": \"Alice\"\n      },\n      \"metrics\": {\n        \"predict_time\": 0.012683\n      },\n      \"output\": \"hello Alice\",\n      \"started_at\": \"2023-09-08T16:19:34.779176Z\",\n      \"source\": \"api\",\n      \"status\": \"succeeded\",\n      \"urls\": {\n        \"get\": \"https://api.replicate.com/v1/predictions/gm3qorzdhgbfurvjtvhg6dckhu\",\n        \"cancel\": \"https://api.replicate.com/v1/predictions/gm3qorzdhgbfurvjtvhg6dckhu/cancel\"\n      },\n      \"model\": \"replicate/hello-world\",\n      \"version\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\",\n    }\n  ]\n}\n```\n\n`id` will be the unique ID of the prediction.\n\n`source` will indicate how the prediction was created. Possible values are `web` or `api`.\n\n`status` will be the status of the prediction. Refer to [get a single prediction](#predictions.get) for possible values.\n\n`urls` will be a convenience object that can be used to construct new API requests for the given prediction. If the requested model version supports streaming, this will have a `stream` entry with an HTTPS URL that you can use to construct an [`EventSource`](https://developer.mozilla.org/en-US/docs/Web/API/EventSource).\n\n`model` will be the model identifier string in the format of `{model_owner}/{model_name}`.\n\n`version` will be the unique ID of model version used to create the prediction.\n\n`data_removed` will be `true` if the input and output data has been deleted.\n"
+      operationId: predictions.list
+      responses:
+        '200':
+          description: Success
+      summary: List Predictions
+      tags:
+      - Predictions
+    post:
+      description: "Create a prediction for the model version and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"version\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\", \"input\": {\"text\": \"Alice\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction will be returned in a `\"starting\"` state and need to be retrieved using the `predictions.get` endpiont.\n\nFor a complete overview of the `predictions.create` API check out our documentation on [creating a prediction](https://replicate.com/docs/topics/predictions/create-a-prediction) which covers a variety of use cases.\n"
+      operationId: predictions.create
+      parameters:
+      - $ref: '#/components/parameters/parameters_prefer_header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/schemas_version_prediction_request'
+      responses:
+        '201':
+          description: 'Prediction has been created. If the `Prefer: wait` header is provided it will contain the final output.'
+        '202':
+          description: Prediction has been created but does not yet have all outputs
+      summary: Create a Prediction
+      tags:
+      - Predictions
+  /predictions/{prediction_id}:
+    get:
+      description: "Get the current state of a prediction.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/predictions/gm3qorzdhgbfurvjtvhg6dckhu\n```\n\nThe response will be the prediction object:\n\n```json\n{\n  \"id\": \"gm3qorzdhgbfurvjtvhg6dckhu\",\n  \"model\": \"replicate/hello-world\",\n  \"version\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\",\n  \"input\": {\n    \"text\": \"Alice\"\n  },\n  \"logs\": \"\",\n  \"output\": \"hello Alice\",\n  \"error\": null,\n  \"status\": \"succeeded\",\n  \"created_at\": \"2023-09-08T16:19:34.765994Z\",\n  \"data_removed\": false,\n  \"started_at\": \"2023-09-08T16:19:34.779176Z\",\n  \"completed_at\": \"2023-09-08T16:19:34.791859Z\",\n  \"metrics\": {\n    \"predict_time\": 0.012683\n  },\n  \"urls\": {\n    \"cancel\": \"https://api.replicate.com/v1/predictions/gm3qorzdhgbfurvjtvhg6dckhu/cancel\",\n    \"get\": \"https://api.replicate.com/v1/predictions/gm3qorzdhgbfurvjtvhg6dckhu\"\n  }\n}\n```\n\n`status` will be one of:\n\n- `starting`: the prediction is starting up. If this status lasts longer than a few seconds, then it's typically because a new worker is being started to run the prediction.\n- `processing`: the `predict()` method of the model is currently running.\n- `succeeded`: the prediction completed successfully.\n- `failed`: the prediction encountered an error during processing.\n- `canceled`: the prediction was canceled by its creator.\n\nIn the case of success, `output` will be an object containing the output of the model. Any files will be represented as HTTPS URLs. You'll need to pass the `Authorization` header to request them.\n\nIn the case of failure, `error` will contain the error encountered during the prediction.\n\nTerminated predictions (with a status of `succeeded`, `failed`, or `canceled`) will include a `metrics` object with a `predict_time` property showing the amount of CPU or GPU time, in seconds, that the prediction used while running. It won't include time waiting for the prediction to start.\n\nAll input parameters, output values, and logs are automatically removed after an hour, by default, for predictions created through the API.\n\nYou must save a copy of any data or files in the output if you'd like to continue using them. The `output` key will still be present, but it's value will be `null` after the output has been removed.\n\nOutput files are served by `replicate.delivery` and its subdomains. If you use an allow list of external domains for your assets, add `replicate.delivery` and `*.replicate.delivery` to it.\n"
+      operationId: predictions.get
+      parameters:
+      - description: 'The ID of the prediction to get.
+
+          '
+        in: path
+        name: prediction_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      summary: Get a Prediction
+      tags:
+      - Predictions
+  /predictions/{prediction_id}/cancel:
+    post:
+      operationId: predictions.cancel
+      parameters:
+      - description: 'The ID of the prediction to cancel.
+
+          '
+        in: path
+        name: prediction_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      summary: Cancel a Prediction
+      tags:
+      - Predictions
+components:
+  schemas:
+    schemas_version_prediction_request:
+      additionalProperties: false
+      properties:
+        input:
+          description: 'The model''s input as a JSON object. The input schema depends on what model you are running. To see the available inputs, click the "API" tab on the model you are running or [get the model version](#models.versions.get) and look at its `openapi_schema` property. For example, [stability-ai/sdxl](https://replicate.com/stability-ai/sdxl) takes `prompt` as an input.
+
+
+            Files should be passed as HTTP URLs or data URLs.
+
+
+            Use an HTTP URL when:
+
+
+            - you have a large file > 256kb
+
+            - you want to be able to use the file multiple times
+
+            - you want your prediction metadata to be associable with your input files
+
+
+            Use a data URL when:
+
+
+            - you have a small file <= 256kb
+
+            - you don''t want to upload and host the file somewhere
+
+            - you don''t need to use the file again (Replicate will not store it)
+
+            '
+          type: object
+        stream:
+          description: '**This field is deprecated.**
+
+
+            Request a URL to receive streaming output using [server-sent events (SSE)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
+
+
+            This field is no longer needed as the returned prediction will always have a `stream` entry in its `url` property if the model supports streaming.
+
+            '
+          type: boolean
+        version:
+          description: The ID of the model version that you want to run.
+          type: string
+        webhook:
+          description: 'An HTTPS URL for receiving a webhook when the prediction has new output. The webhook will be a POST request where the request body is the same as the response body of the [get prediction](#predictions.get) operation. If there are network problems, we will retry the webhook a few times, so make sure it can be safely called more than once. Replicate will not follow redirects when sending webhook requests to your service, so be sure to specify a URL that will resolve without redirecting.
+
+            '
+          type: string
+        webhook_events_filter:
+          description: "By default, we will send requests to your webhook URL whenever there are new outputs or the prediction has finished. You can change which events trigger webhook requests by specifying `webhook_events_filter` in the prediction request:\n\n- `start`: immediately on prediction start\n- `output`: each time a prediction generates an output (note that predictions can generate multiple outputs)\n- `logs`: each time log output is generated by a prediction\n- `completed`: when the prediction reaches a terminal state (succeeded/canceled/failed)\n\nFor example, if you only wanted requests to be sent at the start and end of the prediction, you would provide:\n\n```json\n{\n  \"version\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\",\n  \"input\": {\n    \"text\": \"Alice\"\n  },\n  \"webhook\": \"https://example.com/my-webhook\",\n  \"webhook_events_filter\": [\"start\", \"completed\"]\n}\n```\n\nRequests for event types `output` and `logs` will be sent at most once every 500ms. If you request `start` and `completed` webhooks, then they'll always be sent regardless of throttling.\n"
+          items:
+            enum:
+            - start
+            - output
+            - logs
+            - completed
+            type: string
+          type: array
+      required:
+      - version
+      - input
+      type: object
+    schemas_prediction_request:
+      additionalProperties: false
+      properties:
+        input:
+          description: 'The model''s input as a JSON object. The input schema depends on what model you are running. To see the available inputs, click the "API" tab on the model you are running or [get the model version](#models.versions.get) and look at its `openapi_schema` property. For example, [stability-ai/sdxl](https://replicate.com/stability-ai/sdxl) takes `prompt` as an input.
+
+
+            Files should be passed as HTTP URLs or data URLs.
+
+
+            Use an HTTP URL when:
+
+
+            - you have a large file > 256kb
+
+            - you want to be able to use the file multiple times
+
+            - you want your prediction metadata to be associable with your input files
+
+
+            Use a data URL when:
+
+
+            - you have a small file <= 256kb
+
+            - you don''t want to upload and host the file somewhere
+
+            - you don''t need to use the file again (Replicate will not store it)
+
+            '
+          type: object
+        stream:
+          description: '**This field is deprecated.**
+
+
+            Request a URL to receive streaming output using [server-sent events (SSE)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
+
+
+            This field is no longer needed as the returned prediction will always have a `stream` entry in its `url` property if the model supports streaming.
+
+            '
+          type: boolean
+        webhook:
+          description: 'An HTTPS URL for receiving a webhook when the prediction has new output. The webhook will be a POST request where the request body is the same as the response body of the [get prediction](#predictions.get) operation. If there are network problems, we will retry the webhook a few times, so make sure it can be safely called more than once. Replicate will not follow redirects when sending webhook requests to your service, so be sure to specify a URL that will resolve without redirecting.
+
+            '
+          type: string
+        webhook_events_filter:
+          description: "By default, we will send requests to your webhook URL whenever there are new outputs or the prediction has finished. You can change which events trigger webhook requests by specifying `webhook_events_filter` in the prediction request:\n\n- `start`: immediately on prediction start\n- `output`: each time a prediction generates an output (note that predictions can generate multiple outputs)\n- `logs`: each time log output is generated by a prediction\n- `completed`: when the prediction reaches a terminal state (succeeded/canceled/failed)\n\nFor example, if you only wanted requests to be sent at the start and end of the prediction, you would provide:\n\n```json\n{\n  \"input\": {\n    \"text\": \"Alice\"\n  },\n  \"webhook\": \"https://example.com/my-webhook\",\n  \"webhook_events_filter\": [\"start\", \"completed\"]\n}\n```\n\nRequests for event types `output` and `logs` will be sent at most once every 500ms. If you request `start` and `completed` webhooks, then they'll always be sent regardless of throttling.\n"
+          items:
+            enum:
+            - start
+            - output
+            - logs
+            - completed
+            type: string
+          type: array
+      required:
+      - input
+      type: object
+  parameters:
+    parameters_prefer_header:
+      description: 'Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.
+
+
+        See https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.'
+      in: header
+      name: Prefer
+      schema:
+        example: wait=5
+        pattern: ^wait(=([1-9]|[1-9][0-9]|60))?$
+        type: string
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: 'All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
+
+        Example: `Authorization: Bearer r8_Hw***********************************`
+
+        Find your tokens at https://replicate.com/account/api-tokens
+
+        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Replicate HTTP API
+  url: https://replicate.com/docs/reference/http
