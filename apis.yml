@@ -6,7 +6,20 @@ description: Replicate lets you run machine learning models in the cloud with a 
   and more with a few lines of code. Replicate makes AI accessible to every software
   engineer.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/replicate.png
 tags:
 - Artificial Intelligence
 - Machine Learning
@@ -18,40 +31,342 @@ created: '2024-11-13'
 modified: '2026-05-29'
 specificationVersion: '0.19'
 apis:
-- aid: replicate:replicate
-  name: Replicate
-  description: Replicate lets you run machine learning models in the cloud with a
-    simple REST API. Access thousands of open-source models for image generation,
-    language modeling, audio synthesis, video generation, upscaling, and more. Create
-    predictions, manage deployments, fine-tune models, and run training jobs via a
-    clean API with webhooks and streaming support.
+- aid: replicate:replicate-accounts-api
+  name: Replicate Accounts API
+  description: The Accounts API from Replicate — 1 operation(s) for accounts.
   humanURL: https://replicate.com/
   tags:
   - Accounts
-  - Artificial Intelligence
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-cancel-api
+  name: Replicate Cancel API
+  description: The Cancel API from Replicate — 2 operation(s) for cancel.
+  humanURL: https://replicate.com/
+  tags:
+  - Cancel
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-cancel-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-collections-api
+  name: Replicate Collections API
+  description: The Collections API from Replicate — 2 operation(s) for collections.
+  humanURL: https://replicate.com/
+  tags:
   - Collections
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-collections-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-deployments-api
+  name: Replicate Deployments API
+  description: The Deployments API from Replicate — 3 operation(s) for deployments.
+  humanURL: https://replicate.com/
+  tags:
   - Deployments
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-deployments-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-hardware-api
+  name: Replicate Hardware API
+  description: The Hardware API from Replicate — 1 operation(s) for hardware.
+  humanURL: https://replicate.com/
+  tags:
   - Hardware
-  - Machine Learning
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-hardware-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-model-api
+  name: Replicate Model API
+  description: The Model API from Replicate — 5 operation(s) for model.
+  humanURL: https://replicate.com/
+  tags:
+  - Model
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-model-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-models-api
+  name: Replicate Models API
+  description: The Models API from Replicate — 1 operation(s) for models.
+  humanURL: https://replicate.com/
+  tags:
   - Models
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-models-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-name-api
+  name: Replicate Name API
+  description: The Name API from Replicate — 7 operation(s) for name.
+  humanURL: https://replicate.com/
+  tags:
+  - Name
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-name-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-owner-api
+  name: Replicate Owner API
+  description: The Owner API from Replicate — 7 operation(s) for owner.
+  humanURL: https://replicate.com/
+  tags:
+  - Owner
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-owner-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-predictions-api
+  name: Replicate Predictions API
+  description: The Predictions API from Replicate — 5 operation(s) for predictions.
+  humanURL: https://replicate.com/
+  tags:
   - Predictions
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-predictions-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-secrets-api
+  name: Replicate Secrets API
+  description: The Secrets API from Replicate — 1 operation(s) for secrets.
+  humanURL: https://replicate.com/
+  tags:
+  - Secrets
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-secrets-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-slug-api
+  name: Replicate Slug API
+  description: The Slug API from Replicate — 1 operation(s) for slug.
+  humanURL: https://replicate.com/
+  tags:
+  - Slug
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-slug-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-training-api
+  name: Replicate Training API
+  description: The Training API from Replicate — 2 operation(s) for training.
+  humanURL: https://replicate.com/
+  tags:
   - Training
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-training-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-trainings-api
+  name: Replicate Trainings API
+  description: The Trainings API from Replicate — 1 operation(s) for trainings.
+  humanURL: https://replicate.com/
+  tags:
+  - Trainings
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-trainings-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-version-api
+  name: Replicate Version API
+  description: The Version API from Replicate — 2 operation(s) for version.
+  humanURL: https://replicate.com/
+  tags:
+  - Version
+  properties:
+  - type: OpenAPI
+    url: openapi/replicate-version-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
+- aid: replicate:replicate-webhooks-api
+  name: Replicate Webhooks API
+  description: The Webhooks API from Replicate — 1 operation(s) for webhooks.
+  humanURL: https://replicate.com/
+  tags:
   - Webhooks
   properties:
-  - url: https://replicate.com/docs
-    type: Documentation
-  - url: https://replicate.com/docs/reference/http
-    type: OpenAPI Documentation
-  - url: openapi/replicate-openapi.yml
-    type: OpenAPI
-  - url: asyncapi/replicate-asyncapi.yml
-    type: AsyncAPI
-  - url: rules/replicate-rules.yml
-    type: SpectralRuleset
-  - url: vocabulary/replicate-vocabulary.yml
-    type: Vocabulary
-  - url: graphql/replicate-graphql.md
-    type: GraphQL
+  - type: OpenAPI
+    url: openapi/replicate-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://replicate.com/docs
+  - type: OpenAPI Documentation
+    url: https://replicate.com/docs/reference/http
+  - type: AsyncAPI
+    url: asyncapi/replicate-asyncapi.yml
+  - type: SpectralRuleset
+    url: rules/replicate-rules.yml
+  - type: Vocabulary
+    url: vocabulary/replicate-vocabulary.yml
+  - type: GraphQL
+    url: graphql/replicate-graphql.md
 common:
 - type: AgenticAccess
   url: agentic-access/replicate-agentic-access.yml
