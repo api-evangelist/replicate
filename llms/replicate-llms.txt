@@ -1,0 +1,119 @@
+# Run AI with an API
+
+Run and fine-tune open-source models. Deploy custom models at scale. All with one line of code.
+
+## What You Can Do With Replicate
+
+- Generate images
+- Generate text
+- Caption images
+- Generate music
+- Generate speech
+- Fine tune models
+- Restore images
+
+## Run Open-Source Models
+
+Our community has already published thousands of models that are ready to use in production. You can run these with one line of code.
+
+```python
+import replicate
+
+output = replicate.run(
+    "black-forest-labs/flux-schnell:f2ab8a5bfe79f02f0789a146cf5e73d2a4ff2684a98c",
+    input={
+        "prompt": "An astronaut riding a rainbow unicorn, cinematic, dramatic",
+        "num_outputs": 1,
+        "aspect_ratio": "1:1",
+        "output_format": "webp",
+        "output_quality": 90
+    }
+)
+print(output)
+```
+
+## Fine-tune Models with Your Own Data
+
+You can improve open-source models with your own data to create new models that are better suited to specific tasks. Image models like Flux can generate images of a particular person, object, or style.
+
+Train a model:
+
+```python
+import replicate
+
+training = replicate.trainings.create(
+    version="ostris/flux-dev-lora-trainer:1296f0ab2d695af5a1b5eeee6e8ec043145b",
+    input={
+        "input_images": "https://my-domain/my-input-images.zip",
+    },
+    destination="electricdreams/flux-fine-tuned"
+)
+print(training)
+```
+
+## Deploy Custom Models
+
+You aren't limited to the models on Replicate: you can deploy your own custom models using Cog, our open-source tool for packaging machine learning models.
+
+Define your environment in `cog.yaml`:
+
+```yaml
+build:
+    gpu: true
+    system_packages:
+        - "libgl1-mesa-glx"
+        - "libglib2.0-0"
+    python_version: "3.10"
+    python_packages:
+        - "torch==1.13.1"
+    predict: "predict.py:Predictor"
+```
+
+Define predictions in `predict.py`:
+
+```python
+from cog import BasePredictor, Input, Path
+import torch
+
+class Predictor(BasePredictor):
+    def setup(self):
+        """Load the model into memory to make running multiple predictions efficient"""
+        self.model = torch.load("./weights.pth")
+
+    def predict(self,
+               image: Path = Input(description="Grayscale input image")
+               ) -> Path:
+        """Run a single prediction on the model"""
+        processed_image = preprocess(image)
+        output = self.model(processed_image)
+        return postprocess(output)
+```
+
+## Pricing
+
+Pay only for what you use:
+
+- CPU: $0.000100/sec
+- Nvidia T4 GPU: $0.000225/sec
+- Nvidia A40 GPU: $0.000575/sec
+- Nvidia A40 (Large) GPU: $0.000725/sec
+- Nvidia A100 (40GB) GPU: $0.001150/sec
+- Nvidia A100 (80GB) GPU: $0.001400/sec
+- 8x Nvidia A40 (Large) GPU: $0.005800/sec
+
+## Key Features
+
+### Automatic Scaling
+If you get a ton of traffic, Replicate scales up automatically to handle the demand. If you don't get any traffic, we scale down to zero and don't charge you a thing.
+
+### Infrastructure Management
+Forget about managing infrastructure. We handle API servers, dependencies, model weights, CUDA, GPUs, and batching.
+
+### Monitoring & Logging
+Built-in metrics let you monitor model performance, while detailed logs help you debug specific predictions.
+
+## Get Started
+
+Building with Replicate and Cloudflare, you can wake up with an idea and watch it hit the front page of Hacker News by the time you go to bed.
+
+[Get started with Replicate today →](https://replicate.com)

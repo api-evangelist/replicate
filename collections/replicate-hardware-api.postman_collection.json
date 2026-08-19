@@ -1,0 +1,119 @@
+{
+  "item": [
+    {
+      "id": "2a3c4723-3413-4baf-ad13-ed1528943dfb",
+      "name": "Hardware",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "780811ad-5f11-485c-b9dd-20d1864e4b7b",
+          "name": "List Available Hardware for Models",
+          "request": {
+            "name": "List Available Hardware for Models",
+            "description": {
+              "content": "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/hardware\n```\n\nThe response will be a JSON array of hardware objects:\n\n```json\n[\n    {\"name\": \"CPU\", \"sku\": \"cpu\"},\n    {\"name\": \"Nvidia T4 GPU\", \"sku\": \"gpu-t4\"},\n    {\"name\": \"Nvidia A40 GPU\", \"sku\": \"gpu-a40-small\"},\n    {\"name\": \"Nvidia A40 (Large) GPU\", \"sku\": \"gpu-a40-large\"},\n]\n```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "hardware"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ee155a4f-be2b-4e3d-afa5-b76978d69545",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "hardware"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"string\",\n    \"sku\": \"string\"\n  },\n  {\n    \"name\": \"string\",\n    \"sku\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.replicate.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b75a4535-64c6-425c-920c-1d924a2f7bb6",
+    "name": "Replicate Accounts Hardware API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.\n\nContact Support:\n Email: team@replicate.com",
+      "type": "text/plain"
+    }
+  }
+}

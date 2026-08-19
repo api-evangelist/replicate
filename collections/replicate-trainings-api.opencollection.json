@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Replicate Accounts Trainings API",
+    "version": "1.0.0-a1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Trainings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Trainings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.replicate.com/v1/trainings"
+          },
+          "docs": "Get a paginated list of all trainings created by the user or organization associated with the provided API token.\n\nThis will include trainings created from the API and the website. It will return 100 records per page.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/trainings\n```\n\nThe response will be a paginated JSON array of training objects, sorted with the most recent training first:\n\n```json\n{\n  \"next\": null,\n  \""
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

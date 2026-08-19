@@ -1,0 +1,200 @@
+{
+  "item": [
+    {
+      "id": "7caaf19d-878c-4a21-b9a2-e90ef4462135",
+      "name": "Models",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9ceaba17-bcdf-47d8-8a33-41da05c344e9",
+          "name": "List Public Models",
+          "request": {
+            "name": "List Public Models",
+            "description": {
+              "content": "Get a paginated list of public models.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models\n```\n\nThe response will be a paginated JSON array of model objects:\n\n```json\n{\n  \"next\": null,\n  \"previous\": null,\n  \"results\": [\n    {\n      \"url\": \"https://replicate.com/acme/hello-world\",\n      \"owner\": \"acme\",\n      \"name\": \"hello-world\",\n      \"description\": \"A tiny model that says hello\",\n      \"visibility\": \"public\",\n      \"github_url\": \"https://github.com/replicate/cog-examples\",\n      \"paper_url\": null,\n      \"license_url\": null,\n      \"run_count\": 5681081,\n      \"cover_image_url\": \"...\",\n      \"default_example\": {...},\n      \"latest_version\": {...}\n    }\n  ]\n}\n```\n\nThe `cover_image_url` string is an HTTPS URL for an image file. This can be:\n\n- An image uploaded by the model author.\n- The output file of the example prediction, if the model author has not set a cover image.\n- The input file of the example prediction, if the model author has not set a cover image and the example prediction has no output file.\n- A generic fallback image.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b355fb51-d7f2-4267-a339-3aa27a832994",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c6b13f5f-9762-4ff7-abc2-409e4908e8ee",
+          "name": "Create a Model",
+          "request": {
+            "name": "Create a Model",
+            "description": {
+              "content": "Create a model.\n\nExample cURL request:\n\n```console\ncurl -s -X POST \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"owner\": \"alice\", \"name\": \"my-model\", \"description\": \"An example model\", \"visibility\": \"public\", \"hardware\": \"cpu\"}' \\\n  https://api.replicate.com/v1/models\n```\n\nThe response will be a model object in the following format:\n\n```json\n{\n  \"url\": \"https://replicate.com/alice/my-model\",\n  \"owner\": \"alice\",\n  \"name\": \"my-model\",\n  \"description\": \"An example model\",\n  \"visibility\": \"public\",\n  \"github_url\": null,\n  \"paper_url\": null,\n  \"license_url\": null,\n  \"run_count\": 0,\n  \"cover_image_url\": null,\n  \"default_example\": null,\n  \"latest_version\": null,\n}\n```\n\nNote that there is a limit of 1,000 models per account. For most purposes, we recommend using a single model and pushing new [versions](https://replicate.com/docs/how-does-replicate-work#versions) of the model as you make changes to it.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"owner\": \"<string>\",\n  \"name\": \"<string>\",\n  \"visibility\": \"<string>\",\n  \"hardware\": \"<string>\",\n  \"cover_image_url\": \"<string>\",\n  \"description\": \"<string>\",\n  \"github_url\": \"<string>\",\n  \"license_url\": \"<string>\",\n  \"paper_url\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "bac3bca9-2453-4299-a4ca-dfa1f1085f0b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"owner\": \"<string>\",\n  \"name\": \"<string>\",\n  \"visibility\": \"<string>\",\n  \"hardware\": \"<string>\",\n  \"cover_image_url\": \"<string>\",\n  \"description\": \"<string>\",\n  \"github_url\": \"<string>\",\n  \"license_url\": \"<string>\",\n  \"paper_url\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.replicate.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "05607525-5376-4dbb-978b-d4437c8e58af",
+    "name": "Replicate Accounts Models API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.\n\nContact Support:\n Email: team@replicate.com",
+      "type": "text/plain"
+    }
+  }
+}

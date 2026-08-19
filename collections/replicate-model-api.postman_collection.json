@@ -1,0 +1,944 @@
+{
+  "item": [
+    {
+      "id": "7ec5cf47-3aa8-4610-abf0-6167d9b872de",
+      "name": "Model",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5b3abc73-ce78-41c6-9298-12a621d9fb5c",
+          "name": "Delete a Model",
+          "request": {
+            "name": "Delete a Model",
+            "description": {
+              "content": "Delete a model\n\nModel deletion has some restrictions:\n\n- You can only delete models you own.\n- You can only delete private models.\n- You can only delete models that have no versions associated with them. Currently you'll need to [delete the model's versions](#models.versions.delete) before you can delete the model itself.\n\nExample cURL request:\n\n```command\ncurl -s -X DELETE \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models/replicate/hello-world\n```\n\nThe response will be an empty 204, indicating the model has been deleted.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                ":model_owner",
+                ":model_name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_owner",
+                  "description": "(Required) The name of the user or organization that owns the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_name",
+                  "description": "(Required) The name of the model.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1cfd3468-32fa-43f4-8e98-6ecc4b4306e2",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a35a8766-e581-415d-9a92-f7c8da4a1cc7",
+          "name": "Get a Model",
+          "request": {
+            "name": "Get a Model",
+            "description": {
+              "content": "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models/replicate/hello-world\n```\n\nThe response will be a model object in the following format:\n\n```json\n{\n  \"url\": \"https://replicate.com/replicate/hello-world\",\n  \"owner\": \"replicate\",\n  \"name\": \"hello-world\",\n  \"description\": \"A tiny model that says hello\",\n  \"visibility\": \"public\",\n  \"github_url\": \"https://github.com/replicate/cog-examples\",\n  \"paper_url\": null,\n  \"license_url\": null,\n  \"run_count\": 5681081,\n  \"cover_image_url\": \"...\",\n  \"default_example\": {...},\n  \"latest_version\": {...},\n}\n```\n\nThe `cover_image_url` string is an HTTPS URL for an image file. This can be:\n\n- An image uploaded by the model author.\n- The output file of the example prediction, if the model author has not set a cover image.\n- The input file of the example prediction, if the model author has not set a cover image and the example prediction has no output file.\n- A generic fallback image.\n\nThe `default_example` object is a [prediction](#predictions.get) created with this model.\n\nThe `latest_version` object is the model's most recently pushed [version](#models.versions.get).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                ":model_owner",
+                ":model_name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_owner",
+                  "description": "(Required) The name of the user or organization that owns the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_name",
+                  "description": "(Required) The name of the model.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9bbc206b-d7e0-43d9-af02-19b8216e6f2f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9904961d-a08e-4cc5-af89-e078bc0840fc",
+          "name": "Create a Prediction Using an Official Model",
+          "request": {
+            "name": "Create a Prediction Using an Official Model",
+            "description": {
+              "content": "Create a prediction for the deployment and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"input\": {\"prompt\": \"Write a short poem about the weather.\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/models/meta/meta-llama-3-70b-instruct/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction will be returned in a `\"starting\"` state and need to be retrieved using the `predictions.get` endpiont.\n\nFor a complete overview of the `deployments.predictions.create` API check out our documentation on [creating a prediction](https://replicate.com/docs/topics/predictions/create-a-prediction) which covers a variety of use cases.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                ":model_owner",
+                ":model_name",
+                "predictions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_owner",
+                  "description": "(Required) The name of the user or organization that owns the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_name",
+                  "description": "(Required) The name of the model.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.\n\nSee https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.",
+                "key": "Prefer",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"<object>\",\n  \"stream\": \"<boolean>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fa66e9b0-89dd-40b5-b6b1-bb2344d09cac",
+              "name": "Prediction has been created. If the `Prefer: wait` header is provided it will contain the final output.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name",
+                    "predictions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.\n\nSee https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.",
+                    "key": "Prefer",
+                    "value": "wait=5"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"input\": \"<object>\",\n  \"stream\": \"<boolean>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0424dfa2-924a-4dff-8518-f1b83e342625",
+              "name": "Prediction has been created but does not yet have all outputs",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name",
+                    "predictions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.\n\nSee https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.",
+                    "key": "Prefer",
+                    "value": "wait=5"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"input\": \"<object>\",\n  \"stream\": \"<boolean>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "245f337e-35bc-4466-b82a-14d4371b70c9",
+          "name": "List Model Versions",
+          "request": {
+            "name": "List Model Versions",
+            "description": {
+              "content": "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models/replicate/hello-world/versions\n```\n\nThe response will be a JSON array of model version objects, sorted with the most recent version first:\n\n```json\n{\n  \"next\": null,\n  \"previous\": null,\n  \"results\": [\n    {\n      \"id\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\",\n      \"created_at\": \"2022-04-26T19:29:04.418669Z\",\n      \"cog_version\": \"0.3.0\",\n      \"openapi_schema\": {...}\n    }\n  ]\n}\n```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                ":model_owner",
+                ":model_name",
+                "versions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_owner",
+                  "description": "(Required) The name of the user or organization that owns the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_name",
+                  "description": "(Required) The name of the model.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "46d882ba-0232-4262-9bbd-eaa28d3363ae",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name",
+                    "versions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "39781576-6b24-4ed1-baf2-594d40d12730",
+          "name": "Delete a Model Version",
+          "request": {
+            "name": "Delete a Model Version",
+            "description": {
+              "content": "Delete a model version and all associated predictions, including all output files.\n\nModel version deletion has some restrictions:\n\n- You can only delete versions from models you own.\n- You can only delete versions from private models.\n- You cannot delete a version if someone other than you has run predictions with it.\n- You cannot delete a version if it is being used as the base model for a fine tune/training.\n- You cannot delete a version if it has an associated deployment.\n- You cannot delete a version if another model version is overridden to use it.\n\nExample cURL request:\n\n```command\ncurl -s -X DELETE \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models/replicate/hello-world/versions/5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\n```\n\nThe response will be an empty 202, indicating the deletion request has been accepted. It might take a few minutes to be processed.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                ":model_owner",
+                ":model_name",
+                "versions",
+                ":version_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_owner",
+                  "description": "(Required) The name of the user or organization that owns the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_name",
+                  "description": "(Required) The name of the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "version_id",
+                  "description": "(Required) The ID of the version.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "dd153f7b-51d4-466f-8a0c-1e28b78b1f43",
+              "name": "Deletion request has been accepted. It might take a few minutes to be processed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name",
+                    "versions",
+                    ":version_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "version_id",
+                      "description": "(Required) The ID of the version.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "77c407f1-9bc2-4835-8d66-c459459464ea",
+          "name": "Get a Model Version",
+          "request": {
+            "name": "Get a Model Version",
+            "description": {
+              "content": "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/models/replicate/hello-world/versions/5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\n```\n\nThe response will be the version object:\n\n```json\n{\n  \"id\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\",\n  \"created_at\": \"2022-04-26T19:29:04.418669Z\",\n  \"cog_version\": \"0.3.0\",\n  \"openapi_schema\": {...}\n}\n```\n\nEvery model describes its inputs and outputs with [OpenAPI Schema Objects](https://spec.openapis.org/oas/latest.html#schemaObject) in the `openapi_schema` property.\n\nThe `openapi_schema.components.schemas.Input` property for the [replicate/hello-world](https://replicate.com/replicate/hello-world) model looks like this:\n\n```json\n{\n  \"type\": \"object\",\n  \"title\": \"Input\",\n  \"required\": [\n    \"text\"\n  ],\n  \"properties\": {\n    \"text\": {\n      \"x-order\": 0,\n      \"type\": \"string\",\n      \"title\": \"Text\",\n      \"description\": \"Text to prefix with 'hello '\"\n    }\n  }\n}\n```\n\nThe `openapi_schema.components.schemas.Output` property for the [replicate/hello-world](https://replicate.com/replicate/hello-world) model looks like this:\n\n```json\n{\n  \"type\": \"string\",\n  \"title\": \"Output\"\n}\n```\n\nFor more details, see the docs on [Cog's supported input and output types](https://github.com/replicate/cog/blob/75b7802219e7cd4cee845e34c4c22139558615d4/docs/python.md#input-and-output-types)\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                ":model_owner",
+                ":model_name",
+                "versions",
+                ":version_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_owner",
+                  "description": "(Required) The name of the user or organization that owns the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_name",
+                  "description": "(Required) The name of the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "version_id",
+                  "description": "(Required) The ID of the version.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ad59e4aa-ed77-40a0-ad86-58405ad6b774",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name",
+                    "versions",
+                    ":version_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "version_id",
+                      "description": "(Required) The ID of the version.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "01af8251-0d69-4d79-8dc2-58695e895719",
+          "name": "Create a Training",
+          "request": {
+            "name": "Create a Training",
+            "description": {
+              "content": "Start a new training of the model version you specify.\n\nExample request body:\n\n```json\n{\n  \"destination\": \"{new_owner}/{new_name}\",\n  \"input\": {\n    \"train_data\": \"https://example.com/my-input-images.zip\",\n  },\n  \"webhook\": \"https://example.com/my-webhook\",\n}\n```\n\nExample cURL request:\n\n```console\ncurl -s -X POST \\\n  -d '{\"destination\": \"{new_owner}/{new_name}\", \"input\": {\"input_images\": \"https://example.com/my-input-images.zip\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/models/stability-ai/sdxl/versions/da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf/trainings\n```\n\nThe response will be the training object:\n\n```json\n{\n  \"id\": \"zz4ibbonubfz7carwiefibzgga\",\n  \"model\": \"stability-ai/sdxl\",\n  \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n  \"input\": {\n    \"input_images\": \"https://example.com/my-input-images.zip\"\n  },\n  \"logs\": \"\",\n  \"error\": null,\n  \"status\": \"starting\",\n  \"created_at\": \"2023-09-08T16:32:56.990893084Z\",\n  \"urls\": {\n    \"cancel\": \"https://api.replicate.com/v1/predictions/zz4ibbonubfz7carwiefibzgga/cancel\",\n    \"get\": \"https://api.replicate.com/v1/predictions/zz4ibbonubfz7carwiefibzgga\"\n  }\n}\n```\n\nAs models can take several minutes or more to train, the result will not be available immediately. To get the final result of the training you should either provide a `webhook` HTTPS URL for us to call when the results are ready, or poll the [get a training](#trainings.get) endpoint until it has finished.\n\nWhen a training completes, it creates a new [version](https://replicate.com/docs/how-does-replicate-work#terminology) of the model at the specified destination.\n\nTo find some models to train on, check out the [trainable language models collection](https://replicate.com/collections/trainable-language-models).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "models",
+                ":model_owner",
+                ":model_name",
+                "versions",
+                ":version_id",
+                "trainings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_owner",
+                  "description": "(Required) The name of the user or organization that owns the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "model_name",
+                  "description": "(Required) The name of the model.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "version_id",
+                  "description": "(Required) The ID of the version.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destination\": \"<string>\",\n  \"input\": \"<object>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8287822d-0226-43a9-bc8b-e169acbb969a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "models",
+                    ":model_owner",
+                    ":model_name",
+                    "versions",
+                    ":version_id",
+                    "trainings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_owner",
+                      "description": "(Required) The name of the user or organization that owns the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "model_name",
+                      "description": "(Required) The name of the model.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "version_id",
+                      "description": "(Required) The ID of the version.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"destination\": \"<string>\",\n  \"input\": \"<object>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.replicate.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "db44ba66-d185-4cea-9bbc-5ec41f82dcdc",
+    "name": "Replicate Accounts Model API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.\n\nContact Support:\n Email: team@replicate.com",
+      "type": "text/plain"
+    }
+  }
+}

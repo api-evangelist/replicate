@@ -1,0 +1,164 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Replicate Accounts Predictions API",
+    "version": "1.0.0-a1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Predictions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a Prediction Using a Deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/deployments/:deployment_owner/:deployment_name/predictions",
+            "headers": [
+              {
+                "name": "Prefer",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "deployment_owner",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user or organization that owns the deployment.\n"
+              },
+              {
+                "name": "deployment_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the deployment.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a prediction for the deployment and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"input\": {\"prompt\": \"A photo of a bear riding a bicycle over the moon\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction wi"
+        },
+        {
+          "info": {
+            "name": "Create a Prediction Using an Official Model",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/models/:model_owner/:model_name/predictions",
+            "headers": [
+              {
+                "name": "Prefer",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "model_owner",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user or organization that owns the model.\n"
+              },
+              {
+                "name": "model_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the model.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a prediction for the deployment and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"input\": {\"prompt\": \"Write a short poem about the weather.\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/models/meta/meta-llama-3-70b-instruct/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction will be returne"
+        },
+        {
+          "info": {
+            "name": "List Predictions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.replicate.com/v1/predictions"
+          },
+          "docs": "Get a paginated list of all predictions created by the user or organization associated with the provided API token.\n\nThis will include predictions created from the API and the website. It will return 100 records per page.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/predictions\n```\n\nThe response will be a paginated JSON array of prediction objects, sorted with the most recent prediction first:\n\n```json\n{\n  \"next\":"
+        },
+        {
+          "info": {
+            "name": "Create a Prediction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/predictions",
+            "headers": [
+              {
+                "name": "Prefer",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a prediction for the model version and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"version\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\", \"input\": {\"text\": \"Alice\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction will "
+        },
+        {
+          "info": {
+            "name": "Get a Prediction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.replicate.com/v1/predictions/:prediction_id",
+            "params": [
+              {
+                "name": "prediction_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the prediction to get.\n"
+              }
+            ]
+          },
+          "docs": "Get the current state of a prediction.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/predictions/gm3qorzdhgbfurvjtvhg6dckhu\n```\n\nThe response will be the prediction object:\n\n```json\n{\n  \"id\": \"gm3qorzdhgbfurvjtvhg6dckhu\",\n  \"model\": \"replicate/hello-world\",\n  \"version\": \"5c7d5dc6dd8bf75c1acaa8565735e7986bc5b66206b55cca93cb72c9bf15ccaa\",\n  \"input\": {\n    \"text\": \"Alice\"\n  },\n  \"logs\": \"\",\n  \"output\": \"hello Alice\",\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a Prediction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/predictions/:prediction_id/cancel",
+            "params": [
+              {
+                "name": "prediction_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the prediction to cancel.\n"
+              }
+            ]
+          },
+          "docs": "Cancel a Prediction"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

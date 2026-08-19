@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Replicate Accounts API",
+    "version": "1.0.0-a1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the Authenticated Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.replicate.com/v1/account"
+          },
+          "docs": "Returns information about the user or organization associated with the provided API token.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/account\n```\n\nThe response will be a JSON object describing the account:\n\n```json\n{\n  \"type\": \"organization\",\n  \"username\": \"acme\",\n  \"name\": \"Acme Corp, Inc.\",\n  \"github_url\": \"https://github.com/acme\",\n}\n```\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

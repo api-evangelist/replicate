@@ -1,0 +1,775 @@
+{
+  "item": [
+    {
+      "id": "86a91c3d-5161-499f-a137-76e04cffcbcf",
+      "name": "Deployments",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "683bc413-84aa-4922-a28f-c2ae55cb9748",
+          "name": "List Deployments",
+          "request": {
+            "name": "List Deployments",
+            "description": {
+              "content": "Get a list of deployments associated with the current account, including the latest release configuration for each deployment.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/deployments\n```\n\nThe response will be a paginated JSON array of deployment objects, sorted with the most recent deployment first:\n\n```json\n{\n  \"next\": \"http://api.replicate.com/v1/deployments?cursor=cD0yMDIzLTA2LTA2KzIzJTNBNDAlM0EwOC45NjMwMDAlMkIwMCUzQTAw\",\n  \"previous\": null,\n  \"results\": [\n    {\n      \"owner\": \"replicate\",\n      \"name\": \"my-app-image-generator\",\n      \"current_release\": {\n        \"number\": 1,\n        \"model\": \"stability-ai/sdxl\",\n        \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n        \"created_at\": \"2024-02-15T16:32:57.018467Z\",\n        \"created_by\": {\n          \"type\": \"organization\",\n          \"username\": \"acme\",\n          \"name\": \"Acme Corp, Inc.\",\n          \"github_url\": \"https://github.com/acme\",\n        },\n        \"configuration\": {\n          \"hardware\": \"gpu-t4\",\n          \"min_instances\": 1,\n          \"max_instances\": 5\n        }\n      }\n    }\n  ]\n}\n```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "deployments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d25ada40-dd58-43e6-a14d-5ed897499021",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"next\": \"string\",\n  \"previous\": \"string\",\n  \"results\": [\n    {\n      \"current_release\": {\n        \"configuration\": {\n          \"hardware\": \"string\",\n          \"max_instances\": 7948,\n          \"min_instances\": 1746\n        },\n        \"created_at\": \"1971-11-12T03:21:57.136Z\",\n        \"created_by\": {\n          \"github_url\": \"http://LZovjbNwDDFkXnCZmPffIUxeSNP.qjHVKBwuOEfE7k6EtbJeTSCAHT\",\n          \"name\": \"string\",\n          \"type\": \"user\",\n          \"username\": \"string\"\n        },\n        \"model\": \"string\",\n        \"number\": 7000,\n        \"version\": \"string\"\n      },\n      \"name\": \"string\",\n      \"owner\": \"string\"\n    },\n    {\n      \"current_release\": {\n        \"configuration\": {\n          \"hardware\": \"string\",\n          \"max_instances\": 4666,\n          \"min_instances\": 8977\n        },\n        \"created_at\": \"1997-09-03T10:56:58.969Z\",\n        \"created_by\": {\n          \"github_url\": \"https://LxGmGbvuBQn.byrxV2N.SMXB-3SyvFLiMjF3ikkXveJl.\",\n          \"name\": \"string\",\n          \"type\": \"user\",\n          \"username\": \"string\"\n        },\n        \"model\": \"string\",\n        \"number\": 6270,\n        \"version\": \"string\"\n      },\n      \"name\": \"string\",\n      \"owner\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7cfe4623-fb2f-401e-aaea-e73bdf5103df",
+          "name": "Create a Deployment",
+          "request": {
+            "name": "Create a Deployment",
+            "description": {
+              "content": "Create a new deployment:\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -X POST \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n        \"name\": \"my-app-image-generator\",\n        \"model\": \"stability-ai/sdxl\",\n        \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n        \"hardware\": \"gpu-t4\",\n        \"min_instances\": 0,\n        \"max_instances\": 3\n      }' \\\n  https://api.replicate.com/v1/deployments\n```\n\nThe response will be a JSON object describing the deployment:\n\n```json\n{\n  \"owner\": \"acme\",\n  \"name\": \"my-app-image-generator\",\n  \"current_release\": {\n    \"number\": 1,\n    \"model\": \"stability-ai/sdxl\",\n    \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n    \"created_at\": \"2024-02-15T16:32:57.018467Z\",\n    \"created_by\": {\n      \"type\": \"organization\",\n      \"username\": \"acme\",\n      \"name\": \"Acme Corp, Inc.\",\n      \"github_url\": \"https://github.com/acme\",\n    },\n    \"configuration\": {\n      \"hardware\": \"gpu-t4\",\n      \"min_instances\": 1,\n      \"max_instances\": 5\n    }\n  }\n}\n```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "deployments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"model\": \"<string>\",\n  \"version\": \"<string>\",\n  \"hardware\": \"<string>\",\n  \"min_instances\": \"<integer>\",\n  \"max_instances\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f3fbe6ec-28a4-40de-9d5b-ac6aced6dd7f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "deployments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"model\": \"<string>\",\n  \"version\": \"<string>\",\n  \"hardware\": \"<string>\",\n  \"min_instances\": \"<integer>\",\n  \"max_instances\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"current_release\": {\n    \"configuration\": {\n      \"hardware\": \"string\",\n      \"max_instances\": 4584,\n      \"min_instances\": 2578\n    },\n    \"created_at\": \"2012-05-21T11:39:16.639Z\",\n    \"created_by\": {\n      \"github_url\": \"https://IaHVmvgxogJZBaeLSQIRR.xovR+C1i5uEey\",\n      \"name\": \"string\",\n      \"type\": \"organization\",\n      \"username\": \"string\"\n    },\n    \"model\": \"string\",\n    \"number\": 5840,\n    \"version\": \"string\"\n  },\n  \"name\": \"string\",\n  \"owner\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fd571cf0-ccfe-494e-8a35-88a6a4c6f6a2",
+          "name": "Delete a Deployment",
+          "request": {
+            "name": "Delete a Deployment",
+            "description": {
+              "content": "Delete a deployment\n\nDeployment deletion has some restrictions:\n\n- You can only delete deployments that have been offline and unused for at least 15 minutes.\n\nExample cURL request:\n\n```command\ncurl -s -X DELETE \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator\n```\n\nThe response will be an empty 204, indicating the deployment has been deleted.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "deployments",
+                ":deployment_owner",
+                ":deployment_name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_owner",
+                  "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_name",
+                  "description": "(Required) The name of the deployment.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d6ddd281-2689-463e-9f6c-c614157e70c1",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "deployments",
+                    ":deployment_owner",
+                    ":deployment_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_owner",
+                      "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_name",
+                      "description": "(Required) The name of the deployment.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "672c1916-af61-4397-96a8-9dea81b0b2bc",
+          "name": "Get a Deployment",
+          "request": {
+            "name": "Get a Deployment",
+            "description": {
+              "content": "Get information about a deployment by name including the current release.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/deployments/replicate/my-app-image-generator\n```\n\nThe response will be a JSON object describing the deployment:\n\n```json\n{\n  \"owner\": \"acme\",\n  \"name\": \"my-app-image-generator\",\n  \"current_release\": {\n    \"number\": 1,\n    \"model\": \"stability-ai/sdxl\",\n    \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n    \"created_at\": \"2024-02-15T16:32:57.018467Z\",\n    \"created_by\": {\n      \"type\": \"organization\",\n      \"username\": \"acme\",\n      \"name\": \"Acme Corp, Inc.\",\n      \"github_url\": \"https://github.com/acme\",\n    },\n    \"configuration\": {\n      \"hardware\": \"gpu-t4\",\n      \"min_instances\": 1,\n      \"max_instances\": 5\n    }\n  }\n}\n```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "deployments",
+                ":deployment_owner",
+                ":deployment_name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_owner",
+                  "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_name",
+                  "description": "(Required) The name of the deployment.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0bd6f363-2f5c-49c6-99ae-ff286a113362",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "deployments",
+                    ":deployment_owner",
+                    ":deployment_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_owner",
+                      "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_name",
+                      "description": "(Required) The name of the deployment.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"current_release\": {\n    \"configuration\": {\n      \"hardware\": \"string\",\n      \"max_instances\": 4584,\n      \"min_instances\": 2578\n    },\n    \"created_at\": \"2012-05-21T11:39:16.639Z\",\n    \"created_by\": {\n      \"github_url\": \"https://IaHVmvgxogJZBaeLSQIRR.xovR+C1i5uEey\",\n      \"name\": \"string\",\n      \"type\": \"organization\",\n      \"username\": \"string\"\n    },\n    \"model\": \"string\",\n    \"number\": 5840,\n    \"version\": \"string\"\n  },\n  \"name\": \"string\",\n  \"owner\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4e54d352-99f8-4d77-b7da-eb3492d3ed65",
+          "name": "Update a Deployment",
+          "request": {
+            "name": "Update a Deployment",
+            "description": {
+              "content": "Update properties of an existing deployment, including hardware, min/max instances, and the deployment's underlying model [version](https://replicate.com/docs/how-does-replicate-work#versions).\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -X PATCH \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"min_instances\": 3, \"max_instances\": 10}' \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator\n```\n\nThe response will be a JSON object describing the deployment:\n\n```json\n{\n  \"owner\": \"acme\",\n  \"name\": \"my-app-image-generator\",\n  \"current_release\": {\n    \"number\": 2,\n    \"model\": \"stability-ai/sdxl\",\n    \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n    \"created_at\": \"2024-02-15T16:32:57.018467Z\",\n    \"created_by\": {\n      \"type\": \"organization\",\n      \"username\": \"acme\",\n      \"name\": \"Acme Corp, Inc.\",\n      \"github_url\": \"https://github.com/acme\",\n    },\n    \"configuration\": {\n      \"hardware\": \"gpu-t4\",\n      \"min_instances\": 3,\n      \"max_instances\": 10\n    }\n  }\n}\n```\n\nUpdating any deployment properties will increment the `number` field of the `current_release`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "deployments",
+                ":deployment_owner",
+                ":deployment_name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_owner",
+                  "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_name",
+                  "description": "(Required) The name of the deployment.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hardware\": \"<string>\",\n  \"max_instances\": \"<integer>\",\n  \"min_instances\": \"<integer>\",\n  \"version\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "261be70f-73cd-41f3-b846-63b1b0a70b6f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "deployments",
+                    ":deployment_owner",
+                    ":deployment_name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_owner",
+                      "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_name",
+                      "description": "(Required) The name of the deployment.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hardware\": \"<string>\",\n  \"max_instances\": \"<integer>\",\n  \"min_instances\": \"<integer>\",\n  \"version\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"current_release\": {\n    \"configuration\": {\n      \"hardware\": \"string\",\n      \"max_instances\": 4584,\n      \"min_instances\": 2578\n    },\n    \"created_at\": \"2012-05-21T11:39:16.639Z\",\n    \"created_by\": {\n      \"github_url\": \"https://IaHVmvgxogJZBaeLSQIRR.xovR+C1i5uEey\",\n      \"name\": \"string\",\n      \"type\": \"organization\",\n      \"username\": \"string\"\n    },\n    \"model\": \"string\",\n    \"number\": 5840,\n    \"version\": \"string\"\n  },\n  \"name\": \"string\",\n  \"owner\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "091f4682-fb4e-457e-bb45-54731f6682f7",
+          "name": "Create a Prediction Using a Deployment",
+          "request": {
+            "name": "Create a Prediction Using a Deployment",
+            "description": {
+              "content": "Create a prediction for the deployment and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"input\": {\"prompt\": \"A photo of a bear riding a bicycle over the moon\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction will be returned in a `\"starting\"` state and need to be retrieved using the `predictions.get` endpiont.\n\nFor a complete overview of the `deployments.predictions.create` API check out our documentation on [creating a prediction](https://replicate.com/docs/topics/predictions/create-a-prediction) which covers a variety of use cases.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "deployments",
+                ":deployment_owner",
+                ":deployment_name",
+                "predictions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_owner",
+                  "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "deployment_name",
+                  "description": "(Required) The name of the deployment.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.\n\nSee https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.",
+                "key": "Prefer",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"<object>\",\n  \"stream\": \"<boolean>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e7f87d11-fe7e-4739-b39f-e809bccbca95",
+              "name": "Prediction has been created. If the `Prefer: wait` header is provided it will contain the final output.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "deployments",
+                    ":deployment_owner",
+                    ":deployment_name",
+                    "predictions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_owner",
+                      "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_name",
+                      "description": "(Required) The name of the deployment.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.\n\nSee https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.",
+                    "key": "Prefer",
+                    "value": "wait=5"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"input\": \"<object>\",\n  \"stream\": \"<boolean>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "59a87223-d821-40cc-9145-37237993548d",
+              "name": "Prediction has been created but does not yet have all outputs",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "deployments",
+                    ":deployment_owner",
+                    ":deployment_name",
+                    "predictions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_owner",
+                      "description": "(Required) The name of the user or organization that owns the deployment.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "deployment_name",
+                      "description": "(Required) The name of the deployment.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.\n\nSee https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.",
+                    "key": "Prefer",
+                    "value": "wait=5"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"input\": \"<object>\",\n  \"stream\": \"<boolean>\",\n  \"webhook\": \"<string>\",\n  \"webhook_events_filter\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.replicate.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "786fe6d6-5286-4ef3-89ac-0ab429ed1d13",
+    "name": "Replicate Accounts Deployments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.\n\nContact Support:\n Email: team@replicate.com",
+      "type": "text/plain"
+    }
+  }
+}

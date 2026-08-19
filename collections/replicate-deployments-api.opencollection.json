@@ -1,0 +1,164 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Replicate Accounts Deployments API",
+    "version": "1.0.0-a1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Deployments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Deployments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.replicate.com/v1/deployments"
+          },
+          "docs": "Get a list of deployments associated with the current account, including the latest release configuration for each deployment.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/deployments\n```\n\nThe response will be a paginated JSON array of deployment objects, sorted with the most recent deployment first:\n\n```json\n{\n  \"next\": \"http://api.replicate.com/v1/deployments?cursor=cD0yMDIzLTA2LTA2KzIzJTNBNDAlM0EwOC45NjMwMDAlMk"
+        },
+        {
+          "info": {
+            "name": "Create a Deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/deployments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new deployment:\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -X POST \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n        \"name\": \"my-app-image-generator\",\n        \"model\": \"stability-ai/sdxl\",\n        \"version\": \"da77bc59ee60423279fd632efb4795ab731d9e3ca9705ef3341091fb989b7eaf\",\n        \"hardware\": \"gpu-t4\",\n        \"min_instances\": 0,\n        \"max_instances\": 3\n      }' \\\n  https://api.replicate.com/v1/deployments\n```\n\nThe res"
+        },
+        {
+          "info": {
+            "name": "Get a Deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.replicate.com/v1/deployments/:deployment_owner/:deployment_name",
+            "params": [
+              {
+                "name": "deployment_owner",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user or organization that owns the deployment.\n"
+              },
+              {
+                "name": "deployment_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the deployment.\n"
+              }
+            ]
+          },
+          "docs": "Get information about a deployment by name including the current release.\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/deployments/replicate/my-app-image-generator\n```\n\nThe response will be a JSON object describing the deployment:\n\n```json\n{\n  \"owner\": \"acme\",\n  \"name\": \"my-app-image-generator\",\n  \"current_release\": {\n    \"number\": 1,\n    \"model\": \"stability-ai/sdxl\",\n    \"version\": \"da77bc59ee60423279fd632efb4795"
+        },
+        {
+          "info": {
+            "name": "Update a Deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.replicate.com/v1/deployments/:deployment_owner/:deployment_name",
+            "params": [
+              {
+                "name": "deployment_owner",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user or organization that owns the deployment.\n"
+              },
+              {
+                "name": "deployment_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the deployment.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update properties of an existing deployment, including hardware, min/max instances, and the deployment's underlying model [version](https://replicate.com/docs/how-does-replicate-work#versions).\n\nExample cURL request:\n\n```console\ncurl -s \\\n  -X PATCH \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"min_instances\": 3, \"max_instances\": 10}' \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator\n```\n\nThe response will be a JSON o"
+        },
+        {
+          "info": {
+            "name": "Delete a Deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.replicate.com/v1/deployments/:deployment_owner/:deployment_name",
+            "params": [
+              {
+                "name": "deployment_owner",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user or organization that owns the deployment.\n"
+              },
+              {
+                "name": "deployment_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the deployment.\n"
+              }
+            ]
+          },
+          "docs": "Delete a deployment\n\nDeployment deletion has some restrictions:\n\n- You can only delete deployments that have been offline and unused for at least 15 minutes.\n\nExample cURL request:\n\n```command\ncurl -s -X DELETE \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator\n```\n\nThe response will be an empty 204, indicating the deployment has been deleted.\n"
+        },
+        {
+          "info": {
+            "name": "Create a Prediction Using a Deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/deployments/:deployment_owner/:deployment_name/predictions",
+            "headers": [
+              {
+                "name": "Prefer",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "deployment_owner",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user or organization that owns the deployment.\n"
+              },
+              {
+                "name": "deployment_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the deployment.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a prediction for the deployment and inputs you provide.\n\nExample cURL request:\n\n```console\ncurl -s -X POST -H 'Prefer: wait' \\\n  -d '{\"input\": {\"prompt\": \"A photo of a bear riding a bicycle over the moon\"}}' \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  -H 'Content-Type: application/json' \\\n  https://api.replicate.com/v1/deployments/acme/my-app-image-generator/predictions\n```\n\nThe request will wait up to 60 seconds for the model to run. If this time is exceeded the prediction wi"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,62 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Replicate Accounts Cancel API",
+    "version": "1.0.0-a1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cancel",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Cancel a Prediction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/predictions/:prediction_id/cancel",
+            "params": [
+              {
+                "name": "prediction_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the prediction to cancel.\n"
+              }
+            ]
+          },
+          "docs": "Cancel a Prediction"
+        },
+        {
+          "info": {
+            "name": "Cancel a Training",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.replicate.com/v1/trainings/:training_id/cancel",
+            "params": [
+              {
+                "name": "training_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the training you want to cancel.\n"
+              }
+            ]
+          },
+          "docs": "Cancel a Training"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

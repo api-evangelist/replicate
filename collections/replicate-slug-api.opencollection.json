@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Replicate Accounts Slug API",
+    "version": "1.0.0-a1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Slug",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a Collection of Models",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.replicate.com/v1/collections/:collection_slug",
+            "params": [
+              {
+                "name": "collection_slug",
+                "value": "",
+                "type": "path",
+                "description": "The slug of the collection, like `super-resolution` or `image-restoration`. See [replicate.com/collections](https://replicate.com/collections).\n"
+              }
+            ]
+          },
+          "docs": "Example cURL request:\n\n```console\ncurl -s \\\n  -H \"Authorization: Bearer $REPLICATE_API_TOKEN\" \\\n  https://api.replicate.com/v1/collections/super-resolution\n```\n\nThe response will be a collection object with a nested list of the models in that collection:\n\n```json\n{\n  \"name\": \"Super resolution\",\n  \"slug\": \"super-resolution\",\n  \"description\": \"Upscaling models that create high-quality images from low-quality images.\",\n  \"models\": [...]\n}\n```\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
