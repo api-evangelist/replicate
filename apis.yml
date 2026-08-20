@@ -22,6 +22,12 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/replicate.png
 tags:
 - Artificial Intelligence
+- Machine-Learning
+- Image-Generation
+- Language Models
+- Model Deployment
+tags_raw:
+- Artificial Intelligence
 - Machine Learning
 - Image Generation
 - Language Models
@@ -36,6 +42,8 @@ apis:
   description: The Accounts API from Replicate — 1 operation(s) for accounts.
   humanURL: https://replicate.com/
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -78,6 +86,8 @@ apis:
   description: The Collections API from Replicate — 2 operation(s) for collections.
   humanURL: https://replicate.com/
   tags:
+  - Collection
+  tags_raw:
   - Collections
   properties:
   - type: OpenAPI
@@ -99,6 +109,8 @@ apis:
   description: The Deployments API from Replicate — 3 operation(s) for deployments.
   humanURL: https://replicate.com/
   tags:
+  - Deployment
+  tags_raw:
   - Deployments
   properties:
   - type: OpenAPI
@@ -351,6 +363,8 @@ apis:
   description: The Webhooks API from Replicate — 1 operation(s) for webhooks.
   humanURL: https://replicate.com/
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
