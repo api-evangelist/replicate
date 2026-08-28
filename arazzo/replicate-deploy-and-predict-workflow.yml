@@ -11,8 +11,14 @@ info:
     opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: replicateApi
-  url: ../openapi/replicate-openapi.yml
+- name: deploymentsApi
+  url: ../openapi/replicate-deployments-api-openapi.yml
+  type: openapi
+- name: hardwareApi
+  url: ../openapi/replicate-hardware-api-openapi.yml
+  type: openapi
+- name: predictionsApi
+  url: ../openapi/replicate-predictions-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: deploy-and-predict

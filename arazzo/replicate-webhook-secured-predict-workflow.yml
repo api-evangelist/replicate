@@ -12,8 +12,11 @@ info:
     opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: replicateApi
-  url: ../openapi/replicate-openapi.yml
+- name: predictionsApi
+  url: ../openapi/replicate-predictions-api-openapi.yml
+  type: openapi
+- name: secretsApi
+  url: ../openapi/replicate-secrets-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: webhook-secured-predict

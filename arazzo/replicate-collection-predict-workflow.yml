@@ -11,8 +11,14 @@ info:
     read and executed without opening the underlying OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: replicateApi
-  url: ../openapi/replicate-openapi.yml
+- name: collectionsApi
+  url: ../openapi/replicate-collections-api-openapi.yml
+  type: openapi
+- name: modelApi
+  url: ../openapi/replicate-model-api-openapi.yml
+  type: openapi
+- name: predictionsApi
+  url: ../openapi/replicate-predictions-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: collection-predict

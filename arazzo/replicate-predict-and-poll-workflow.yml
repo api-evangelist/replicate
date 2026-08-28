@@ -12,8 +12,8 @@ info:
     OpenAPI description.
   version: 1.0.0
 sourceDescriptions:
-- name: replicateApi
-  url: ../openapi/replicate-openapi.yml
+- name: predictionsApi
+  url: ../openapi/replicate-predictions-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: predict-and-poll

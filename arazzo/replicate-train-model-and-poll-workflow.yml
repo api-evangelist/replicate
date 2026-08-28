@@ -12,8 +12,11 @@ info:
     description.
   version: 1.0.0
 sourceDescriptions:
-- name: replicateApi
-  url: ../openapi/replicate-openapi.yml
+- name: modelApi
+  url: ../openapi/replicate-model-api-openapi.yml
+  type: openapi
+- name: trainingApi
+  url: ../openapi/replicate-training-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: train-model-and-poll
