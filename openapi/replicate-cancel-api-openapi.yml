@@ -1,10 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   contact:
     email: team@replicate.com
   description: AI can do extraordinary things, but its still too hard to use. We don't believe AI is inherently hard. We just don't have the right tools and abstractions yet. Were building tools so all software engineers can use AI as if it were normal software. You should be able to import an image generator the same way you import an npm package. You should be able to customize a model as easily as you can fork something on GitHub.
   termsOfService: https://replicate.com/terms
-  title: Replicate Accounts Cancel API
+  title: Replicate Cancel API
   version: 1.0.0-a1
 servers:
 - url: https://api.replicate.com/v1

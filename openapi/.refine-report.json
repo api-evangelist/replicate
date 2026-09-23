@@ -1,22 +1,7 @@
 {
   "provider": "replicate",
   "sources": [
-    "replicate-accounts-api-openapi.yml",
-    "replicate-cancel-api-openapi.yml",
-    "replicate-collections-api-openapi.yml",
-    "replicate-deployments-api-openapi.yml",
-    "replicate-hardware-api-openapi.yml",
-    "replicate-model-api-openapi.yml",
-    "replicate-models-api-openapi.yml",
-    "replicate-name-api-openapi.yml",
-    "replicate-owner-api-openapi.yml",
-    "replicate-predictions-api-openapi.yml",
-    "replicate-secrets-api-openapi.yml",
-    "replicate-slug-api-openapi.yml",
-    "replicate-training-api-openapi.yml",
-    "replicate-trainings-api-openapi.yml",
-    "replicate-version-api-openapi.yml",
-    "replicate-webhooks-api-openapi.yml"
+    "_original/replicate-openapi.yml"
   ],
   "outputs": [
     "replicate-accounts-api-openapi.yml",
@@ -26,19 +11,31 @@
     "replicate-hardware-api-openapi.yml",
     "replicate-model-api-openapi.yml",
     "replicate-models-api-openapi.yml",
-    "replicate-name-api-openapi.yml",
-    "replicate-owner-api-openapi.yml",
     "replicate-predictions-api-openapi.yml",
     "replicate-secrets-api-openapi.yml",
-    "replicate-slug-api-openapi.yml",
     "replicate-training-api-openapi.yml",
-    "replicate-trainings-api-openapi.yml",
-    "replicate-version-api-openapi.yml",
-    "replicate-webhooks-api-openapi.yml"
+    "replicate-trainings-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "replicate-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "replicate-openapi.yml: multi-axis tagging (16 tags, 11 first tags, 2.15x duplication over 27 operations) \u2014 split on first tag, 15 operations narrowed",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "replicate-accounts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-cancel-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-collections-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-deployments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-hardware-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-model-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-models-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-predictions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-secrets-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-training-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "replicate-trainings-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
