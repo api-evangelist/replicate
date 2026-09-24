@@ -35,8 +35,8 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/replicate.png
 tags:
 - Artificial Intelligence
-- Machine-Learning
-- Image-Generation
+- Machine Learning
+- Image Generation
 - Language Models
 - Model Deployment
 tags_raw:
@@ -45,6 +45,8 @@ tags_raw:
 - Image Generation
 - Language Models
 - Model Deployment
+- Machine-Learning
+- Image-Generation
 url: https://raw.githubusercontent.com/api-evangelist/replicate/refs/heads/main/apis.yml
 created: '2024-11-13'
 modified: '2026-05-29'
@@ -71,8 +73,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-cancel-api
   name: Replicate Cancel API
   description: The Cancel API from Replicate — 2 operation(s) for cancel.
@@ -92,8 +92,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-collections-api
   name: Replicate Collections API
   description: The Collections API from Replicate — 2 operation(s) for collections.
@@ -115,8 +113,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-deployments-api
   name: Replicate Deployments API
   description: The Deployments API from Replicate — 3 operation(s) for deployments.
@@ -138,8 +134,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-hardware-api
   name: Replicate Hardware API
   description: The Hardware API from Replicate — 1 operation(s) for hardware.
@@ -159,8 +153,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-model-api
   name: Replicate Model API
   description: The Model API from Replicate — 5 operation(s) for model.
@@ -180,8 +172,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-models-api
   name: Replicate Models API
   description: The Models API from Replicate — 1 operation(s) for models.
@@ -201,8 +191,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-predictions-api
   name: Replicate Predictions API
   description: The Predictions API from Replicate — 5 operation(s) for predictions.
@@ -222,8 +210,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-secrets-api
   name: Replicate Secrets API
   description: The Secrets API from Replicate — 1 operation(s) for secrets.
@@ -243,8 +229,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-training-api
   name: Replicate Training API
   description: The Training API from Replicate — 2 operation(s) for training.
@@ -264,8 +248,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 - aid: replicate:replicate-trainings-api
   name: Replicate Trainings API
   description: The Trainings API from Replicate — 1 operation(s) for trainings.
@@ -285,8 +267,6 @@ apis:
     url: rules/replicate-rules.yml
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
-  - type: GraphQL
-    url: graphql/replicate-graphql.md
 common:
 - type: AgenticAccess
   url: agentic-access/replicate-agentic-access.yml
