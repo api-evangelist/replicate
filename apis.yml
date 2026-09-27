@@ -39,6 +39,7 @@ tags:
 - Image Generation
 - Language Models
 - Model Deployment
+- Inference
 tags_raw:
 - Artificial Intelligence
 - Machine Learning
@@ -47,6 +48,7 @@ tags_raw:
 - Model Deployment
 - Machine-Learning
 - Image-Generation
+- Inference
 url: https://raw.githubusercontent.com/api-evangelist/replicate/refs/heads/main/apis.yml
 created: '2024-11-13'
 modified: '2026-05-29'
