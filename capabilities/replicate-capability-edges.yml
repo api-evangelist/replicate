@@ -1,0 +1,77 @@
+slug: replicate
+provider: Replicate
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: Model
+  spec_file: replicate-model-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.8
+  evidence: '"GET /models/{model_owner}/{model_name}/versions  models.versions.list  List Model Versions"
+    and "POST .../versions/{version_id}/trainings  trainings.create  Create a Training"'
+  reason: Operations create, fetch, version and delete machine-learning models and launch trainings/predictions
+    against them — this is ML model lifecycle / MLOps tooling, which maps to Artificial Intelligence Management
+    under Information & Data Management. No other candidate covers model hosting and versioning.
+- tag: Deployments
+  spec_file: replicate-deployments-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.78
+  evidence: POST /deployments  deployments.create  Create a Deployment; POST /deployments/{deployment_owner}/{deployment_name}/predictions  deployments.predictions.create  Create
+    a Prediction Using a Deployment
+  reason: Full CRUD over served model deployments plus running predictions through them — this is ML model
+    serving/MLOps, i.e. Artificial Intelligence Management. Despite the word 'Deployments', it is model
+    deployment, not SaaS release/deployment orchestration of the buyer's own software.
+- tag: Models
+  spec_file: replicate-models-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.78
+  evidence: '"GET /models  models.list  List Public Models"; "POST /models  models.create  Create a Model"'
+  reason: Listing and creating machine-learning models in a model registry is AI/ML model lifecycle management
+    (BC-610.60). Thin surface (2 operations) but unambiguous in meaning given the vendor runs ML models
+    in the cloud.
+- tag: Training
+  spec_file: replicate-training-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.75
+  evidence: '"GET /trainings/{training_id}  trainings.get  Get a Training"'
+  reason: A 'training' here is a fine-tuning run of a machine-learning model, retrieved by id — ML model
+    training lifecycle, i.e. AI/ML model lifecycle and MLOps. Not learning & development of people despite
+    the word 'training'.
+- tag: Trainings
+  spec_file: replicate-trainings-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.75
+  evidence: '"GET /trainings  trainings.list  List Trainings"'
+  reason: Lists model fine-tuning runs on an ML inference platform — AI/ML model lifecycle (MLOps), not
+    human training. Homograph risk acknowledged but vendor context (run/customise machine learning models)
+    resolves it.
+- tag: Predictions
+  spec_file: replicate-predictions-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.72
+  evidence: '"POST /predictions  predictions.create  Create a Prediction"; schema "schemas_version_prediction_request"'
+  reason: Predictions are inference runs against a model version — model serving/inference, part of the
+    AI/ML model lifecycle and MLOps capability. Slightly lower confidence because inference execution
+    is arguably runtime compute rather than management of AI assets.

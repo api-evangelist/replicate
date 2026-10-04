@@ -270,6 +270,9 @@ apis:
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
 common:
+- type: CapabilityMap
+  url: capabilities/replicate-capability-edges.yml
+  name: Replicate Business Capability Map
 - type: AgenticAccess
   url: agentic-access/replicate-agentic-access.yml
 - type: DomainSecurity
