@@ -289,6 +289,18 @@ paths:
       tags:
       - Predictions
 components:
+  parameters:
+    parameters_prefer_header:
+      description: 'Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.
+
+
+        See https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.'
+      in: header
+      name: Prefer
+      schema:
+        example: wait=5
+        pattern: ^wait(=([1-9]|[1-9][0-9]|60))?$
+        type: string
   schemas:
     schemas_version_prediction_request:
       additionalProperties: false
@@ -354,18 +366,6 @@ components:
       - version
       - input
       type: object
-  parameters:
-    parameters_prefer_header:
-      description: 'Leave the request open and wait for the model to finish generating output. Set to `wait=n` where n is a number of seconds between 1 and 60.
-
-
-        See https://replicate.com/docs/topics/predictions/create-a-prediction#sync-mode for more information.'
-      in: header
-      name: Prefer
-      schema:
-        example: wait=5
-        pattern: ^wait(=([1-9]|[1-9][0-9]|60))?$
-        type: string
   securitySchemes:
     bearerAuth:
       bearerFormat: 'All API requests must include a valid API token in the `Authorization` request header. The token must be prefixed by "Bearer", followed by a space and the token value.
