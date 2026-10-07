@@ -270,6 +270,8 @@ apis:
   - type: Vocabulary
     url: vocabulary/replicate-vocabulary.yml
 common:
+- type: Plans
+  url: plans/replicate-plans-pricing.yml
 - type: CapabilityMap
   url: capabilities/replicate-capability-edges.yml
   name: Replicate Business Capability Map
