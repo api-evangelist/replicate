@@ -1,91 +1,352 @@
-specification: API Commons Plans
-specificationVersion: '0.1'
-schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
-provider: Replicate
-providerId: replicate
-created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
-reconciled: true
-tags:
-  - AI
-  - ML
-  - GPU
-description: Replicate per-second hardware pricing for running open-source ML models.
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-07'
+method: searched
+source: https://replicate.com/pricing
 sources:
-  - https://replicate.com/pricing
+- https://replicate.com/pricing
+provenance:
+  tool: all/0-working/economics/harvest_pricing.py
+  run: 20261007T104522
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: usage-other
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-07'
+published: true
+note: 'Usage-based: models billed by hardware time per-second/per-hour, or per output image/token/second
+  of video. Multi-GPU and H200 capacity available with committed spend contracts; enterprise terms not
+  priced.'
+plan_count: 23
+currency: USD
 plans:
-  - id: replicate-t4
-    name: Nvidia T4 GPU
-    type: usage-based
-    description: $0.000225/sec.
-    entries:
-      - label: Per second
-        name: second
-        type: metered
-        metric: second
-        limit: -1
-        timeFrame: usage
-        geo: global
-        unit: 1
-        price: '0.000225'
-        userMultiplied: false
-    elements:
-      - name: Cheapest GPU option
-      - name: Best for small models / batch
-  - id: replicate-l40s
-    name: Nvidia L40S GPU
-    type: usage-based
-    description: $0.000975/sec.
-    entries:
-      - label: Per second
-        name: second
-        type: metered
-        metric: second
-        limit: -1
-        timeFrame: usage
-        geo: global
-        unit: 1
-        price: '0.000975'
-        userMultiplied: false
-    elements:
-      - name: Mid-tier GPU
-      - name: Good for image generation
-  - id: replicate-a100
-    name: Nvidia A100 (80GB) GPU
-    type: usage-based
-    description: $0.00140/sec.
-    entries:
-      - label: Per second
-        name: second
-        type: metered
-        metric: second
-        limit: -1
-        timeFrame: usage
-        geo: global
-        unit: 1
-        price: '0.001400'
-        userMultiplied: false
-    elements:
-      - name: High-performance GPU
-      - name: Best for medium-to-large models
-  - id: replicate-h100
-    name: Nvidia H100 GPU
-    type: usage-based
-    description: $0.001525/sec.
-    entries:
-      - label: Per second
-        name: second
-        type: metered
-        metric: second
-        limit: -1
-        timeFrame: usage
-        geo: global
-        unit: 1
-        price: '0.001525'
-        userMultiplied: false
-    elements:
-      - name: Top-tier GPU
-      - name: Best for large models / training
+- name: flux-1.1-pro
+  price_text: $0.04 / output image
+  price: 0.04
+  currency: USD
+  period: per-use
+  unit: output image
+- name: flux-dev
+  price_text: $0.025 / output image
+  price: 0.025
+  currency: USD
+  period: per-use
+  unit: output image
+- name: flux-schnell
+  price_text: $3.00 / thousand output images
+  price: 3.0
+  currency: USD
+  period: per-use
+  unit: thousand output images
+- name: deepseek-r1 output
+  price_text: $0.01 / thousand output tokens
+  price: 0.01
+  currency: USD
+  period: per-use
+  unit: thousand output tokens
+- name: deepseek-r1 input
+  price_text: $3.75 / million input tokens
+  price: 3.75
+  currency: USD
+  period: per-use
+  unit: million input tokens
+- name: ideogram-v3-quality
+  price_text: $0.09 / output image
+  price: 0.09
+  currency: USD
+  period: per-use
+  unit: output image
+- name: recraft-v3
+  price_text: $0.04 / output image
+  price: 0.04
+  currency: USD
+  period: per-use
+  unit: output image
+- name: wan-2.1-i2v-480p
+  price_text: $0.09 / second of output video
+  price: 0.09
+  currency: USD
+  period: per-use
+  unit: second of output video
+- name: wan-2.1-i2v-720p
+  price_text: $0.25 / second of output video
+  price: 0.25
+  currency: USD
+  period: per-use
+  unit: second of output video
+- name: CPU (Small) cpu-small
+  price_text: $ 0.09 /hr
+  price: 0.09
+  currency: USD
+  period: per-use
+  unit: hour
+- name: CPU
+  price_text: $ 0.36 /hr
+  price: 0.36
+  currency: USD
+  period: per-use
+  unit: hour
+- name: Nvidia A100 (80GB) GPU
+  price_text: $ 5.04 /hr
+  price: 5.04
+  currency: USD
+  period: per-use
+  unit: hour
+- name: 2x Nvidia A100 (80GB) GPU
+  price_text: $ 10.08 /hr
+  price: 10.08
+  currency: USD
+  period: per-use
+  unit: hour
+- name: Nvidia H100 GPU
+  price_text: $ 5.49 /hr
+  price: 5.49
+  currency: USD
+  period: per-use
+  unit: hour
+- name: Nvidia L40S GPU
+  price_text: $ 3.51 /hr
+  price: 3.51
+  currency: USD
+  period: per-use
+  unit: hour
+- name: 2x Nvidia L40S GPU
+  price_text: $ 7.02 /hr
+  price: 7.02
+  currency: USD
+  period: per-use
+  unit: hour
+- name: Nvidia T4 GPU
+  price_text: $ 0.81 /hr
+  price: 0.81
+  currency: USD
+  period: per-use
+  unit: hour
+- name: 4x Nvidia A100 (80GB) GPU
+  price_text: $ 20.16 /hr
+  price: 20.16
+  currency: USD
+  period: per-use
+  unit: hour
+- name: 8x Nvidia A100 (80GB) GPU
+  price_text: $ 40.32 /hr
+  price: 40.32
+  currency: USD
+  period: per-use
+  unit: hour
+- name: 8x Nvidia H100 GPU
+  price_text: $ 43.92 /hr
+  price: 43.92
+  currency: USD
+  period: per-use
+  unit: hour
+- name: 4x Nvidia L40S GPU
+  price_text: $ 14.04 /hr
+  price: 14.04
+  currency: USD
+  period: per-use
+  unit: hour
+- name: 8x Nvidia L40S GPU
+  price_text: $ 28.08 /hr
+  price: 28.08
+  currency: USD
+  period: per-use
+  unit: hour
+- name: Enterprise & volume discounts
+  price_text: We've also got volume discounts for large amounts of spend.
+  period: none
+  included_quota: Dedicated account manager, Priority support, Higher GPU limits, Performance SLAs
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - subscription
+  units:
+  - compute
+  - token
+  plans:
+  - name: flux-1.1-pro
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: flux-dev
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: flux-schnell
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: deepseek-r1 output
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - token
+    periods:
+    - other
+  - name: deepseek-r1 input
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - token
+    periods:
+    - other
+  - name: ideogram-v3-quality
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: recraft-v3
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: wan-2.1-i2v-480p
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: wan-2.1-i2v-720p
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: CPU (Small) cpu-small
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: CPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Nvidia A100 (80GB) GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: 2x Nvidia A100 (80GB) GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Nvidia H100 GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Nvidia L40S GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: 2x Nvidia L40S GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Nvidia T4 GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: 4x Nvidia A100 (80GB) GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: 8x Nvidia A100 (80GB) GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: 8x Nvidia H100 GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: 4x Nvidia L40S GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: 8x Nvidia L40S GPU
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - compute
+    periods:
+    - other
+  - name: Enterprise & volume discounts
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none

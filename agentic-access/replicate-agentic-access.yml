@@ -1,6 +1,10 @@
-generated: '2026-07-15'
+generated: '2026-09-24'
 method: generated
-source: openapi/replicate-openapi.yml
+source: openapi/replicate-accounts-api-openapi.yml, openapi/replicate-cancel-api-openapi.yml,
+  openapi/replicate-collections-api-openapi.yml, openapi/replicate-deployments-api-openapi.yml,
+  openapi/replicate-hardware-api-openapi.yml, openapi/replicate-model-api-openapi.yml, openapi/replicate-models-api-openapi.yml,
+  openapi/replicate-predictions-api-openapi.yml, openapi/replicate-secrets-api-openapi.yml,
+  openapi/replicate-training-api-openapi.yml, openapi/replicate-trainings-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
@@ -11,8 +15,8 @@ summary:
     acting: 12
   by_consequence:
     read: 15
-    physical: 4
     write: 8
+    physical: 4
   human_in_the_loop_required: 0
 operations:
 - path: /account
@@ -25,6 +29,38 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /predictions/{prediction_id}/cancel
+  method: post
+  operationId: predictions.cancel
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /trainings/{training_id}/cancel
+  method: post
+  operationId: trainings.cancel
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /collections
   method: get
   operationId: collections.list
@@ -147,32 +183,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /models
-  method: get
-  operationId: models.list
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /models
-  method: post
-  operationId: models.create
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /models/{model_owner}/{model_name}
   method: delete
   operationId: models.delete
@@ -267,6 +277,32 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /models
+  method: get
+  operationId: models.list
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /models
+  method: post
+  operationId: models.create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /predictions
   method: get
   operationId: predictions.list
@@ -303,25 +339,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /predictions/{prediction_id}/cancel
-  method: post
-  operationId: predictions.cancel
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /trainings
+- path: /webhooks/default/secret
   method: get
-  operationId: trainings.list
+  operationId: webhooks.default.secret.get
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -339,25 +359,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /trainings/{training_id}/cancel
-  method: post
-  operationId: trainings.cancel
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /webhooks/default/secret
+- path: /trainings
   method: get
-  operationId: webhooks.default.secret.get
+  operationId: trainings.list
   x-agentic-access:
     action-class: connected
     consequence: read
