@@ -36,3 +36,15 @@
   relationship: system-coverage
   status: not-a-workflow
   arazzo: null
+- slug: replicate-github-marketplace-actions
+  label: GitHub Marketplace (actions)
+  partner: github-actions
+  partner_name: GitHub Marketplace (actions)
+  type: marketplace
+  marketplace: github-actions
+  channel: partner-built
+  evidence: https://github.com/marketplace/actions/setup-cog
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
