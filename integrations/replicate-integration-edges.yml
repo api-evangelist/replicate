@@ -1,4 +1,21 @@
 edges:
+- partner_name: GitHub Marketplace (actions)
+  partner: github-actions
+  partner_match: aggregator
+  type: marketplace
+  marketplace: github-actions
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://github.com/marketplace/actions/setup-cog
+  listing_count: 1
+  apps:
+  - Setup Cog
+  publisher_name: Replicate
+  badges:
+  - Verified creator
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
 - partner_name: LiteLLM
   partner: litellm
   partner_match: router
@@ -55,28 +72,38 @@ edges:
   matched_by: verified-token-table
   detected_by: sweep-model-routing.py
   first_seen: '2026-10-13'
-- partner_name: GitHub Marketplace (actions)
-  partner: github-actions
+- partner_name: Pipedream
+  partner: pipedream
   partner_match: aggregator
   type: marketplace
-  marketplace: github-actions
-  channel: partner-built
-  relationship: platform-app
+  marketplace: pipedream-components
+  channel: open-source-node
+  relationship: ipaas-bridge
   direction: third-party
-  evidence: https://github.com/marketplace/actions/setup-cog
-  listing_count: 1
-  apps:
-  - Setup Cog
-  publisher_name: Replicate
-  badges:
-  - Verified creator
-  detected_by: sweep-devtools.py
-  detected: '2026-10-14'
+  evidence: https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/replicate
+  category: null
+  contract_reference:
+    register: Pipedream components (PipedreamHQ/pipedream components/)
+    spec_file: null
+    role: ipaas-connector:pipedream
+    registered_name: replicate
+    matched_domain: replicate.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: replicate
+    actions: true
+    sources: false
+    builder: Pipedream repo (component)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-15'
 generated: '2026-10-13'
 method: searched
 checked:
 - https://developers.cloudflare.com/ai-gateway/usage/providers/
 - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json
+- https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
 - https://github.com/Portkey-AI/gateway/tree/main/src/providers
 - https://github.com/marketplace?type=actions
 marketplace_apps: []
