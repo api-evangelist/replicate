@@ -15,6 +15,36 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: replicate-go-module-proxy
+  label: Go module proxy
+  partner_name: Go module proxy
+  category: official SDK (Go)
+  type: register
+  channel: package-registry
+  evidence: https://pkg.go.dev/github.com/replicate/replicate-go
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/replicate/replicate-go
+      version: v0.26.0
+      released: '2024-10-11'
+      released_field: Time
+      lapsed: true
+      page: https://pkg.go.dev/github.com/replicate/replicate-go
+      repo_leg: github-org:replicate
+      publisher_leg: org:replicate
+      matched_by: github-org
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
 - slug: replicate-litellm
   label: LiteLLM
   partner: litellm
@@ -55,7 +85,7 @@
   type: marketplace
   marketplace: pipedream-components
   channel: open-source-node
-  evidence: https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/replicate
+  evidence: https://github.com/PipedreamHQ/pipedream/tree/d5872355ef27b4efa769f05352f2820c299a456e/components/replicate
   source: edge
   relationship: ipaas-bridge
   contract_reference:
@@ -72,35 +102,5 @@
     actions: true
     sources: false
     builder: Pipedream repo (component)
-  status: not-a-workflow
-  arazzo: null
-- slug: replicate-go-module-proxy
-  label: Go module proxy
-  partner_name: Go module proxy
-  category: official SDK (Go)
-  type: register
-  channel: package-registry
-  evidence: https://pkg.go.dev/github.com/replicate/replicate-go
-  source: edge
-  relationship: distribution-channel
-  contract_reference:
-    register: Go module proxy (public registry JSON)
-    spec_file: null
-    language: Go
-    packages:
-    - name: github.com/replicate/replicate-go
-      version: v0.26.0
-      released: '2024-10-11'
-      released_field: Time
-      lapsed: true
-      page: https://pkg.go.dev/github.com/replicate/replicate-go
-      repo_leg: github-org:replicate
-      publisher_leg: org:replicate
-      matched_by: github-org
-    current: false
-    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
-      24 months'
-    detected_by: sweep-official-sdks.py
-    detected: '2026-10-18'
   status: not-a-workflow
   arazzo: null
