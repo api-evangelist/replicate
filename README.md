@@ -1,4 +1,4 @@
-# Replicate (replicate)
+# Replicate
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,85 +66,246 @@
 
 Replicate lets you run machine learning models in the cloud with a simple API. Thousands of open-source models are available, and you can run your own custom models at scale. Run image generation, language models, audio synthesis, video generation, and more with a few lines of code. Replicate makes AI accessible to every software engineer.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/replicate/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/replicate/refs/heads/main/apis.yml)
+**Areas:** Artificial Intelligence · Machine Learning · Image Generation · Language Models · Model Deployment · Inference
 
-## Scope
+## Replicate on APIs.io
 
-- **Type:** Index
+Everything profiled for Replicate is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/replicate/](https://apis.io/providers/replicate/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (11)
 
-- Artificial Intelligence
-- Machine Learning
-- Image Generation
-- Language Models
-- Model Deployment
+- [Replicate Accounts API](https://apis.io/apis/replicate/replicate-accounts-api/) — The Accounts API from Replicate — 1 operation(s) for accounts.
+- [Replicate Cancel API](https://apis.io/apis/replicate/replicate-cancel-api/) — The Cancel API from Replicate — 2 operation(s) for cancel.
+- [Replicate Collections API](https://apis.io/apis/replicate/replicate-collections-api/) — The Collections API from Replicate — 2 operation(s) for collections.
+- [Replicate Deployments API](https://apis.io/apis/replicate/replicate-deployments-api/) — The Deployments API from Replicate — 3 operation(s) for deployments.
+- [Replicate Hardware API](https://apis.io/apis/replicate/replicate-hardware-api/) — The Hardware API from Replicate — 1 operation(s) for hardware.
+- [Replicate Model API](https://apis.io/apis/replicate/replicate-model-api/) — The Model API from Replicate — 5 operation(s) for model.
+- [Replicate Models API](https://apis.io/apis/replicate/replicate-models-api/) — The Models API from Replicate — 1 operation(s) for models.
+- [Replicate Predictions API](https://apis.io/apis/replicate/replicate-predictions-api/) — The Predictions API from Replicate — 5 operation(s) for predictions.
+- [Replicate Secrets API](https://apis.io/apis/replicate/replicate-secrets-api/) — The Secrets API from Replicate — 1 operation(s) for secrets.
+- [Replicate Training API](https://apis.io/apis/replicate/replicate-training-api/) — The Training API from Replicate — 2 operation(s) for training.
+- [Replicate Trainings API](https://apis.io/apis/replicate/replicate-trainings-api/) — The Trainings API from Replicate — 1 operation(s) for trainings.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2024-11-13
-- **Modified:** 2026-05-29
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### Arazzo workflows (10)
 
-### Replicate
+Multi-step workflows that chain operations into a business task.
 
-Replicate lets you run machine learning models in the cloud with a simple REST API. Access thousands of open-source models for image generation, language modeling, audio synthesis, video generation, upscaling, and more. Create predictions, manage deployments, fine-tune models, and run training jobs via a clean API with webhooks and streaming support.
+- [Replicate Pick a Model from a Collection and Predict](https://apis.io/arazzos/replicate/replicate-collection-predict-workflow/)
+- [Replicate Create a Deployment and Run a Prediction Through It](https://apis.io/arazzos/replicate/replicate-deploy-and-predict-workflow/)
+- [Replicate Resolve Latest Version and Predict](https://apis.io/arazzos/replicate/replicate-model-version-predict-workflow/)
+- [Replicate Run an Official Model and Poll](https://apis.io/arazzos/replicate/replicate-official-model-predict-workflow/)
+- [Replicate Create Prediction and Poll Until Complete](https://apis.io/arazzos/replicate/replicate-predict-and-poll-workflow/)
+- [Replicate Run a Prediction with Bounded Wait and Cancel](https://apis.io/arazzos/replicate/replicate-predict-with-timeout-cancel-workflow/)
+- [Replicate Scale a Deployment and Run a Prediction](https://apis.io/arazzos/replicate/replicate-scale-deployment-and-predict-workflow/)
+- [Replicate Search for a Model and Run a Prediction](https://apis.io/arazzos/replicate/replicate-search-model-and-predict-workflow/)
+- [Replicate Start a Training and Poll Until Complete](https://apis.io/arazzos/replicate/replicate-train-model-and-poll-workflow/)
+- [Replicate Fetch Webhook Secret and Run a Webhook Prediction](https://apis.io/arazzos/replicate/replicate-webhook-secured-predict-workflow/)
 
-- **Human URL:** [https://replicate.com/](https://replicate.com/)
+#### AsyncAPI (1)
 
-#### Tags
+Event-driven and webhook contracts.
 
-- Accounts
-- Artificial Intelligence
-- Collections
-- Deployments
-- Hardware
-- Machine Learning
-- Models
-- Predictions
-- Training
-- Webhooks
+- [Replicate Streaming and Webhooks API](https://apis.io/asyncapis/replicate/replicate-asyncapi/)
 
-#### Properties
+#### Event channels (2)
 
-- [Documentation](https://replicate.com/docs)
-- [Open A P I  Documentation](https://replicate.com/docs/reference/http)
-- [OpenAPI](openapi/replicate-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/replicate.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/replicate.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [AsyncAPI](asyncapi/replicate-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
-- [Spectral Ruleset](rules/replicate-rules.yml)
-- [Vocabulary](vocabulary/replicate-vocabulary.yml)
+Individual events and webhooks the provider emits.
 
-## Common Properties
+- [predictions.stream](https://apis.io/channels/replicate/predictions-stream/)
+- [webhooks.prediction](https://apis.io/channels/replicate/webhooks-prediction/)
 
-- [Arazzo Workflows](arazzo/) — [Arazzo Specification](https://spec.openapis.org/arazzo/latest.html)
-- [LinkedIn](https://www.linkedin.com/company/replicate)
+#### GraphQL (1)
+
+GraphQL schemas.
+
+- [Moved to /providers/replicate/](https://apis.io/graphqls/replicate/replicate-graphql/)
+
+#### MCP servers (2)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [MCP Server](https://apis.io/servers/replicate/mcp-server/)
+- [replicate](https://apis.io/servers/replicate/replicate/)
+
+#### Agent skills (7)
+
+Agent skills built on the API.
+
+- [build-models](https://apis.io/agent-skills/replicate/build-models/)
+- [compare-models](https://apis.io/agent-skills/replicate/compare-models/)
+- [find-models](https://apis.io/agent-skills/replicate/find-models/)
+- [prompt-images](https://apis.io/agent-skills/replicate/prompt-images/)
+- [prompt-videos](https://apis.io/agent-skills/replicate/prompt-videos/)
+- [publish-models](https://apis.io/agent-skills/replicate/publish-models/)
+- [run-models](https://apis.io/agent-skills/replicate/run-models/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Replicate Agentic Access](https://apis.io/agentic-access/replicate/replicate-agentic-access/)
+
+#### JSON Schema (5)
+
+The data models the API reads and writes.
+
+- [Replicate Model](https://apis.io/schemas/replicate/replicate-model/)
+- [Replicate Prediction](https://apis.io/schemas/replicate/replicate-prediction/)
+- [schemas_prediction_request](https://apis.io/schemas/replicate/replicate-schemas-prediction-request/)
+- [schemas_training_request](https://apis.io/schemas/replicate/replicate-schemas-training-request/)
+- [schemas_version_prediction_request](https://apis.io/schemas/replicate/replicate-schemas-version-prediction-request/)
+
+#### JSON Structure (2)
+
+Data models expressed in JSON Structure.
+
+- [Replicate Prediction Structure](https://apis.io/json-structure/replicate/replicate-prediction-structure/)
+- [Replicate Structure](https://apis.io/json-structure/replicate/replicate-structure/)
+
+#### JSON-LD (1)
+
+Linked-data contexts for the provider's vocabulary.
+
+- [Replicate Context](https://apis.io/jsonld/replicate/replicate-context/)
+
+#### Vocabulary (1)
+
+The provider's domain terms, defined.
+
+- [Replicate Vocabulary](https://apis.io/vocabularies/replicate/replicate-vocabulary/)
+
+#### Examples (2)
+
+Example requests and responses.
+
+- [Replicate Create Prediction Example](https://apis.io/examples/replicate/replicate-create-prediction-example/)
+- [Replicate List Models Example](https://apis.io/examples/replicate/replicate-list-models-example/)
+
+#### Collections (18)
+
+Postman and Open Collection request collections.
+
+- [Replicate](https://apis.io/collections/replicate/open-replicate/)
+- [Replicate Accounts API](https://apis.io/collections/replicate/open-replicate-accounts-api/)
+- [Replicate Accounts Cancel API](https://apis.io/collections/replicate/open-replicate-cancel-api/)
+- [Replicate Accounts Collections API](https://apis.io/collections/replicate/open-replicate-collections-api/)
+- [Replicate Accounts Deployments API](https://apis.io/collections/replicate/open-replicate-deployments-api/)
+- [Replicate Accounts Hardware API](https://apis.io/collections/replicate/open-replicate-hardware-api/)
+- [Replicate Accounts Model API](https://apis.io/collections/replicate/open-replicate-model-api/)
+- [Replicate Accounts Models API](https://apis.io/collections/replicate/open-replicate-models-api/)
+- [Replicate Accounts Name API](https://apis.io/collections/replicate/open-replicate-name-api/)
+- [Replicate Accounts Owner API](https://apis.io/collections/replicate/open-replicate-owner-api/)
+- [Replicate Accounts Predictions API](https://apis.io/collections/replicate/open-replicate-predictions-api/)
+- [Replicate Accounts Secrets API](https://apis.io/collections/replicate/open-replicate-secrets-api/)
+- [Replicate Accounts Slug API](https://apis.io/collections/replicate/open-replicate-slug-api/)
+- [Replicate Accounts Training API](https://apis.io/collections/replicate/open-replicate-training-api/)
+- [Replicate Accounts Trainings API](https://apis.io/collections/replicate/open-replicate-trainings-api/)
+- [Replicate Accounts Version API](https://apis.io/collections/replicate/open-replicate-version-api/)
+- [Replicate Accounts Webhooks API](https://apis.io/collections/replicate/open-replicate-webhooks-api/)
+- [Replicate](https://apis.io/collections/replicate/postman-replicate/)
+
+#### Governance rules (3)
+
+Spectral rulesets for the provider's contracts.
+
+- [Replicate — asyncapi rules](https://apis.io/rules/replicate/replicate-asyncapi-spectral-rules/)
+- [Replicate — jsonschema rules](https://apis.io/rules/replicate/replicate-jsonschema-spectral-rules/)
+- [Replicate API Rules](https://apis.io/rules/replicate/replicate-rules/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Replicate Authentication](https://apis.io/security/replicate/replicate-authentication/)
+- [Replicate Domain Security](https://apis.io/security/replicate/replicate-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Replicate Plans Pricing](https://apis.io/plans/replicate/replicate-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Replicate Rate Limits](https://apis.io/rate-limits/replicate/replicate-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Replicate Finops](https://apis.io/finops/replicate/replicate-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://replicate.com)
 - [Documentation](https://replicate.com/docs)
 - [Pricing](https://replicate.com/pricing)
-- [Blog](https://replicate.com/blog)
 - [Changelog](https://replicate.com/changelog)
-- [Terms of Service](https://replicate.com/terms)
-- [Privacy Policy](https://replicate.com/privacy)
-- [Sign Up](https://replicate.com/signin?next=/docs)
-- [Login](https://replicate.com/signin)
-- [Playground](https://replicate.com/explore)
-- [GitHub Organization](https://github.com/replicate)
-- [S D Ks](https://replicate.com/docs/reference/client-libraries)
-- [Python  S D K](https://github.com/replicate/replicate-python)
-- [Node.js  S D K](https://github.com/replicate/replicate-javascript)
-- [Go  S D K](https://github.com/replicate/replicate-go)
-- [Swift  S D K](https://github.com/replicate/replicate-swift)
-- [Cog](https://github.com/replicate/cog)
-- [Status Page](https://status.replicate.com)
-- [Features](undefined)
-- [M C P Server](https://github.com/replicate/replicate-mcp-code-mode)
-- [Agent Skill](https://github.com/replicate/skills)
-- [L L Ms Txt](https://replicate.com/llms.txt)
+- [Blog](https://replicate.com/blog)
+- [Terms of service](https://replicate.com/terms)
+- [Privacy policy](https://replicate.com/privacy)
+- [GitHub](https://github.com/replicate)
+- [Status](https://status.replicate.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 55.9** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.7 |
+| Contract quality | 64.8 |
+| Contract governance | 27.3 |
+| Operational transparency | 42.1 |
+| Developer ergonomics | 51.7 |
+| Access clarity | 69.7 |
+
+**Agent readiness 49.8** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | unknown |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 22.7** — AI & Biometrics
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/replicate/](https://apis.io/providers/replicate/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Replicate: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/replicate/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
